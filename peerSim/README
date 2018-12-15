@@ -1,0 +1,5 @@
+コンパイルとシミュレータ実行方法
+
+	1.コンパイル: bash make.bash
+
+	2.シミュレータ実行: bash runSimulator.bash

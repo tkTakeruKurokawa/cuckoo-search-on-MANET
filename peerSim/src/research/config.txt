@@ -1,0 +1,33 @@
+#random.seed 1234567890
+network.size 10
+simulation.cycles 10
+#control.shf Shuffle
+#shuffleを有効にするとサイクルごとに隣接ノードが変化する
+
+protocol.lnk Link
+#protocol.lnk.capacity 2
+
+protocol.str Storage
+
+K 3
+
+init.rnd WireUndirectedGraph
+init.rnd.k K
+init.rnd.protocol lnk
+
+init.mn ModifyNetwork
+init.mn.linkable lnk
+init.mn.protocol lnk
+init.mn.k K
+
+#init.data Data
+	
+#init.iniNet InitializeNetwork
+#init.iniNet.protocol str
+
+control.stat printStatus
+control.stat.linkable lnk
+control.stat.protocol lnk
+
+#control.test ControlTest
+#control.test.protocol str

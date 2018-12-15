@@ -1,0 +1,25 @@
+#random.seed 1234567890
+network.size 2000
+simulation.cycles 5
+control.shf Shuffle
+
+protocol.lnk IdleProtocol2
+#protocol.lnk.capacity 2
+
+protocol.mp MyProtocol
+protocol.mp.linkable lnk
+
+protocol.str Storage
+
+init.rnd WireKOut
+init.rnd.protocol lnk
+init.rnd.k 3
+
+init.data Data
+
+#control.stat printStatus
+#control.stat.linkable lnk
+#control.stat.protocol mp
+
+control.test ControlTest
+control.test.protocol str
