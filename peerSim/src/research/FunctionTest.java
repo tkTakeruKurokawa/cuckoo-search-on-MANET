@@ -1,7 +1,9 @@
-package research;
-
 import java.lang.Math;
 import java.util.Random;
+// import org.apache.commons.math3.distribution.*;
+
+// compile: javac -cp ./:commons-math3-3.6.1.jar FunctionTest.java
+// run: java -cp ./:commons-math3-3.6.1.jar FunctionTest
 
 public class FunctionTest{
 	public static Random random = new Random();
@@ -10,6 +12,7 @@ public class FunctionTest{
 	public static Double p = 10.0/500.0;
 	public static Double total = 0.0;
 	public static Boolean decrease = false;
+	// public static PoissonDistribution pd = new PoissonDistribution(1500.0, 500.0);
 	// public static Integer k;
 
 	public static Double loop(Double k){
@@ -22,6 +25,12 @@ public class FunctionTest{
 	}
 
 	public static void main(String[] args){
+
+		// for(int i=0; i<500; i++){
+			// System.out.println(pd.probability(i));
+			// System.out.println(pd.sample());
+		// }
+
 
 		// for(Integer x=1; x<501; x++){
 		// 	double max = 1500.0;
@@ -66,10 +75,10 @@ public class FunctionTest{
 		// 	System.out.println(i + ", " + sum);
 		// }
 
-		for(Integer i=1; i<500; i++){
-			Double k = 1 / (500.0- i.doubleValue());
-			System.out.println( (Math.exp(-1*lam)*Math.pow(lam,  i.doubleValue()))/loop(i.doubleValue()));
-		}
+		// for(Integer i=1; i<500; i++){
+		// 	Double k = 1 / (500.0- i.doubleValue());
+		// 	System.out.println( (Math.exp(-1*lam)*Math.pow(lam,  i.doubleValue()))/loop(i.doubleValue()));
+		// }
 
 		// for(Integer t = 1; t < 100; t++){
 		// 	System.out.println(u*Math.exp(-1*u*t));

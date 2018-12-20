@@ -13,6 +13,7 @@ public class ModifyNetwork implements Control{
 	private static Queue<Node> queue = new ArrayDeque<Node>();
 	private static Random random = new Random();
 
+
 	public ModifyNetwork(String prefix){
 		k = Configuration.getInt(prefix + "." + PAR_DEGREE);
 		pid = Configuration.getPid(prefix + "." + PAR_PROT);
@@ -26,13 +27,17 @@ public class ModifyNetwork implements Control{
 	public static boolean addNode(){
 		Node newNode = (Node) Network.prototype.clone();
 		Network.add(newNode);
+		System.out.println("add Node ID: " + newNode.getIndex());
 
 		Link newLink = (Link) newNode.getProtocol(pid);
 		int num = random.nextInt(k-1)+1;
+		System.out.println("num of Nodes to add: " + num);
 
 		int i=0;
 		while(i<num){
 			int nodeID = random.nextInt(Network.size());
+			System.out.println("Node: " + newNode.getIndex() +  " addNeighbor: " + nodeID);
+
 			if(nodeID == newNode.getIndex()){
 				System.out.println("addNodeID == thisNodeID. Done ReRoll.");
 				continue;
@@ -48,6 +53,7 @@ public class ModifyNetwork implements Control{
 			addLink(tmp, newNode);
 			i++;
 		}
+		System.out.println();
 
 		return true;
 	}

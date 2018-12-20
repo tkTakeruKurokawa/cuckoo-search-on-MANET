@@ -1,33 +1,41 @@
 #random.seed 1234567890
-network.size 10
-simulation.cycles 10
+network.size 500
+simulation.cycles 2
 #control.shf Shuffle
 #shuffleを有効にするとサイクルごとに隣接ノードが変化する
 
+#ノード間のリンク関係
 protocol.lnk Link
 #protocol.lnk.capacity 2
 
+#ノードが持っているデータ
 protocol.str Storage
 
 K 3
 
+#Linkクラスを元に無向グラフを形成
 init.rnd WireUndirectedGraph
 init.rnd.k K
 init.rnd.protocol lnk
 
+#ノード・リンクの追加・削除
 init.mn ModifyNetwork
 init.mn.linkable lnk
 init.mn.protocol lnk
 init.mn.k K
 
-#init.data Data
-	
-#init.iniNet InitializeNetwork
-#init.iniNet.protocol str
+#ノードが持つデータ
+init.data Data
 
-control.stat printStatus
-control.stat.linkable lnk
-control.stat.protocol lnk
+#初期ネットワークノードにデータを付与
+init.iniNet InitializeNetwork
+init.iniNet.protocol str
 
-#control.test ControlTest
-#control.test.protocol str
+#ノード・リンクの追加・削除をコントロール
+#control.stat printStatus
+#control.stat.linkable lnk
+#control.stat.protocol lnk
+
+#データの付与・削除をコントロール
+control.test ControlTest
+control.test.protocol str

@@ -67,15 +67,17 @@ public class Data implements Control{
 		if(!lowDemand){
 			if(!decrease){
 				return increaseNormalDemand();
-			}else{
-				return decreaseNormalDemand();
 			}
+			// }else{
+			// 	return decreaseNormalDemand();
+			// }
 		}if(lowDemand){
 			if(!decrease){
 				return increaseLowDemand();
-			}else{
-				return decreaseLowDemand();
 			}
+		// 	}else{
+		// 		return decreaseLowDemand();
+		// 	}
 		}
 		return -1;
 	}	
@@ -98,24 +100,24 @@ public class Data implements Control{
 		return value;
 	}
 
-	private int decreaseNormalDemand(){
-		// if(estimateReplication <= maxReplication*0.05){
-			// 	System.out.println("LowDemand");
-			// 	return -1;
-			// 	LowDemandRepricate();
-			// }
-		if(estimateReplication-(replication) < 0){
-			estimateReplication = 0;
-			// System.out.println(i + ", " + estimateReplication);
-			return 0;
-		}
-		value = random.nextInt(replication);
-		estimateReplication -= value;
-		// System.out.println(i + ", " + estimateReplication);
-		i++;
+	// private int decreaseNormalDemand(){
+	// 	// if(estimateReplication <= maxReplication*0.05){
+	// 		// 	System.out.println("LowDemand");
+	// 		// 	return -1;
+	// 		// 	LowDemandRepricate();
+	// 		// }
+	// 	if(estimateReplication-(replication) < 0){
+	// 		estimateReplication = 0;
+	// 		// System.out.println(i + ", " + estimateReplication);
+	// 		return 0;
+	// 	}
+	// 	value = random.nextInt(replication);
+	// 	estimateReplication -= value;
+	// 	// System.out.println(i + ", " + estimateReplication);
+	// 	i++;
 
-		return -1*value;
-	}
+	// 	return -1*value;
+	// }
 
 	private int increaseLowDemand(){
 			// Random(replication)+(replication - Random(replication))
@@ -131,24 +133,24 @@ public class Data implements Control{
 		return value;
 	}
 
-	private int decreaseLowDemand(){
-		// if(estimateReplication <= Math.ceil((double)maxReplication/10.0)){
-			// 	System.out.println((int)Math.ceil((double)maxReplication/10.0));
-			// 	return -1;
-			// 	LowDemandRepricate();
-			// }
-		if(estimateReplication-(replication) < 0){
-			estimateReplication = 0;
-			// System.out.println(i + ", " + estimateReplication);
-			return 0;
-		}
-		value = random.nextInt(replication+1);
-		estimateReplication -= value;
-		// System.out.println(i + ", " + estimateReplication);
-		i++;
+	// private int decreaseLowDemand(){
+	// 	// if(estimateReplication <= Math.ceil((double)maxReplication/10.0)){
+	// 		// 	System.out.println((int)Math.ceil((double)maxReplication/10.0));
+	// 		// 	return -1;
+	// 		// 	LowDemandRepricate();
+	// 		// }
+	// 	if(estimateReplication-(replication) < 0){
+	// 		estimateReplication = 0;
+	// 		// System.out.println(i + ", " + estimateReplication);
+	// 		return 0;
+	// 	}
+	// 	value = random.nextInt(replication+1);
+	// 	estimateReplication -= value;
+	// 	// System.out.println(i + ", " + estimateReplication);
+	// 	i++;
 		
-		return -1*value;
-	}
+	// 	return -1*value;
+	// }
 
 	public void setRealReplications(int realReplications){
 		this.realReplications = realReplications;
@@ -173,6 +175,10 @@ public class Data implements Control{
 
 	private int getRealReplications(){
 		return realReplications;
+	}
+
+	public int getPeakCycle(){
+		return peakCycle;
 	}
 
 	public Data getData(int id){

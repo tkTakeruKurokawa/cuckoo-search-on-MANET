@@ -13,11 +13,13 @@ public class printStatus implements Control {
 	private static final String PAR_PROT = "protocol";
 	private static int pid;
 
+
 	public printStatus(String prefix){
 		pid = Configuration.getPid(prefix + "." + PAR_PROT);
 		// System.out.println(FastConfig.numLinkables(pid));
 		// System.out.println(FastConfig.getLinkable(pid));
 	}
+
 
 	public boolean execute(){
 
@@ -32,11 +34,12 @@ public class printStatus implements Control {
 		System.out.println("All Nodes: " + Network.size());
 
 
-		int r = random.nextInt(Network.size());
 		System.out.println();
-		System.out.println("remove Node ID: " + r);
 		ModifyNetwork.addNode();
+
+		int r = random.nextInt(Network.size());
 		node = Network.get(r);
+		System.out.println("remove Node ID: " + r);
 		ModifyNetwork.removeLink(node);
 		ModifyNetwork.removeNode(node);
 
