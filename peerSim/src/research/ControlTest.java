@@ -16,6 +16,7 @@ public class ControlTest implements Control{
 	private static final String PAR_PROT = "protocol";
 	private static int pid;
 	private static boolean doneReplicate;
+	private static int count = 1;
 
 	public ControlTest(String prefix){
 		pid = Configuration.getPid(prefix + "." + PAR_PROT);
@@ -38,8 +39,8 @@ public class ControlTest implements Control{
 
 	public boolean execute(){
 
-		for(int i=0; i<data.getVariety(); i++)
-			System.out.println("\tData: " + i + " num of Data: " + dataCounter.get(i));
+		// for(int i=0; i<data.getVariety(); i++)
+		// 	System.out.println("\tData: " + i + " num of Data: " + dataCounter.get(i));
 
 		// make Not overlap random 
 		for(int i=0; i<Network.size(); i++)
@@ -48,7 +49,7 @@ public class ControlTest implements Control{
 		// Set Test
 		for(int dataID=0; dataID<data.getVariety(); dataID++){
 			int replications = data.getReplications(dataID);
-			System.out.println("Data :" + dataID + " Replications: " + replications);
+			// System.out.println("Data :" + dataID + " Replications: " + replications);
 			Collections.shuffle(rnd);
 
 			int num = 0;
@@ -59,13 +60,12 @@ public class ControlTest implements Control{
 				element++;
 				boolean success =  storage.setData(data.getData(dataID));
 				if(!success) continue;
-				System.out.println("   Data: " + dataID + " to NodeIndex: " + node.getIndex());
+				// System.out.println("   Data: " + dataID + " to NodeIndex: " + node.getIndex());
 				num++;
 			}
-			// System.out.println("Fd: " + (0.5*(double)replications+(1-0.5)*(double)));
 		}
-		System.out.println("*************** END SET DATA ***************");
-		System.out.println();
+		// System.out.println("*************** END SET DATA ***************");
+		// System.out.println();
 
 		// Remove Test
 		// for(int nodeID=0; nodeID<Network.size(); nodeID++){
@@ -77,18 +77,18 @@ public class ControlTest implements Control{
 		// }
 
 		// Get Test
-		for(int nodeID=0; nodeID<Network.size(); nodeID++){
-			node = Network.get(nodeID);
-			storage = (Storage) node.getProtocol(pid);
-			if(storage.getData().size() == 0) continue;
-			System.out.println("Node ID: " + nodeID);
-			for(Data d: storage.getData()){
-				System.out.println("   Data ID: " + d.getID());
-			}
-		}
+		// for(int nodeID=0; nodeID<Network.size(); nodeID++){
+		// 	node = Network.get(nodeID);
+		// 	storage = (Storage) node.getProtocol(pid);
+		// 	if(storage.getData().size() == 0) continue;
+		// 	// System.out.println("Node ID: " + nodeID);
+		// 	for(Data d: storage.getData()){
+		// 		// System.out.println("   Data ID: " + d.getID());
+		// 	}
+		// }
 
-		System.out.println("*************** END GET DATA ***************");
-		System.out.println();
+		// System.out.println("*************** END GET DATA ***************");
+		// System.out.println();
 
 		for(int nodeID=0; nodeID<Network.size(); nodeID++){
 			node = Network.get(nodeID);
@@ -96,11 +96,15 @@ public class ControlTest implements Control{
 			storage.reduceTTL(node);
 		}
 
-		// for(int i=0; i<data.getVariety(); i++)
-		// 	System.out.println("\tData: " + i + " num of Data: " + dataCounter.get(i));
+		for(int i=0; i<data.getVariety(); i++){
+			System.out.printf("%d, ",count);
+			System.out.println(dataCounter.get(i));			
+		}
+			// System.out.println("\tData: " + i + " num of Data: " + dataCounter.get(i));
 		
-		System.out.println();
-		System.out.println();
+		// System.out.println();
+		// System.out.println();
+		count++;
 		return false;
 	}
 }

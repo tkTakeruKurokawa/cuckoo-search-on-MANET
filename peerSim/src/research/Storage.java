@@ -12,7 +12,6 @@ public class Storage implements Protocol{
 
 
 	public Storage(){
-		System.out.println(Data.getVariety());
 		for(int i=0; i<Data.getVariety(); i++)
 			dataCounter.add(i, 0);
 	}
@@ -39,7 +38,7 @@ public class Storage implements Protocol{
 			ControlTest.setDataCounter(dataCounter);
 			return true;
 		}
-		System.out.println("*****  fail to setData. Re Roll   *****");
+		// System.out.println("*****  fail to setData. Re Roll   *****");
 		return false;
 	}
 

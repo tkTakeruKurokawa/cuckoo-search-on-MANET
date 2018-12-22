@@ -26,7 +26,7 @@ public class InitializeNetwork implements Control{
 
 		for(int dataID = 0; dataID<data.getVariety(); dataID++){
 			int replications = data.getReplications(dataID);
-			System.out.println("Data " + dataID + " Replications: " + replications);
+			// System.out.println("Data " + dataID + " Replications: " + replications);
 
 			int i = 0;
 			while(i<replications){
@@ -34,7 +34,7 @@ public class InitializeNetwork implements Control{
 				storage = (Storage) node.getProtocol(pid);
 				boolean success = storage.setData(data.getData(dataID));
 				if(success == false) continue; 
-				System.out.println("   Data: " + dataID + " NodeIndex: " + node.getIndex());
+				// System.out.println("   Data: " + dataID + " NodeIndex: " + node.getIndex());
 				i++;
 			}
 			// System.out.println("Fd: " + (0.5*(double)replications+(1-0.5)*(double)realReplications));

@@ -1,6 +1,6 @@
 #random.seed 1234567890
-network.size 500
-simulation.cycles 2
+network.size 2000
+simulation.cycles 500
 #control.shf Shuffle
 #shuffleを有効にするとサイクルごとに隣接ノードが変化する
 

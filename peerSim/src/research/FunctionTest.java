@@ -1,5 +1,6 @@
 import java.lang.Math;
 import java.util.Random;
+import java.util.*;
 // import org.apache.commons.math3.distribution.*;
 
 // compile: javac -cp ./:commons-math3-3.6.1.jar FunctionTest.java
@@ -7,78 +8,93 @@ import java.util.Random;
 
 public class FunctionTest{
 	public static Random random = new Random();
-	public static Double u = 0.5;
-	public static Double lam = 100.0;
-	public static Double p = 10.0/500.0;
-	public static Double total = 0.0;
-	public static Boolean decrease = false;
+	private static ArrayList<Integer> r = new ArrayList<Integer>();
+	private static ArrayList<Integer> hit = new ArrayList<Integer>();
+	public static Double lam;
+	static Integer peak;
+	static int count = 0;
+	static int num;
+	static int total;
+	static int tr=0;
+	static int average=0;
+
 	// public static PoissonDistribution pd = new PoissonDistribution(1500.0, 500.0);
-	// public static Integer k;
 
 	public static Double loop(Double k){
 		if(k > 0.0) return k*loop(k-1.0);
 		return 1.0; 
 	}
 
-	private static int numOfReplications(int incriment){
-		return random.nextInt(incriment)+(incriment-random.nextInt(incriment));
+	public static void makeLambda(){
+		int a = 1;
+		if(random.nextBoolean())
+			a = 1;
+		else
+			a = -1;
+		Integer tmp = 50 + (a * random.nextInt(25)+1);
+		lam = tmp.doubleValue();
+		// System.out.println(lam);
+	}
+
+	public static boolean probability(Double sum){
+		Collections.shuffle(r);
+
+		num = (int) Math.round(sum*100);
+		// System.out.println(count + ", " + num);
+		count++;
+		for(int i=0; i<num; i++)
+			hit.add(r.get(i));
+
+		int candidate = random.nextInt(100);
+		if(hit.contains(candidate)){
+			hit.clear();
+			return true;
+		}
+
+		hit.clear();
+		return false;
 	}
 
 	public static void main(String[] args){
+		for(int i=0; i<100; i++){
+			r.add(i);
+		}
 
 		// for(int i=0; i<500; i++){
 			// System.out.println(pd.probability(i));
 			// System.out.println(pd.sample());
 		// }
+		for(int cycle=0; cycle<50; cycle++){
 
+			tr = 0;
+			count = 0;
+			makeLambda();
 
-		// for(Integer x=1; x<501; x++){
-		// 	double max = 1500.0;
-		// 	double cycle = 50.0;
-		// 	double max_cycle = 500.0;
+			int a = 1;
+			if(random.nextBoolean())
+				a = 1;
+			else
+				a = -1;
+			peak = 50 + (a * random.nextInt(25)+1);
+			lam = random.nextDouble()/500.0;
+		// lam = 1.0/500.0;
+			double sum = 0.0;
+			for(Integer i=1; i<peak; i++){
+				double l = lam*i.doubleValue();
+				double prefix = Math.exp(-1*l);
+				sum = (Math.pow(l,  1.0))/loop(1.0);
+			// System.out.println(1.0 - (prefix * sum));
+				if(probability(sum*prefix))
+					tr++;
+			}
 
-		// 	System.out.printf("%d, ",x);
-		// 	if((total + Math.floor(max/cycle)) > max)
-		// 		decrease = true;
-		// 	if(decrease == false)
-		// 		total += Math.floor(max/cycle);
-		// 	if(decrease == true){
-		// 		if((total - Math.floor(0.5*max/cycle))<0.0)
-		// 			total = 0.0;
-		// 		else
-		// 			total -= Math.floor(0.5*(max/cycle));
-		// 	}
-		// 	System.out.println(total);
-		// }
+			System.out.println("True: " + tr);
+			System.out.println("False: " + (peak-tr));
+			total+=tr;
+		}
 
-		// int max = 10;
-		// int peak = 100;
-		// int sum = 0;
-		// int incriment = max/peak;
-		// for(int i=1; i<500; i++){
-		// 	if(!decrease){
-		// 		if(sum<max-(incriment*2))
-		// 			sum += numOfReplications(incriment);
-		// 		else
-		// 			decrease = true;
-		// 	}
-		// 	if(decrease){
-		// 		if(sum<=max*0.05)
-		// 			System.out.println("LowDemand");
-		// 		if(sum-(incriment)<0){
-		// 			sum = 0;
-		// 			System.out.println(i + ", " + sum);
-		// 			continue;
-		// 		}
-		// 		sum -= random.nextInt(incriment);
-		// 	}
-		// 	System.out.println(i + ", " + sum);
-		// }
+		System.out.println("True average: " + (total/50));
 
-		// for(Integer i=1; i<500; i++){
-		// 	Double k = 1 / (500.0- i.doubleValue());
-		// 	System.out.println( (Math.exp(-1*lam)*Math.pow(lam,  i.doubleValue()))/loop(i.doubleValue()));
-		// }
 
 		// for(Integer t = 1; t < 100; t++){
 		// 	System.out.println(u*Math.exp(-1*u*t));
