@@ -1,8 +1,19 @@
+############## Variable ###############
+
+#Configファイル内変数の設定
+K 3
+cycleNum 500
+
+############## Network ###############
+
+#ノードの数、サイクル数等の設定
 #random.seed 1234567890
 network.size 2000
-simulation.cycles 500
+simulation.cycles cycleNum
 #control.shf Shuffle
 #shuffleを有効にするとサイクルごとに隣接ノードが変化する
+
+############## Protocol ###############
 
 #ノード間のリンク関係
 protocol.lnk Link
@@ -11,7 +22,14 @@ protocol.lnk Link
 #ノードが持っているデータ
 protocol.str Storage
 
-K 3
+#ノードが各データを要求する確率
+protocol.rp RequestProbability
+
+############## Initialize ###############
+
+#ノードが持つデータ
+init.data Data
+init.data.cycles cycleNum
 
 #Linkクラスを元に無向グラフを形成
 init.rnd WireUndirectedGraph
@@ -20,16 +38,26 @@ init.rnd.protocol lnk
 
 #ノード・リンクの追加・削除
 init.mn ModifyNetwork
-init.mn.linkable lnk
 init.mn.protocol lnk
+init.mn.linkable lnk
 init.mn.k K
-
-#ノードが持つデータ
-init.data Data
 
 #初期ネットワークノードにデータを付与
 init.iniNet InitializeNetwork
-init.iniNet.protocol str
+init.iniNet.protocol0 str
+init.iniNet.protocol1 rp
+
+init.fld Flooding
+init.fld.protocol0 str
+init.fld.protocol1 lnk
+init.fld.linkable lnk
+init.fld.ttl 30
+
+#init.stat printStatus
+#init.stat.linkable lnk
+#init.stat.protocol lnk
+
+############## Control ###############
 
 #ノード・リンクの追加・削除をコントロール
 #control.stat printStatus
@@ -38,4 +66,5 @@ init.iniNet.protocol str
 
 #データの付与・削除をコントロール
 control.test ControlTest
-control.test.protocol str
+control.test.protocol0 str
+control.test.protocol1 rp

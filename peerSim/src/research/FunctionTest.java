@@ -1,5 +1,4 @@
 import java.lang.Math;
-import java.util.Random;
 import java.util.*;
 // import org.apache.commons.math3.distribution.*;
 
@@ -16,6 +15,7 @@ public class FunctionTest{
 	static int num;
 	static int total;
 	static int tr=0;
+	static int zzz=0;
 	static int average=0;
 
 	// public static PoissonDistribution pd = new PoissonDistribution(1500.0, 500.0);
@@ -41,7 +41,6 @@ public class FunctionTest{
 
 		num = (int) Math.round(sum*100);
 		// System.out.println(count + ", " + num);
-		count++;
 		for(int i=0; i<num; i++)
 			hit.add(r.get(i));
 
@@ -53,10 +52,22 @@ public class FunctionTest{
 
 		hit.clear();
 		return false;
+
+
+		// num = (int) Math.round(sum*100);
+		// // System.out.println(count + ", " + num);
+		// count++;
+
+		// int candidate = random.nextInt(100);
+		// if(candidate <= num)
+		// 	return true;
+
+		// return false;
 	}
 
 	public static void main(String[] args){
 		for(int i=0; i<100; i++){
+			System.out.println(random.nextInt(1));
 			r.add(i);
 		}
 
@@ -64,7 +75,9 @@ public class FunctionTest{
 			// System.out.println(pd.probability(i));
 			// System.out.println(pd.sample());
 		// }
-		for(int cycle=0; cycle<50; cycle++){
+
+		int maxNode = 2000;
+		for(int cycle=0; cycle<maxNode; cycle++){
 
 			tr = 0;
 			count = 0;
@@ -75,7 +88,8 @@ public class FunctionTest{
 				a = 1;
 			else
 				a = -1;
-			peak = 50 + (a * random.nextInt(25)+1);
+			peak = 100 + (a * random.nextInt(50)+1);
+			peak = 5 + random.nextInt(3);
 			lam = random.nextDouble()/500.0;
 		// lam = 1.0/500.0;
 			double sum = 0.0;
@@ -88,12 +102,16 @@ public class FunctionTest{
 					tr++;
 			}
 
+			if(tr == 0)
+				zzz++;
+
 			System.out.println("True: " + tr);
 			System.out.println("False: " + (peak-tr));
 			total+=tr;
 		}
 
-		System.out.println("True average: " + (total/50));
+		System.out.println("True == 0: " + zzz);
+		System.out.println("True > 0:" + (maxNode-zzz));
 
 
 		// for(Integer t = 1; t < 100; t++){

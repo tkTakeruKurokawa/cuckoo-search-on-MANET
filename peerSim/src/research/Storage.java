@@ -8,15 +8,15 @@ public class Storage implements Protocol{
 
 	private ArrayList<Data> dataList = new ArrayList<Data>();
 	private HashMap<Data, Integer> dataTTL = new HashMap<Data, Integer>();
-	private static ArrayList<Integer> dataCounter = new ArrayList<Integer>();
+	private static ArrayList<Integer> dataCounter;
+	private static Random random = new Random();
 
 
 	public Storage(){
-		for(int i=0; i<Data.getVariety(); i++)
-			dataCounter.add(i, 0);
 	}
 
 	public Storage(String prefix){
+		dataCounter = InitializeNetwork.getDataCounter();
 	}
 
 	public Object clone(){
@@ -33,13 +33,19 @@ public class Storage implements Protocol{
 	public boolean setData(Data data){
 		if(!dataList.contains(data)){
 			dataList.add(data);
-			dataTTL.put(data, data.getPeakCycle());
+			// dataTTL.put(data, data.getPeakCycle());
+			int ttl = data.getPeakCycle() + random.nextInt(20);
+			dataTTL.put(data, ttl);
 			dataCounter.set(data.getID(), dataCounter.get(data.getID())+1);
 			ControlTest.setDataCounter(dataCounter);
 			return true;
 		}
-		// System.out.println("*****  fail to setData. Re Roll   *****");
+		System.out.println("*****  fail to setData. Re Roll   *****");
 		return false;
+	}
+
+	public boolean contains(Data data){
+		return dataList.contains(data);
 	}
 
 	public ArrayList<Data> getData(){

@@ -31,17 +31,17 @@ public class printStatus implements Control {
 
 		// System.out.println("All Nodes: " + Network.size());
 		// System.out.println();
-		System.out.println("All Nodes: " + Network.size());
+		// System.out.println("All Nodes: " + Network.size());
 
 
-		System.out.println();
-		ModifyNetwork.addNode();
+		// System.out.println();
+		// ModifyNetwork.addNode();
 
-		int r = random.nextInt(Network.size());
-		node = Network.get(r);
-		System.out.println("remove Node ID: " + r);
-		ModifyNetwork.removeLink(node);
-		ModifyNetwork.removeNode(node);
+		// int r = random.nextInt(Network.size());
+		// node = Network.get(r);
+		// System.out.println("remove Node ID: " + r);
+		// ModifyNetwork.removeLink(node);
+		// ModifyNetwork.removeNode(node);
 
 		System.out.println();
 		System.out.println();
