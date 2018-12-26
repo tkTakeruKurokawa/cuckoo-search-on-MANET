@@ -40,7 +40,7 @@ public class Storage implements Protocol{
 			ControlTest.setDataCounter(dataCounter);
 			return true;
 		}
-		System.out.println("*****  fail to setData. Re Roll   *****");
+		// System.out.println("*****  fail to setData. Re Roll   *****");
 		return false;
 	}
 

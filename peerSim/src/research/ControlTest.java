@@ -52,6 +52,14 @@ public class ControlTest implements Control{
 		dataCounter = dc;
 	}
 
+	private static void pathReplication(Data data){
+		for(Map.Entry<Integer, Node> path : Flooding.getPath().entrySet()){
+			storage = (Storage) path.getValue().getProtocol(pid_str);
+			storage.setData(data);
+			// System.out.println("TTL " + path.getKey() + ", Node " + path.getValue().getIndex());
+		}
+	}
+
 	public boolean execute(){
 
 		// for(int i=0; i<data.getVariety(); i++)
@@ -93,10 +101,11 @@ public class ControlTest implements Control{
 				}
 				else
 					if(!storage.contains(data)){
-						// System.out.println("Node " + node.getIndex() + " Request Data " + data.getID());
+						// System.out.println("**********   Node " + node.getIndex() + " Request Data " + data.getID() + "   **********");
 						boolean hit = Flooding.search(node, data);
 						if(hit){
-							storage.setData(data);
+							// storage.setData(data);
+							pathReplication(data);
 						}
 						else{
 							// System.out.println("Node " + nodeID + "can't find Data "+ data.getID());

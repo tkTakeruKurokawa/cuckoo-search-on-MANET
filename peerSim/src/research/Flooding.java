@@ -15,7 +15,8 @@ public class Flooding implements Control{
 	// private Node node;
 	private static ArrayList<Node> checkedList = new ArrayList<Node>();
 	private static HashMap<Node, Integer> next = new HashMap<Node, Integer>(); 
-	private static Queue<Node> queue = new ArrayDeque<Node>();
+	private static Deque<Node> stack = new ArrayDeque<Node>();
+	private static HashMap<Integer, Node> path = new HashMap<Integer, Node>();
 	private static Data target;
 	private static boolean hit;
 
@@ -24,6 +25,20 @@ public class Flooding implements Control{
 		pid_str = Configuration.getPid(prefix + "." + PAR_PROT0);
 		pid_lnk = Configuration.getPid(prefix + "." + PAR_PROT1);
 		ttl = Configuration.getInt(prefix + "." + PAR_TTL);
+	}
+
+	public static HashMap<Integer, Node> getPath(){
+		return path;		
+	}
+
+	private static void removePath(int ttl){
+		Iterator<Map.Entry<Integer, Node>> iterator = path.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<Integer, Node> p = iterator.next();
+			if (p.getKey() < ttl) {
+				iterator.remove();
+			}
+		}
 	}
 
 	private static boolean nextSearch(Node node, int ttl){
@@ -36,8 +51,11 @@ public class Flooding implements Control{
 		// }		
 		// System.out.println();
 
+		path.put(ttl, node);
+
 		if(contains(node)){
 			hit = true;
+			removePath(ttl);
 			return true;
 		}
 
@@ -46,23 +64,31 @@ public class Flooding implements Control{
 
 		checkedList.add(node);
 		Link linkable = (Link) node.getProtocol(pid_lnk);
-		for(int nodeID=0; nodeID<linkable.degree(); nodeID++){
-			Node neighbor = linkable.getNeighbor(nodeID);
 
-			if(!checkedList.contains(neighbor)){
-				next.put(neighbor, ttl-1);
-				queue.add(neighbor);
-			}
+		if(!hit){
+			for(int nodeID=0; nodeID<linkable.degree(); nodeID++){
+				Node neighbor = linkable.getNeighbor(nodeID);
+
+				if(!checkedList.contains(neighbor)){
+					next.put(neighbor, ttl-1);
+					// queue.add(neighbor);
+					stack.push(neighbor);
+					// nextSearch(neighbor, ttl-1);
+				}
+			}			
 		}
 
-		while(true){
-			Node neighbor = queue.poll();
-			if(neighbor == null) break;
-			if(hit == true) break;
+
+		// while(true){
+		// Node neighbor = queue.poll();
+		if(stack.size()==0) return false;
+		Node neighbor = stack.pop();
+		if(hit == true) return true;
+		if(neighbor == null) return false;
 			// System.out.println("neighbor " + neighbor.getIndex() + " " + next.get(neighbor));
 
-			nextSearch(neighbor, next.get(neighbor));
-		}
+		nextSearch(neighbor, next.get(neighbor));
+		// }
 
 
 		return false;
@@ -70,7 +96,7 @@ public class Flooding implements Control{
 
 	private static boolean contains(Node node){
 		Storage storage = (Storage) node.getProtocol(pid_str);
-		// storage = (Storage) node.getProtocol(pid_str);
+		storage = (Storage) node.getProtocol(pid_str);
 		// for(Data d: storage.getData()){
 		// 	System.out.println("\tNode " + node.getIndex() + " having Data " + d.getID());
 		// }
@@ -83,23 +109,14 @@ public class Flooding implements Control{
 		checkedList.clear();
 		checkedList.add(node);
 
+		path.clear();
 		next.clear();
-		while(true)
-			if(Objects.equals(queue.poll(), null)) break;
 
-		// for(int nodeID=0; nodeID<Network.size(); nodeID++){
-		// 	node = Network.get(nodeID);
-		// 	Storage storage = (Storage) node.getProtocol(pid_str);
-		// 	if(storage.getData().size() == 0) continue;
-		// 	for(Data d: storage.getData()){
-		// 		if(data.getID() == d.getID())
-		// 			System.out.println("Node " + nodeID + " having Data " + d.getID());
-		// 	}
-		// }
+		while(stack.size() != 0)
+			stack.pop();
 
 		target = data;
 		hit = false;
-		// int ttl = 5;
 
 		nextSearch(node, ttl-1);
 		if(!hit) return false;
