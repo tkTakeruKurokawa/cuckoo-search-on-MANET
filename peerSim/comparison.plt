@@ -1,10 +1,10 @@
 set datafile separator ","
-set xrange [0:500]
+set xrange [0:2000]
 set xlabel 'Num of cycles'
-set yrange [0:2000]
+set yrange [0:1.1]
 set ylabel 'Num of data'
-plot 'numOfData.csv'
+plot './result/owner.csv' with lines
 
-set output 'comparison.eps'
+set output 'comp.eps'
 set terminal postscript eps color
 replot

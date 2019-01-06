@@ -12,14 +12,7 @@ public class RequestProbability implements Protocol{
 	private static ArrayList<Integer> hit = new ArrayList<Integer>();
 	private static Random random = new Random();
 	private Storage storage;
-
-	private double lambda;
-	private int peakCycle;
-	private int cycle = 1;
-
-
-	public RequestProbability(){
-	}
+	
 
 	public RequestProbability(String prefix){
 		for(int i=0; i<100; i++){
@@ -45,9 +38,9 @@ public class RequestProbability implements Protocol{
 		Collections.shuffle(rnd);
 
 		int num = (int) Math.round(p*100);
-		// System.out.println(count + ", " + num);
-		if(num > 1)
-			num = random.nextInt(num)+1;
+		// System.out.println(num);
+		if(num > 0)
+			num = random.nextInt(num+1);
 		for(int i=0; i<num; i++)
 			hit.add(rnd.get(i));
 
@@ -71,28 +64,29 @@ public class RequestProbability implements Protocol{
 	}
 
 	private boolean poisson(int dataID){
-		lambda = Data.getData(dataID).getLambda();
-		peakCycle = Data.getData(dataID).getPeakCycle();
+		double lambda = Data.getData(dataID).getLambda();
+		int peakCycle = Data.getData(dataID).getPeakCycle();
+		int nowCycle = Data.getData(dataID).getNowCycle();
+		ArrayList<Boolean> upLoaded = SharedResource.getUpLoaded();
 
-		if(cycle <= peakCycle){
-			double lam = lambda * (double) cycle;
+			// if(nowCycle <= peakCycle){
+		if(nowCycle <= peakCycle || !upLoaded.get(dataID)){
+			double lam = lambda * ((double) nowCycle);
 			double p = Math.exp(-1*lam) * (Math.pow(lam,  1.0))/1.0;
 			return probability(p);
 		}
 
 		return false;
-
 	}
 
 	public ArrayList<Data> dataRequests(){
 		requestList.clear();
 
-		for(int dataID=0; dataID<Data.getVariety(); dataID++){
-			if(poisson(dataID))
+		for(int dataID=0; dataID<Data.getNowVariety(); dataID++){
+			if(poisson(dataID)){
 				requestList.add(Data.getData(dataID));
+			}
 		}
-
-		cycle++;
 		return requestList;
 	}
 }

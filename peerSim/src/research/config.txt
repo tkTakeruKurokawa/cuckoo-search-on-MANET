@@ -3,6 +3,7 @@
 #Configファイル内変数の設定
 K 3
 cycleNum 500
+TTL 50
 
 ############## Network ###############
 
@@ -17,54 +18,138 @@ simulation.cycles cycleNum
 
 #ノード間のリンク関係
 protocol.lnk Link
-#protocol.lnk.capacity 2
+
+#ノードの座標
+protocol.crd NodeCoordinate
+protocol.crd.d 200.0
+
+#ノードの情報(バッテリー残量、ストレージ残量)
+protocol.prm NodeParameter
+protocol.prm.baseBattery 50.0
+protocol.prm.maxCapacity 10
+
+#各手法用パラメータ。値はサイクル毎にNodeParameterからコピー
+protocol.npo NPOwner
+protocol.npp NPPath
+protocol.npr NPRelate
+protocol.npc NPCuckoo
 
 #ノードが持っているデータ
-protocol.str Storage
+protocol.str Storages
+protocol.str.protocol prm
 
-#ノードが各データを要求する確率
+#Owner Replication用のストレージ
+protocol.owner StorageOwner
+protocol.owner.protocol npo
+
+#Path Replication用のストレージ
+protocol.path StoragePath
+protocol.path.protocol npp
+
+#Related Researchのストレージ
+protocol.relate StorageRelate
+protocol.relate.protocol npr
+
+#Cuckoo Search用のストレージ
+protocol.cuckoo StorageCuckoo
+protocol.cuckoo.protocol npc
+
+#各ノードが各データを要求する確率
 protocol.rp RequestProbability
 
+order.protocol lnk crd prm npo npp npr npc str owner path relate cuckoo rp
+
 ############## Initialize ###############
+
+#Initialize, Controlで共有されるデータ
+init.sr SharedResource
+init.sr.protocol0 lnk
+init.sr.protocol1 prm
+init.sr.protocol2 crd
+init.sr.protocol3 str
+init.sr.protocol4 rp
+init.sr.protocol5 owner
+init.sr.protocol6 path
+init.sr.protocol7 relate
+init.sr.protocol8 cuckoo
+init.sr.protocol9 npo
+init.sr.protocol10 npp
+init.sr.protocol11 npr
+init.sr.protocol12 npc
+
+#ノードのパラメータ、座標を初期化
+init.iniNet InitializeNetwork
 
 #ノードが持つデータ
 init.data Data
 init.data.cycles cycleNum
 
+#ランダムジオメトリックグラフを構成
+init.rgg RandomGeometricGraph
+init.rgg.r 5.0
+
 #Linkクラスを元に無向グラフを形成
-init.rnd WireUndirectedGraph
-init.rnd.k K
-init.rnd.protocol lnk
+init.wrgg WireRGG
+init.wrgg.protocol lnk
+init.wrgg.k K
 
-#ノード・リンクの追加・削除
-init.mn ModifyNetwork
-init.mn.protocol lnk
-init.mn.linkable lnk
-init.mn.k K
-
-#初期ネットワークノードにデータを付与
-init.iniNet InitializeNetwork
-init.iniNet.protocol0 str
-init.iniNet.protocol1 rp
-
+#データの検索手法のFlooading
 init.fld Flooding
-init.fld.protocol0 str
-init.fld.protocol1 lnk
-init.fld.linkable lnk
-init.fld.ttl 30
+init.fld.ttl TTL
+
+#複製配置先を決定するためのCuckoo Search
+init.cs CuckooSearch
+init.cs.generation 30
+
+#Cuckoo Searchで扱う巣の集合
+init.ns NestSet
+init.ns.nestSize 50
+init.ns.abandonRate 0.25
+
+#Cuckoo Searchで扱う巣
+init.nest Nest
+init.nest.protocol0 prm
+init.nest.delta 45.0
+
+#関連研究での複製配置先の決定に用いるFlooading
+init.rr RelatedResearch
+init.rr.ttl TTL
 
 #init.stat printStatus
-#init.stat.linkable lnk
-#init.stat.protocol lnk
+
+order.init sr iniNet data rgg wrgg fld cs ns nest rr
+#order.init iniNet sr data rgg wrgg fld stat
+
 
 ############## Control ###############
 
+#control.tst Test
+#control.tst.protocol prm
+
+#ノード・リンクの追加・削除
+control.mn ModifyNetwork
+control.mn.capacity 10
+
 #ノード・リンクの追加・削除をコントロール
 #control.stat printStatus
-#control.stat.linkable lnk
-#control.stat.protocol lnk
 
-#データの付与・削除をコントロール
-control.test ControlTest
-control.test.protocol0 str
-control.test.protocol1 rp
+#control.tst ControlTest
+#control.tst.protocol0 str
+#control.tst.protocol1 rp
+
+#各ノードの各データに対するダウンロード要求
+control.ir IncreaseReplications
+
+#各ノードの保有データのTTLを減少
+control.dr DecreaseReplications
+
+#各ノードで保有されているデータの総数を表示
+control.gr GetReplications
+control.gr.alpha 0.6
+
+#データの需要のサイクルを進める
+control.data Data
+control.data.cycle cycleNum 
+
+order.control mn ir dr gr data
+#order.control mn tst data

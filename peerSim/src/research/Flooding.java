@@ -5,10 +5,6 @@ import peersim.core.*;
 import java.util.*;
 
 public class Flooding implements Control{
-	private static final String PAR_PROT0 = "protocol0";
-	private static int pid_str;
-	private static final String PAR_PROT1 = "protocol1";
-	private static int pid_lnk;
 	private static final String PAR_TTL = "ttl";
 	private static int ttl;
 
@@ -17,13 +13,13 @@ public class Flooding implements Control{
 	private static HashMap<Node, Integer> next = new HashMap<Node, Integer>(); 
 	private static Deque<Node> stack = new ArrayDeque<Node>();
 	private static HashMap<Integer, Node> path = new HashMap<Integer, Node>();
+	
 	private static Data target;
+	private static int id;
 	private static boolean hit;
 
 
 	public Flooding(String prefix){
-		pid_str = Configuration.getPid(prefix + "." + PAR_PROT0);
-		pid_lnk = Configuration.getPid(prefix + "." + PAR_PROT1);
 		ttl = Configuration.getInt(prefix + "." + PAR_TTL);
 	}
 
@@ -63,8 +59,7 @@ public class Flooding implements Control{
 			return false;
 
 		checkedList.add(node);
-		Link linkable = (Link) node.getProtocol(pid_lnk);
-
+		Link linkable = SharedResource.getLink(node);
 		if(!hit){
 			for(int nodeID=0; nodeID<linkable.degree(); nodeID++){
 				Node neighbor = linkable.getNeighbor(nodeID);
@@ -95,8 +90,26 @@ public class Flooding implements Control{
 	}
 
 	private static boolean contains(Node node){
-		Storage storage = (Storage) node.getProtocol(pid_str);
-		storage = (Storage) node.getProtocol(pid_str);
+		if(Objects.equals(id, 0)){
+			StorageOwner storage = SharedResource.getSOwner(node);
+			return storage.contains(target);
+		}
+
+		if(Objects.equals(id, 1)){
+			StoragePath storage = SharedResource.getSPath(node);
+			return storage.contains(target);
+		}
+
+		if(Objects.equals(id, 2)){
+			StorageRelate storage = SharedResource.getSRelate(node);
+			return storage.contains(target);
+		}
+
+		if(Objects.equals(id, 3)){
+			StorageCuckoo storage = SharedResource.getSCuckoo(node);
+			return storage.contains(target);
+		}
+		Storage storage = SharedResource.getStorage(node);
 		// for(Data d: storage.getData()){
 		// 	System.out.println("\tNode " + node.getIndex() + " having Data " + d.getID());
 		// }
@@ -105,7 +118,7 @@ public class Flooding implements Control{
 		return storage.contains(target);
 	}
 
-	public static boolean search(Node node, Data data){
+	public static boolean search(Node node, Data data, int num){
 		checkedList.clear();
 		checkedList.add(node);
 
@@ -116,6 +129,7 @@ public class Flooding implements Control{
 			stack.pop();
 
 		target = data;
+		id = num;
 		hit = false;
 
 		nextSearch(node, ttl-1);

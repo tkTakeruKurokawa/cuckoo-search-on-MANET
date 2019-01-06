@@ -13,15 +13,14 @@ public class ControlTest implements Control{
 
 	private static Node node;
 	private static Data data;
-	private static RequestProbability request = new RequestProbability();
+	private static RequestProbability request;
 	private static ArrayList<Data> requestList;
-	private static ArrayList<Integer> dataCounter;
+	public static ArrayList<Integer> dataCounter = new ArrayList<Integer>();
 	private static Storage storage;
 	private static ArrayList<Integer> rnd = new ArrayList<Integer>();
 	private static ArrayList<Boolean> uploaded = new ArrayList<Boolean>();
 	private static Random random = new Random();
 	
-	private static boolean doneReplicate;
 	private static int count = 1;
 
 	public ControlTest(String prefix){
@@ -30,23 +29,13 @@ public class ControlTest implements Control{
 
 		// System.out.println(FastConfig.numLinkables(pid));
 		// System.out.println(FastConfig.getLinkable(pid));
-		data = InitializeNetwork.getData();
-		dataCounter = InitializeNetwork.getDataCounter();
+		data = SharedResource.getDataInst();
 
-		for(int i=0; i<Network.size(); i++)
-			rnd.add(i);
-
-		for(int dataID=0; dataID<Data.getVariety(); dataID++)
-			uploaded.add(false);
+		for(int dataID=0; dataID<Data.getMaxVariety(); dataID++){
+			dataCounter.add(dataID, 0);
+			uploaded.add(dataID, false);
+		}
 	}
-
-	// public int selectNode(int nodeID){
-	// 	return random.nextInt(Network.size()+1);
-	// }
-
-	// public int selectData(){
-	// 	return 
-	// }
 
 	public static void setDataCounter(ArrayList<Integer> dc){
 		dataCounter = dc;
@@ -55,13 +44,17 @@ public class ControlTest implements Control{
 	private static void pathReplication(Data data){
 		for(Map.Entry<Integer, Node> path : Flooding.getPath().entrySet()){
 			storage = (Storage) path.getValue().getProtocol(pid_str);
-			storage.setData(data);
+			storage.setData(node, data);
 			// System.out.println("TTL " + path.getKey() + ", Node " + path.getValue().getIndex());
 		}
 	}
 
 	public boolean execute(){
 
+
+		rnd.clear();
+		for(int i=0; i<Network.size(); i++)
+			rnd.add(i);
 		// for(int i=0; i<data.getVariety(); i++)
 		// 	System.out.println("\tData: " + i + " num of Data: " + dataCounter.get(i));
 
@@ -97,43 +90,45 @@ public class ControlTest implements Control{
 				// System.out.println(requestList.get(i).getID());
 				data = requestList.get(dataID);
 				if(!uploaded.get(data.getID())){
-					storage.setData(data);
+					storage.setData(node, data);
 				}
 				else
 					if(!storage.contains(data)){
 						// System.out.println("**********   Node " + node.getIndex() + " Request Data " + data.getID() + "   **********");
-						boolean hit = Flooding.search(node, data);
-						if(hit){
-							// storage.setData(data);
-							pathReplication(data);
-						}
-						else{
+						// boolean hit = Flooding.search(node, data);
+						// if(hit){
+						// 	storage.setData(node, data);
+						// 	// pathReplication(data);
+						// }
+						// else{
 							// System.out.println("Node " + nodeID + "can't find Data "+ data.getID());
-						}
+						// }
 					}
 				}
 			}
 
 			// ピークサイクルになってもアップロードされたデータが0の時の処理
-			for(int dataID=0; dataID<Data.getVariety(); dataID++){
-				if(Objects.equals(data.getData(dataID).getPeakCycle(), count) && Objects.equals(dataCounter.get(dataID), 0)){
-					Collections.shuffle(rnd);
+		// 	for(int dataID=0; dataID<Data.getVariety(); dataID++){
+		// 		data = getData(dataID);
+		// 		if(Objects.equals(data.getNowCycle(), data.getPeakCycle()) && Objects.equals(dataCounter.get(dataID), 0)){
+		// 			Collections.shuffle(rnd);
 
-					int num = 0;
-					int element = 0;
-					int nodeNum = random.nextInt(10)+5;
-					while(num < nodeNum){
-						node = Network.get(rnd.get(element));
-						storage = (Storage) node.getProtocol(pid_str);
-						element++;
-						boolean success =  storage.setData(data.getData(dataID));
-						if(!success) continue;
-				// System.out.println("   Data: " + dataID + " to NodeIndex: " + node.getIndex());
-						num++;
+		// 			int num = 0;
+		// 			int element = 0;
+		// 			int nodeNum = random.nextInt(10)+5;
+		// 			while(num < nodeNum){
+		// 				node = Network.get(rnd.get(element));
+		// 				// System.out.println();
+		// 				storage = (Storage) node.getProtocol(pid_str);
+		// 				element++;
+		// 				boolean success =  storage.setData(data.getData(dataID));
+		// 				if(!success) continue;
+		// 		// System.out.println("   Data: " + dataID + " to NodeIndex: " + node.getIndex());
+		// 				num++;
+		// // 	}
+		// 			}
+		// 		}
 		// 	}
-					}
-				}
-			}
 		// System.out.println("*************** END SET DATA ***************");
 		// System.out.println();
 
@@ -164,17 +159,25 @@ public class ControlTest implements Control{
 				node = Network.get(nodeID);
 				storage = (Storage) node.getProtocol(pid_str);
 				storage.reduceTTL(node);
+				// if(!storage.isEmpty()){
+				// 	System.out.printf("\tNode %d having Data: ", nodeID);
+				// 	for(Data d: storage.getData())
+				// 		System.out.printf("%d, ", d.getID());
+				// }
+				// System.out.println();
 			}
 
-			for(int dataID=0; dataID<data.getVariety(); dataID++){
-				// if(!Objects.equals(true, data.getData(dataID).lowDemand)){
-					// System.out.printf("%d, %d, ",count, dataID);
-				System.out.printf("%d, ", count);
+			for(int dataID=0; dataID<data.getNowVariety(); dataID++){
+				if(Objects.equals(true, data.getData(dataID).lowDemand)){
+				System.out.printf("%d, %d, ",count, dataID);
+				// System.out.printf("%d, ", count);
 				System.out.println(dataCounter.get(dataID));	
-				// }
+				}
 				if(dataCounter.get(dataID) > 0)
 					uploaded.set(dataID, true);
 			}
+
+			System.out.println(uploaded.size());
 
 			// Optional<Integer> max = dataCounter.stream()
 			// .max((a, b) -> a.compareTo(b));
