@@ -1,0 +1,367 @@
+%
+% $Id: thesis_sample.tex,v 1.9 2011/12/08 02:48:59 fukuyasu Exp $
+%
+\documentclass[11pt]{jreport}
+\usepackage{ksu_cse_thesis}
+\usepackage{indentfirst}
+%\usepackage{graphicx}  % ←graphicx.styを用いてEPSを取り込む場合有効にする
+			% 他のパッケージ・スタイルを使う場合には適宜追加
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%
+%% 主に表紙を作成するための情報
+%%
+
+%%  タイトル(修論の場合は英語表記も指定)
+\title{カッコウ探索を用いた\\
+       アドホックネットワーク上の複製配置}
+%% 英文タイトル(修論では必須)       
+%\etitle{Replication Placement on Ad-hoc Network\\
+	% Using Cuckoo Search}
+
+%%  著者名(修論の場合は英語表記も指定)
+\author{黒川 岳児}
+%%英語著者名(修論では必須)
+%\eauthor{Kentaro Hayashibara}
+
+%%指導教員名
+\supervisor{林原 尚浩}
+%%英語指導教員名(修論では必須)
+%\esupervisor{Naohiro Hayashibara}
+
+%% 卒業論文・修士論文(以下のどちらかを選択)
+\bachelar	% 卒業論文(4年生用)
+%\master  	% 修士論文(M2用)
+
+%%  学科・クラスタ
+\department{コンピュータサイエンス}
+%\department{ネットワークメディア}
+%\department{インテリジェントシステム}
+
+%%  学籍番号
+\studentid{544520}
+
+%%  卒業年度
+\gyear{2018}		% 提出年が2011年なら，2010年度
+
+%%  論文提出日
+\date{2019年1月23日}	% 修士の場合は月(2011年2月等)までとし，英語表記も指定
+%\edate{February 2011}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\maketitle
+
+%%
+%%  概要
+%%
+\begin{abstract}
+本稿では，
+「京都産業大学コンピュータ理工学部卒業論文/
+  大学院先端情報学研究科修士論文用スタイルファイル」
+を用いて卒業論文を作成する方法を解説する．
+本稿自身，
+「京都産業大学コンピュータ理工学部卒業論文/
+  大学院先端情報学研究科修士論文用スタイルファイル」
+を用いて記述されており，例によってその使い方を示している．
+「京都産業大学コンピュータ理工学部卒業論文/
+  大学院先端情報学研究科修士論文用スタイルファイル」
+では，タイトルページ，概要，目次，参考文献などの書式を設定している．
+
+  「京都産業大学コンピュータ理工学部卒業論文/
+  大学院先端情報学研究科修士論文用スタイルファイル」
+は，
+\begin{quote}
+  \begin{description}
+    \item[\tt ksu\_cse\_thesis.sty:] 卒業/修士論文用スタイルファイル
+    \item[\tt bachelor\_thesis.tex:] 卒業論文記述例
+    \item[\tt master\_thesis.tex:] 修士論文記述例    
+  \end{description}
+\end{quote}
+からなる．
+
+なお，この卒業論文用スタイルファイル(\TeX 版)に関する質問は，
+メールにて
+\begin{quote}
+naohaya@cse.kyoto-su.ac.jp
+\end{quote}
+まで．
+
+\end{abstract}
+
+%%  目次
+\tableofcontents
+
+%%  図目次 (図目次をいれたければ以下のコメントをはずす)
+%\listoffigures
+
+%%  表目次 (表目次をいれたければ以下のコメントをはずす)
+%\listoftables
+
+\newpage
+\pagenumbering{arabic}	% 以降のページ番号を算用数字に
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%
+%%  本文はここから
+%%
+
+\chapter{はじめに}
+\section{背景}
+P2Pネットワークでは，参加ピア間でのデータの共有，耐故障性の向上のため，複数のピアにデータを配置する等，幅広い用途で使用されている．このP2Pネットワークで扱われるデータの需要は一様ではなく、データごとに大きく異なる可能性がある。
+
+\section{問題点}
+
+\section{目的}
+
+\section{論文構成}
+
+\begin{itemize}
+  \item タイトル
+  \item 著者名
+  \item 学士(4年)/修士(M2)の設定
+  \item 学科名/クラスタ名
+  \item 学籍番号
+  \item 卒業年度
+  \item 論文提出日
+\end{itemize}
+である．
+これらのデータは，\verb|\maketitle|によってタイトルページに出力される．
+また，概要の部分において，論文の内容をまとめる．その内容は論文の2ペー
+ジ目(タイトルページの次)に出力される．
+このソースでは，目次(\verb|\tableofcontents|)を出力している．
+他に，図目次(\verb|\listoffigures|)，表目次(\verb|\listoftables|)を
+出力することもできるので，必要ならばそれぞれのコメントをはずす．
+図目次，表目次については，第\ref{chap:fig-tab-exp}章において説明する．
+
+\section{タイトル}
+\subsection{title}
+論文のタイトルを記述する．
+
+\section{著者}
+\subsection{author}
+著者名を記述する．
+
+\subsection{bachelar/master}
+卒業論文の場合には，\verb|\master|をコメントアウトし，
+\verb|\bachelar|を設定する．
+修士論文の場合には，\verb|\bachelar|をコメントアウトし，
+\verb|\master|を設定する．
+
+\subsection{department}
+所属学科を記述する．
+コンピュータサイエンス学科所属の場合には``コンピュータサイエンス''と記述する．
+
+\subsection{studentid}
+学籍番号を記述する．
+
+\subsection{supervisor}
+指導教員名を記述する．
+
+\subsection{gyear}
+卒業年度を記述する．
+
+\section{提出日}
+\subsection{date}
+論文提出日を記述する．
+
+\chapter{既存の検索・複製手法}
+本章では，非構造P2Pネットワークの既存のデータ検索手法，複製手法の説明を行い，問題点を提示する．
+\section{検索手法}
+検索手法は，目的のデータを持つピアを発見するため，データを要求するピアが送信する検索要求メッセージの転送手法を指す．以下の検索手法が提案されている．\cite{qlv}
+\begin{itemize}
+	\item {\tt Flooading}
+	\par データ要求するピアは，自身の全てのの隣接ピアに検索要求メッセージを転送する．検索要求メッセージを受け取ったピアは，該当データを持っていない場合，同様に検索要求メッセージを自身の全ての隣接ピアに検索要求メッセージを転送する．
+	\par 検索要求メッセージにはTTL(Time To Live)が設けられており，メッセージが隣接ピアに転送されるごとに値が１つ減る．値が0になった場合は，データを発見することができなかったと判断され，検索失敗となる．
+	
+	\item {\tt Expanding Ring}
+	\par TTLの値を小さく設定し，Floodingによる検索を開始する．検索に失敗した場合，TTLの値を増加させ，再びFlooadingによる検索を行う．
+	\item {\tt k-walker random walk}
+\end{itemize}
+
+\section{複製手法}
+
+\chapter{関連研究}
+本章では，\cite{kageyama}によって提案された手法の説明と問題点の提示を行う．
+\section{提案手法}
+\section{問題点}
+
+\chapter{ネットワークモデル}
+本章では，本研究に用いるアドホックネットワーク
+\section{アドホックネットワーク}
+\section{ランダムジオメトリックグラフ}
+
+\chapter{カッコウ探索による複製配置}
+\section{カッコウ探索}
+\section{Levy walk}
+\section{ランダムジオメトリックグラフ上のLevy walk}
+
+\chapter{シミュレーション}
+\section{概要}
+\section{環境}
+\section{結果}
+\section{考察}
+
+\chapter{まとめと今後の課題}
+
+\chapter{図，表，数式}\label{chap:fig-tab-exp}
+
+論文では，図，表，数式などを効果的に使用する．
+
+\section{図}
+
+{\tt figure}環境を利用することによって図にキャプション
+(\verb|\caption|)を付けることができる．図に付けられたキャプションは
+\verb|\listoffigures|によって図目次として出力される．図には章ごとに通
+し番号が付けられ，キャプションに\verb|\label|を設定しておくと，
+``図\ref{fig:sample}''のように\verb|\ref|によって図を番号で参照するこ
+とができる．図\ref{fig:sample}に{\tt figure}環境を用いた記述例を示す．
+
+\begin{figure}
+  \begin{center}
+    ここで図を取り込む．
+    % 試しに，tiger.psが自分のマシンのどこに格納されているかを調べて
+    % 以下の命令を有効にしてみて下さい．
+    % ただし，同時に\begin{document}より前にある\usepackage{graphicx}
+    % も有効にする必要があります．
+    % 以下の例ではついでに四角で囲っています．
+    %\framebox{\includegraphics[width=5cm,clip]{/usr/local/share/ghostscript/7.07/examples/tiger.ps}}
+  \end{center}
+  \caption{図の例}
+  \label{fig:sample}
+\end{figure}
+
+また，{\tt graphicx.sty}などのスタイルファイルを利用することによって
+EPS形式の図を文章の中に取り込むことができる．
+この場合，\verb|\begin{document}|の前に\verb|\usepackage{graphicx}|を
+追加する．
+
+\section{表}
+
+{\tt table}環境を利用することによって図と同じように，キャプションをつ
+けたり，ラベルにより参照したりすることができる．また
+\verb|\listoftables|によって表目次として出力される．
+表\ref{tab:sample}に{\tt table}環境で作成した表を示す．
+
+\begin{table}
+  \caption{表の例}
+  \label{tab:sample}
+  \begin{center}
+    \begin{tabular}{|c|c|c|}
+      \hline
+      8 & 3 & 4\\
+      \hline
+      1 & 5 & 9 \\
+      \hline
+      6 & 7 & 2 \\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{table}
+
+\section{数式}
+
+\TeX では数式のための機能が豊富である．
+{\tt equation}環境などを利用することによって数式に番号を付けることがで
+きる．図や表と同じくラベルを付けておけば，``式\ref{exp:sample}''のよう
+に数式を番号で参照することができる．
+
+\begin{equation}
+  y = ax^2 + bx + c \label{exp:sample}
+\end{equation}
+
+\chapter{参考文献}
+
+文献を参照する場合には，論文の最後に参考文献として列挙するとともに，
+\verb|\cite|を使って，例えば，
+\begin{quote}
+  文献\cite{latex}によれば…
+\end{quote}
+や，
+\begin{quote}
+  …である\cite{latex2e}．
+\end{quote}
+のように参照する．
+
+文献の列挙には，{\tt thebibliography}環境などを用いる\footnote{使い方
+は，この資料のソースを参照．}．
+
+%% \chapter{ボリューム確認用ページ}
+
+%% 次のページでは，ページあたりのボリュームを確認するために無駄な文章が延々
+%% と続いています．
+
+%% \newpage
+
+%% 1行当たりの文字数は…\\
+%% １２３４５６７８９０
+%% １２３４５６７８９０
+%% １２３４５６７８９０
+%% １２３４５６７８９０
+%% １２３４５６７８９０
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%
+%% 謝辞
+%%
+%% \begin{acknowledgements}
+%% 感謝します．
+%% \end{acknowledgements}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%
+%% 参考文献
+%%
+\begin{thebibliography}{99}
+\bibitem{ksu_thesis}
+    京都産業大学コンピュータ理工学部卒業論文/大学院システム工学研究科修士論文用スタイルファイル，
+    ``{\tt http://rudds.kyoto-su.ac.jp/\symbol{"7E}naohaya/}''．
+\bibitem{latex}
+    奥村晴彦 著，\LaTeX 入門---美文書作成のポイント---，技術評論社，1993．
+\bibitem{latex2e}
+    奥村晴彦 著，[改定第3版] \LaTeXe~美文書作成入門，技術評論社，2004．
+\bibitem{texbasic}
+    OfficeMASA，神代英俊，長島秀行 著，\TeX の基礎，
+    ソフトバンクパブリッシング，2002．
+\bibitem{latexcomp}
+    M. Goossens, F. Mittelbach, A. Samarin 共著，
+    アスキー書籍編集部 監訳，The \LaTeX コンパニオン，アスキー出版局，1998．
+\bibitem{qlv}
+ \bibitem{kageyama}
+\end{thebibliography}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%
+%% 付録
+%%
+\appendix
+
+\chapter{サンプルプログラム}
+
+プログラムリストや実行結果など，本論を補足する上で必要と思われるものが
+あれば付録として付ける．
+
+{
+\footnotesize
+\begin{verbatim}
+#include <stdio.h>
+int main(void)
+{
+    printf("Hello, World!\n");
+    return 0;
+}
+\end{verbatim}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

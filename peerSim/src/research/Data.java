@@ -46,7 +46,7 @@ public class Data implements Control{
 		// 低需要
 		if(lowDemand){
 			// int maxReplications = random.nextInt(Network.size()/100);
-			peakCycle = 10;
+			peakCycle = 20;
 			// lambda = random.nextDouble()/((double) maxCycle);
 			double tmp;
 			while(true){
@@ -62,7 +62,8 @@ public class Data implements Control{
 		else {
 			peakCycle = 100 + random.nextInt(25);
 			// lambda = random.nextDouble()/((double) maxCycle);
-			lambda = random.nextDouble()/500.0;
+			// lambda = random.nextDouble()/500.0;
+			lambda = 1.0/500.0;
 		}
 	}
 

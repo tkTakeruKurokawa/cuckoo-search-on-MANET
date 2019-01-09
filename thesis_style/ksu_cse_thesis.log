@@ -1,0 +1,40 @@
+This is e-pTeX, Version 3.14159265-p3.7.1-161114-2.6 (utf8.euc) (TeX Live 2017) (preloaded format=platex 2017.9.29)  5 JAN 2019 02:43
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**ksu_cse_thesis.sty
+(./ksu_cse_thesis.sty
+pLaTeX2e <2017/07/29>+1 (based on LaTeX2e <2017-04-15>)
+Babel <3.13> and hyphenation patterns for 84 language(s) loaded.
+京都産業大学コンピュータ理工学部卒業論文用スタイルファイル
+
+./ksu_cse_thesis.sty:9: LaTeX Error: \usepackage before \documentclass.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.9 \usepackage{
+                ifthen}
+? H
+\usepackage may only appear in the document preamble, i.e.,
+between \documentclass and \begin{document}.
+? 
+./ksu_cse_thesis.sty:9: Emergency stop.
+ ...                                              
+                                                  
+l.9 \usepackage{
+                ifthen}
+End of file on the terminal!
+
+ 
+Here is how much of TeX's memory you used:
+ 6 strings out of 493648
+ 216 string characters out of 6148806
+ 54703 words of memory out of 5000000
+ 3695 multiletter control sequences out of 15000+600000
+ 7511 words of font info for 31 fonts, out of 8000000 for 9000
+ 929 hyphenation exceptions out of 8191
+ 5i,0n,5p,89b,14s stack positions out of 5000i,500n,10000p,200000b,80000s
+No pages of output.

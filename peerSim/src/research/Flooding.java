@@ -14,6 +14,7 @@ public class Flooding implements Control{
 	private static Deque<Node> stack = new ArrayDeque<Node>();
 	private static HashMap<Integer, Node> path = new HashMap<Integer, Node>();
 	
+	private static Storage storage;
 	private static Data target;
 	private static int id;
 	private static boolean hit;
@@ -91,31 +92,31 @@ public class Flooding implements Control{
 
 	private static boolean contains(Node node){
 		if(Objects.equals(id, 0)){
-			StorageOwner storage = SharedResource.getSOwner(node);
+			storage = SharedResource.getSOwner(node);
 			return storage.contains(target);
 		}
 
 		if(Objects.equals(id, 1)){
-			StoragePath storage = SharedResource.getSPath(node);
+			storage = SharedResource.getSPath(node);
 			return storage.contains(target);
 		}
 
 		if(Objects.equals(id, 2)){
-			StorageRelate storage = SharedResource.getSRelate(node);
+			storage = SharedResource.getSRelate(node);
 			return storage.contains(target);
 		}
 
 		if(Objects.equals(id, 3)){
-			StorageCuckoo storage = SharedResource.getSCuckoo(node);
+			storage = SharedResource.getSCuckoo(node);
 			return storage.contains(target);
 		}
-		Storage storage = SharedResource.getStorage(node);
+		// Storage storage = SharedResource.getStorage(node);
 		// for(Data d: storage.getData()){
 		// 	System.out.println("\tNode " + node.getIndex() + " having Data " + d.getID());
 		// }
 		// System.out.println(storage.contains(target));
 		// System.out.println();
-		return storage.contains(target);
+		return false;
 	}
 
 	public static boolean search(Node node, Data data, int num){

@@ -107,11 +107,12 @@ public class StorageRelate implements Storage{
 	}
 
 	public void clear(){
+		dataCounter = SharedResource.getRelateCounter();
+		
 		for(Data data: dataList){
 			dataCounter.set(data.getID(), dataCounter.get(data.getID())-1);	
 		}
 
-		dataCounter = SharedResource.getRelateCounter();
 		dataList.clear();
 		SharedResource.setRelateCounter(dataCounter);
 	}

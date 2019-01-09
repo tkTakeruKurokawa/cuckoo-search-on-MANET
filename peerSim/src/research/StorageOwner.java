@@ -74,11 +74,12 @@ public class StorageOwner implements Storage{
 	}
 
 	public void clear(){
+		dataCounter = SharedResource.getOwnerCounter();
+		
 		for(Data data: dataList){
 			dataCounter.set(data.getID(), dataCounter.get(data.getID())-1);	
 		}
 
-		dataCounter = SharedResource.getOwnerCounter();
 		dataList.clear();
 		SharedResource.setOwnerCounter(dataCounter);
 	}

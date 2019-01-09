@@ -14,6 +14,7 @@ public class Statistic{
 	private int count=0;
 
 	public PrintWriter output(PrintWriter stat){
+		stat.println("Allocation Num: " + count);
 		stat.println("Max Battery: " + maxB);
 		stat.println("Min Battery: " + minB);
 		stat.println("Max Capacity: " + maxC);

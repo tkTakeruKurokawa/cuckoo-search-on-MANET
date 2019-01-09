@@ -10,9 +10,11 @@ public class StorageCuckoo implements Storage{
 	private static int pid_prm;
 
 	private ArrayList<Data> dataList = new ArrayList<Data>();
+	private ArrayList<Data> replicaList = new ArrayList<Data>();
 	private HashMap<Data, Integer> dataTTL = new HashMap<Data, Integer>();
+	private HashMap<Data, Integer> replicaTTL = new HashMap<Data, Integer>();
 	private static ArrayList<Integer> dataCounter;
-	private static ArrayList<Node> replica = new ArrayList<Node>();
+	private static ArrayList<Integer> replicaCounter;
 
 	private static Random random = new Random();
 	private int ttl;
@@ -30,6 +32,8 @@ public class StorageCuckoo implements Storage{
 		}
 		storage.dataList = new ArrayList<Data>(this.dataList.size());
 		storage.dataTTL = new HashMap<Data, Integer>(this.dataTTL.size());
+		storage.replicaList = new ArrayList<Data>(this.replicaList.size());
+		storage.replicaTTL = new HashMap<Data, Integer>(this.replicaTTL.size());
 		return storage;
 	}
 	
@@ -42,19 +46,20 @@ public class StorageCuckoo implements Storage{
 
 		if(!dataList.contains(data) && (newCapacity>=0)){
 			dataList.add(data);
+			replicaList.add(data);
 
 			ttl = SharedResource.getTTL(50);
 			dataTTL.put(data, ttl);
+			replicaTTL.put(data, ttl);
 
 			dataCounter = SharedResource.getCuckooCounter();
+			replicaCounter = SharedResource.getReplicaCounter();
 			dataCounter.set(data.getID(), dataCounter.get(data.getID())+1);
+			replicaCounter.set(data.getID(), replicaCounter.get(data.getID())+1);
 			SharedResource.setCuckooCounter(dataCounter);
+			SharedResource.setReplicaCounter(replicaCounter);
 
 			parameter.setCapacity(newCapacity);
-
-			if(!replica.contains(node)){
-				replica.add(node);
-			}
 
 			return true;
 		}
@@ -84,10 +89,6 @@ public class StorageCuckoo implements Storage{
 			parameter.setCapacity(newCapacity);
 			// System.out.println("Node " + node.getIndex() + " capacity: " + newCapacity);
 
-			if(replica.contains(node)){
-				IncreaseReplications.replicaC++;
-			}
-
 			return true;
 		}
 		// System.out.println("*****  fail to setData. Re Roll   *****");
@@ -107,13 +108,21 @@ public class StorageCuckoo implements Storage{
 	}
 
 	public void clear(){
+		dataCounter = SharedResource.getCuckooCounter();
+		replicaCounter = SharedResource.getReplicaCounter();
+
 		for(Data data: dataList){
 			dataCounter.set(data.getID(), dataCounter.get(data.getID())-1);	
 		}
+		for(Data data: replicaList){
+			replicaCounter.set(data.getID(), replicaCounter.get(data.getID())-1);	
+		}
 
-		dataCounter = SharedResource.getCuckooCounter();
 		dataList.clear();
+		replicaList.clear();
+
 		SharedResource.setCuckooCounter(dataCounter);
+		SharedResource.setReplicaCounter(replicaCounter);
 	}
 
 	public void removeData(Node node, Data data){
@@ -135,18 +144,37 @@ public class StorageCuckoo implements Storage{
 		}
 		SharedResource.setCuckooCounter(dataCounter);
 		parameter.setCapacity(newCapacity);
-		// System.out.println("Node " + node.getIndex() + " capacity: " + newCapacity);
-		
+	}
+
+	public void removeReplica(Node node, Data data){
+		replicaCounter = SharedResource.getReplicaCounter();
+
+		Iterator<Data> itr = replicaList.iterator();
+		while(itr.hasNext()){
+			Data currentData = itr.next();
+			if(Objects.equals(currentData, data)) {
+				replicaCounter.set(data.getID(), replicaCounter.get(data.getID())-1);
+				replicaTTL.remove(currentData);
+				itr.remove();
+			}
+		}
+		SharedResource.setReplicaCounter(replicaCounter);
 	}
 
 	public void reduceTTL(Node node){
-		// System.out.println("Node ID: " + node.getIndex());
 		for(int i=0; i<dataList.size(); i++){
 			Data data = dataList.get(i);
 			ttl = dataTTL.get(data);
-			// System.out.println("   Data :" + data.getID() + " TTL :" + ttl);
 			if(ttl > 0) dataTTL.put(data, ttl-1); 
 			if(ttl == 0) removeData(node, data);
+
+		}
+
+		for(int i=0; i<replicaList.size(); i++){
+			Data replica = replicaList.get(i);
+			ttl = replicaTTL.get(replica);
+			if(ttl > 0) replicaTTL.put(replica, ttl-1); 
+			if(ttl == 0) removeReplica(node, replica);
 		}
 	}
 

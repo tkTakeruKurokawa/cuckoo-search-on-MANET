@@ -3,7 +3,6 @@
 #Configファイル内変数の設定
 K 3
 cycleNum 500
-TTL 50
 
 ############## Network ###############
 
@@ -95,15 +94,15 @@ init.wrgg.k K
 
 #データの検索手法のFlooading
 init.fld Flooding
-init.fld.ttl TTL
+init.fld.ttl 50
 
 #複製配置先を決定するためのCuckoo Search
 init.cs CuckooSearch
-init.cs.generation 30
+init.cs.generation 100
 
 #Cuckoo Searchで扱う巣の集合
 init.ns NestSet
-init.ns.nestSize 50
+init.ns.nestSize 10
 init.ns.abandonRate 0.25
 
 #Cuckoo Searchで扱う巣
@@ -113,7 +112,7 @@ init.nest.delta 45.0
 
 #関連研究での複製配置先の決定に用いるFlooading
 init.rr RelatedResearch
-init.rr.ttl TTL
+init.rr.ttl 100
 
 #init.stat printStatus
 

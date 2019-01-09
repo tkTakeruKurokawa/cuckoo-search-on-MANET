@@ -120,26 +120,22 @@ public class Nest implements Control{
 	}
 
 	private Node levyWalk(Node base){
-		double rand,rand_n,u,v,s,o;
+		double r,o;
 		int d;
+
 		while(true){
-			rand = random.nextDouble(); 
-			rand_n = Math.sqrt(-2.0*Math.log(rand) * Math.cos(2.0*PI*rand));
+			r = random.nextDouble();
+			if(r>0.1d){
+				break;
+			}
+		}
 
-			u = rand_n*SIGMA;
-			v = rand_n;
-			s = u / Math.pow(Math.abs(v), 1.0/BETA);
-			if(Double.isNaN(s))
-				continue;
-
-			d = (int) Math.round(Math.pow(s, -1.0));
+		d = (int) Math.round(Math.pow(r, -2.0));
 			// d = (int) Math.round(s*2);
 			// System.out.println("d: " + d);
-			o = random.nextDouble()*359.9999999999;
+		o = random.nextDouble()*359.9999999999;
 
-			if(d>0) 
-				break;
-		}
+		// System.out.println(d);
 
 		while(d>0){
 			pn.clear();

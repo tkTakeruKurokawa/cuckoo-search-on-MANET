@@ -43,6 +43,8 @@ public class SharedResource implements Control{
 	private static ArrayList<Boolean> upLoaded;
 	private static ArrayList<Double> relateOccu;
 	private static ArrayList<Double> cuckooOccu;
+	private static ArrayList<Integer> replicaCounter;
+	private static ArrayList<Data> cyclesRequestList;
 
 
 	public SharedResource(String prefix){
@@ -91,6 +93,14 @@ public class SharedResource implements Control{
 	}
 	public static void setCuckooOccu(ArrayList<Double> co){
 		cuckooOccu = co;
+	}
+
+	public static void setReplicaCounter(ArrayList<Integer> rc){
+		replicaCounter = rc;
+	}
+
+	public static void setCyclesRequestList(ArrayList<Data> crl){
+		cyclesRequestList = crl;
 	}
 
 
@@ -182,12 +192,20 @@ public class SharedResource implements Control{
 		return cuckooOccu;
 	}
 
+	public static ArrayList<Integer> getReplicaCounter(){
+		return replicaCounter;
+	}
+
+	public static ArrayList<Data> getCyclesRequestList(){
+		return cyclesRequestList;
+	}
+
 	public static int getTTL(int base){
 		return base + rand;
 	}
 
 	public static void nextRand(){
-		rand = random.nextInt(10);
+		rand = random.nextInt(5);
 	}
 
 
@@ -201,6 +219,8 @@ public class SharedResource implements Control{
 		upLoaded = new ArrayList<Boolean>();
 		relateOccu = new ArrayList<Double>();
 		cuckooOccu = new ArrayList<Double>();
+		replicaCounter = new ArrayList<Integer>();
+		cyclesRequestList = new ArrayList<Data>();
 		random = new Random();
 
 		for(int i=0; i<Network.size(); i++){
@@ -214,6 +234,8 @@ public class SharedResource implements Control{
 			pathCounter.add(dataID, 0);
 			relateCounter.add(dataID, 0);
 			cuckooCounter.add(dataID, 0);
+			replicaCounter.add(dataID, 0);
+			cyclesRequestList.add(dataID, null);
 			upLoaded.add(dataID, false);
 		}
 

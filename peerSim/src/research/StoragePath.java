@@ -73,11 +73,12 @@ public class StoragePath implements Storage{
 	}
 
 	public void clear(){
+		dataCounter = SharedResource.getPathCounter();
+		
 		for(Data data: dataList){
 			dataCounter.set(data.getID(), dataCounter.get(data.getID())-1);	
 		}
 
-		dataCounter = SharedResource.getPathCounter();
 		dataList.clear();
 		SharedResource.setPathCounter(dataCounter);
 	}
