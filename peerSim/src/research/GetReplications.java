@@ -9,6 +9,8 @@ import java.lang.Math;
 public class GetReplications implements Control{
 	private static final String PAR_ALPHA = "alpha";
 	private static double alpha;
+	private static final String PAR_CAPACITY = "capacity";
+	private static double capacity;
 
 	private Random random = new Random();
 	private ArrayList<Integer> nowRelate = new ArrayList<Integer>();
@@ -37,14 +39,15 @@ public class GetReplications implements Control{
 	private PrintWriter occuC;
 	private PrintWriter compR;
 	private PrintWriter compC;
-	private PrintWriter histR;
-	private PrintWriter histC;
 
 	private int cycle = 0;
+	private boolean done = false;
 
 
 	public GetReplications(String prefix){
 		alpha = Configuration.getDouble(prefix + "." + PAR_ALPHA);
+		capacity = Configuration.getDouble(prefix + "." + PAR_CAPACITY);
+
 
 		for(int i=0; i<Data.getMaxVariety(); i++){
 			nowRelate.add(i, 0);
@@ -83,8 +86,6 @@ public class GetReplications implements Control{
 			File relateO = new File(relate);
 			relate  = way + "/result/relate_compare.csv";
 			File relateC = new File(relate);
-			relate  = way + "/result/relate_hist.csv";
-			File relateH = new File(relate);
 
 			String cuckoo  = way + "/result/cuckoo_counter.csv";
 			File cuckooR = new File(cuckoo);
@@ -92,8 +93,6 @@ public class GetReplications implements Control{
 			File cuckooO = new File(cuckoo);
 			cuckoo  = way + "/result/cuckoo_compare.csv";
 			File cuckooC = new File(cuckoo);
-			cuckoo  = way + "/result/cuckoo_hist.csv";
-			File cuckooH = new File(cuckoo);
 
 			counterO = new PrintWriter(new BufferedWriter(new FileWriter(ownerR, true)));
 			counterP = new PrintWriter(new BufferedWriter(new FileWriter(pathR, true)));
@@ -107,9 +106,6 @@ public class GetReplications implements Control{
 			
 			compR = new PrintWriter(new BufferedWriter(new FileWriter(relateC, true)));
 			compC = new PrintWriter(new BufferedWriter(new FileWriter(cuckooC, true)));
-
-			histR = new PrintWriter(new BufferedWriter(new FileWriter(relateH, true)));
-			histC = new PrintWriter(new BufferedWriter(new FileWriter(cuckooH, true)));
 
 		}catch(IOException e){
 			System.out.println(e);
@@ -134,8 +130,6 @@ public class GetReplications implements Control{
 		occuC.println();
 		compR.println();
 		compC.println();
-		histR.println();
-		histC.println();
 
 		counterO.close();
 		counterP.close();
@@ -147,63 +141,6 @@ public class GetReplications implements Control{
 		occuC.close();
 		compR.close();	
 		compC.close();
-		histR.close();
-		histC.close();
-	}
-
-	public void histgram(){
-		ArrayList<Double> relateOccu = SharedResource.getRelateOccu();
-		ArrayList<Double> cuckooOccu = SharedResource.getCuckooOccu();
-		double relateSum = 0.0;
-		double cuckooSum = 0.0;
-		int count = 0;
-		ArrayList<Integer> relateFreq = new ArrayList<Integer>();
-		ArrayList<Integer> cuckooFreq = new ArrayList<Integer>();
-		for(int i=0; i<10; i++){
-			relateFreq.add(i, 0);
-			cuckooFreq.add(i, 0);
-		}
-		for(int i=0; i<Network.size(); i++){
-			relateSum = relateOccu.get(i);
-			cuckooSum = cuckooOccu.get(i);
-			if(relateSum > cuckooSum){
-				count++;
-			}
-			for(int j=0; j<10; j++){
-				int value = (int)Math.floor(relateSum/500.0*10.0);
-				if(j<=value && value<=j+1){
-					relateFreq.set(j, relateFreq.get(j)+1);
-				}
-				if(value==10){
-					relateFreq.set(9, relateFreq.get(9)+1);
-				}
-
-				value = (int)Math.floor(cuckooSum/500.0*10.0);
-				if(j<=value && value<j+1){
-					cuckooFreq.set(j, cuckooFreq.get(j)+1);
-				}
-				if(value==10){
-					cuckooFreq.set(9, cuckooFreq.get(9)+1);
-				}
-			}
-		}
-
-		histR = setHistgram(histR, relateFreq);
-		histC = setHistgram(histC, cuckooFreq);
-	}
-
-	public PrintWriter setHistgram(PrintWriter pw, ArrayList<Integer> freq){
-
-		pw.printf("Bin\tRange\tFrequency\n");
-		for(int i=0; i<10; i++){
-			if(i!=9){
-				pw.printf("%d\t[%.1f-%.1f)\t%d\n", i, (double)i/10.0, (double)i/10.0+0.1, freq.get(i));
-			}else{
-				pw.printf("%d\t[%.1f-%.1f]\t%d\n", i, (double)i/10.0, (double)i/10.0+0.1, freq.get(i));
-			}
-		}
-
-		return pw;
 	}
 
 	public void setOccupancy(){
@@ -239,7 +176,7 @@ public class GetReplications implements Control{
 	}
 
 	public void calcOccupancy(Parameter parameter, int id){
-		double occupancy = ((double)parameter.getCapacity()) / 10.0;
+		double occupancy = ((double)parameter.getCapacity()) / capacity;
 		total.set(id, total.get(id)+occupancy);
 	}
 
@@ -265,12 +202,8 @@ public class GetReplications implements Control{
 		while(addNum<diff){
 			while(true){
 				node = Network.get(random.nextInt(Network.size()));
-				// long start = System.nanoTime();
 				node = RelatedResearch.getBestNode(node, data);
-				// long end = System.nanoTime();
-				// System.out.println("Relate Time:" + (end - start) / 1000000f + "ms");
-
-				// System.out.println("RR Node: " + node);
+				// node = ExhaustiveSearch.search(data);
 				if(!Objects.equals(node, null)){
 					break;
 				}
@@ -284,7 +217,9 @@ public class GetReplications implements Control{
 				continue;
 			}
 
-			statR.set(parameter);
+			if(Objects.equals(done, true)){
+				statR.set(parameter);
+			}
 			storage.setReplica(node, data);
 
 			addNum++;
@@ -296,11 +231,18 @@ public class GetReplications implements Control{
 	public  void cuckooSearch(int dataID, int dataNum){
 		Data data = Data.getData(dataID);
 		int diff = cuckooReplica.get(dataID) - dataNum;
+		if(dataID%5 == 0 && dataID%10 != 0){
+			// System.out.println("Data "+ dataID);
+			// System.out.println("cuckooReplica " + cuckooReplica.get(dataID) + " dataNum " + dataNum);
+		}
 		int addNum=0;
 		Node node;
-
+		// System.out.println("diff " + diff);
 		while(addNum<diff){
 			node = CuckooSearch.search(data);
+			if(Objects.equals(node, null)){
+				continue;
+			}
 			// System.out.println("CS Node: " + node);
 
 			StorageCuckoo storage = SharedResource.getSCuckoo(node);
@@ -312,6 +254,8 @@ public class GetReplications implements Control{
 			}
 			
 			statC.set(parameter);
+			done = true;
+
 			storage.setReplica(node, data);
 
 			addNum++;
@@ -330,7 +274,7 @@ public class GetReplications implements Control{
 		}
 
 		counterO.printf("%d", cycle);
-		for(int dataID=0; dataID<Data.getMaxVariety(); dataID++){
+		for(int dataID=0; dataID<Data.getNowVariety(); dataID++){
 			Integer dataNum = dataCounter.get(dataID);
 
 			if(dataNum == null) 
@@ -354,7 +298,7 @@ public class GetReplications implements Control{
 		}
 
 		counterP.printf("%d", cycle);
-		for(int dataID=0; dataID<Data.getMaxVariety(); dataID++){
+		for(int dataID=0; dataID<Data.getNowVariety(); dataID++){
 			Integer dataNum = dataCounter.get(dataID);
 
 			if(dataNum == null) 
@@ -395,7 +339,7 @@ public class GetReplications implements Control{
 		}
 
 		counterR.printf("%d", cycle);
-		for(int dataID=0; dataID<Data.getMaxVariety(); dataID++){
+		for(int dataID=0; dataID<Data.getNowVariety(); dataID++){
 			Integer dataNum = dataCounter.get(dataID);
 
 			nowRelate.set(dataID, dataNum);
@@ -419,7 +363,8 @@ public class GetReplications implements Control{
 			}
 
 			if(0 <= startReplicaR.get(dataID)){
-					relatedResearch(dataID, dataNum);
+				relatedResearch(dataID, dataNum);
+				dataCounter = SharedResource.getRelateCounter();
 			}
 
 			preRelate.set(dataID, nowRelate.get(dataID));
@@ -438,6 +383,7 @@ public class GetReplications implements Control{
 		ArrayList<Integer> replicaCounter = SharedResource.getReplicaCounter();
 
 		double sum = 0.0;
+		int neighbors=0;
 		ArrayList<Double> cuckooOccu = SharedResource.getCuckooOccu();
 		for(int i=0; i<Network.size(); i++){
 			Parameter parameter = SharedResource.getNPCuckoo(Network.get(i));
@@ -446,6 +392,7 @@ public class GetReplications implements Control{
 			sum += occupancy;
 			cuckooOccu.set(i, cuckooOccu.get(i)+occupancy);
 
+			Node node = Network.get(i);
 		}
 		SharedResource.setCuckooOccu(cuckooOccu);
 
@@ -453,7 +400,7 @@ public class GetReplications implements Control{
 		for(int i=0; i<Data.getNowVariety(); i++){
 			total += dataCounter.get(i);
 		}
-		System.out.println(total*0.05);
+		// System.out.println(total*0.05);
 
 		if(cycle == 0){
 			counterC.printf("cycle");
@@ -465,7 +412,7 @@ public class GetReplications implements Control{
 		}
 
 		counterC.printf("%d", cycle);
-		for(int dataID=0; dataID<Data.getMaxVariety(); dataID++){
+		for(int dataID=0; dataID<Data.getNowVariety(); dataID++){
 			Integer dataNum = dataCounter.get(dataID);
 
 			nowCuckoo.set(dataID, dataNum);
@@ -476,7 +423,7 @@ public class GetReplications implements Control{
 			// 減少中であるのもかかわらず、現在のデータ数が前回のデータ数を上回った場合
 			// ただし、複製配置で増えた分は除く
 			if(cyclesRequestList.get(dataID)!=null){
-			System.out.println("This cycle request Data " + cyclesRequestList.get(dataID).getID());
+			// System.out.println("This cycle request Data " + cyclesRequestList.get(dataID).getID());
 
 			}
 			if(decreaseReplicaC.get(dataID) && cyclesRequestList.contains(Data.getData(dataID))){
@@ -497,7 +444,11 @@ public class GetReplications implements Control{
 			// System.out.println("Data " + dataID + " replica : " + replicaCounter.get(dataID));
 
 			if(0<=startReplicaC.get(dataID) && (cycle-startReplicaC.get(dataID))<100){
+				// System.out.println("befor Num " + dataCounter.get(dataID));
 				cuckooSearch(dataID, replicaCounter.get(dataID));
+				dataCounter = SharedResource.getCuckooCounter();
+				// System.out.println("after Num " + dataCounter.get(dataID));
+				// System.out.println();
 			}
 
 			preCuckoo.set(dataID, nowCuckoo.get(dataID));
@@ -519,24 +470,25 @@ public class GetReplications implements Control{
 
 		owner();
 		path();
-		relate();
 		cuckoo();
+		relate();
+
+		done = false;
 
 		SharedResource.setCyclesRequestList(cyclesRequestList);
 
 		setOccupancy();
 
 		cycle++;
-		SharedResource.nextRand();
 
 		if(cycle==500){
-			histgram();
 			close();
 
 			for(int i=0; i<Data.getMaxVariety(); i++){
 				System.out.println("Data " + i + " start Replication cycle");
 				System.out.println("Relate: " + startReplicaR.get(i) + " Cuckoo: " + startReplicaC.get(i));				
 			}
+			System.out.println("All Node: " + Network.size());
 		}
 
 		return false;

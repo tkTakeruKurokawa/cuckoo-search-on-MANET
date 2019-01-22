@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.7.1-161114-2.6 (utf8.euc) (TeX Live 2017) (preloaded format=platex 2017.9.29)  8 JAN 2019 20:38
+This is e-pTeX, Version 3.14159265-p3.7.1-161114-2.6 (utf8.euc) (TeX Live 2017) (preloaded format=platex 2017.9.29)  22 JAN 2019 20:01
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -40,41 +40,101 @@ Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
 (/usr/local/texlive/2017/texmf-dist/tex/latex/tools/indentfirst.sty
 Package: indentfirst 1995/11/23 v1.03 Indent first paragraph (DPC)
 )
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks15
+)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2017/06/25 v1.2c Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: dvipdfmx.def on input line 99.
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/graphics-def/dvipdfmx.def
+File: dvipdfmx.def 2017/06/24 v5.0g Graphics/color driver for dvipdfmx
+))
+\Gin@req@height=\dimen121
+\Gin@req@width=\dimen122
+)
+(/usr/local/texlive/2017/texmf-dist/tex/latex/algorithms/algorithm.sty
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
+nment
+
+(/usr/local/texlive/2017/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count93
+\float@exts=\toks16
+\float@box=\box42
+\@float@everytoks=\toks17
+\@floatcapt=\box43
+)
+\@float@every@algorithm=\toks18
+\c@algorithm=\count94
+)
+(./algorithmicx.sty
+Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
+
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+\c@ALG@line=\count95
+\c@ALG@rem=\count96
+\c@ALG@nested=\count97
+\ALG@tlm=\skip43
+\ALG@thistlm=\skip44
+\c@ALG@Lnr=\count98
+\c@ALG@blocknr=\count99
+\c@ALG@storecount=\count100
+\c@ALG@tmpcounter=\count101
+\ALG@tmplength=\skip45
+) (./algpseudocode.sty
+Package: algpseudocode 
+
+Document Style - pseudocode environments for use with the `algorithmicx' style
+) (/usr/local/texlive/2017/texmf-dist/tex/latex/here/here.sty)
+\myheight=\skip46
+
 (./bachelor_thesis.aux)
 \openout1 = `bachelor_thesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for JY1/mc/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
-LaTeX Font Info:    Checking defaults for JT1/mc/m/n on input line 55.
-LaTeX Font Info:    ... okay on input line 55.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for JY1/mc/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
+LaTeX Font Info:    Checking defaults for JT1/mc/m/n on input line 70.
+LaTeX Font Info:    ... okay on input line 70.
 LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <20.74> not available
-(Font)              Font shape `JT1/gt/m/n' tried instead on input line 57.
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 72.
 LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <20.74> not available
-(Font)              Font shape `JY1/gt/m/n' tried instead on input line 57.
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 72.
  [1
 
 ]
 LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <14.4> not available
-(Font)              Font shape `JT1/gt/m/n' tried instead on input line 62.
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 77.
 LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <14.4> not available
-(Font)              Font shape `JY1/gt/m/n' tried instead on input line 62.
-LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <10.95> not available
-(Font)              Font shape `JT1/gt/m/n' tried instead on input line 80.
-LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <10.95> not available
-(Font)              Font shape `JY1/gt/m/n' tried instead on input line 80.
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 77.
  [1] (./bachelor_thesis.toc
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <10.95> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 1.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <10.95> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 1.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <10.95> on input line 2.
 LaTeX Font Info:    External font `cmex10' loaded for size
@@ -86,7 +146,20 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 \openout3 = `bachelor_thesis.toc'.
 
  [3]
+(./bachelor_thesis.lof)
+\tf@lof=\write4
+\openout4 = `bachelor_thesis.lof'.
+
+ [4] (./bachelor_thesis.lot)
+\tf@lot=\write5
+\openout5 = `bachelor_thesis.lot'.
+
+ [5]
 第 1 章
+[1
+
+] [2]
+第 2 章
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 125.
 
 (/usr/local/texlive/2017/texmf-dist/tex/latex/base/omscmr.fd
@@ -94,60 +167,69 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 125.
-LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <12> not available
-(Font)              Font shape `JT1/gt/m/n' tried instead on input line 143.
-LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <12> not available
-(Font)              Font shape `JY1/gt/m/n' tried instead on input line 143.
- [1
+ [3
 
-] [2]
-第 2 章
-[3
-
-]
+] [4]
 第 3 章
-[4
-
-]
-第 4 章
+LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <12> not available
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 162.
+LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <12> not available
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 162.
 [5
 
-]
-第 5 章
-[6
-
-]
-第 6 章
-[7
-
-]
-第 7 章
+] [6] [7]
+第 4 章
+File: ./figure/rgg.png Graphic file (type bmp)
+<./figure/rgg.png>
 [8
 
 ]
-第 8 章
+第 5 章
 [9
 
-] [10]
-第 9 章
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <9> on input line 292.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 292.
-[11
+] [10] [11] [12] [13] [14]
+第 6 章
+[15
 
-] [12]
-付 録 A  
-[13
+]
+File: ./figure/owner_counter.eps Graphic file (type eps)
+<./figure/owner_counter.eps>
+ [16]
+File: ./figure/path_counter.eps Graphic file (type eps)
+<./figure/path_counter.eps>
+ [17]
+File: ./figure/relate_counter.eps Graphic file (type eps)
+<./figure/relate_counter.eps>
+File: ./figure/cuckoo_counter.eps Graphic file (type eps)
+<./figure/cuckoo_counter.eps>
+ [18]
+File: ./figure/counter_comp.eps Graphic file (type eps)
+<./figure/counter_comp.eps>
+ [19] [20]
+File: ./figure/owner_occupancy.eps Graphic file (type eps)
+<./figure/owner_occupancy.eps>
+ [21]
+File: ./figure/path_occupancy.eps Graphic file (type eps)
+<./figure/path_occupancy.eps>
+File: ./figure/relate_occupancy.eps Graphic file (type eps)
+<./figure/relate_occupancy.eps>
+ [22]
+File: ./figure/cuckoo_occupancy.eps Graphic file (type eps)
+<./figure/cuckoo_occupancy.eps>
+File: ./figure/occupancy_comp.eps Graphic file (type eps)
+<./figure/occupancy_comp.eps>
+ [23] [24] [25] [26]
+第 7 章
+[27
 
-] (./bachelor_thesis.aux) ) 
+] [28] [29] [30] (./bachelor_thesis.aux) ) 
 Here is how much of TeX's memory you used:
- 476 strings out of 493648
- 5540 string characters out of 6148806
- 66968 words of memory out of 5000000
- 4117 multiletter control sequences out of 15000+600000
- 18383 words of font info for 72 fonts, out of 8000000 for 9000
+ 1492 strings out of 493648
+ 20133 string characters out of 6148806
+ 83556 words of memory out of 5000000
+ 5077 multiletter control sequences out of 15000+600000
+ 17392 words of font info for 68 fonts, out of 8000000 for 9000
  929 hyphenation exceptions out of 8191
- 23i,8n,19p,250b,265s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 25i,7n,21p,1080b,348s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on bachelor_thesis.dvi (17 pages, 26536 bytes).
+Output written on bachelor_thesis.dvi (36 pages, 97940 bytes).

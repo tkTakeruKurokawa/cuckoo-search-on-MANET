@@ -12,7 +12,7 @@ public class Data implements Control{
 	private static final int DEFAULT_INITIAL_MAXVARIETY = 50;
 	private static final String PAR_MAXVARIETY = "maxVariety";
 	private static int maxVariety;
-	private static final int DEFAULT_INITIAL_MAXSIZE = 3;
+	private static final int DEFAULT_INITIAL_MAXSIZE = 2;
 	private static final String PAR_MAXSIZE = "maxSize";
 	private static int maxSize;
 
@@ -40,13 +40,13 @@ public class Data implements Control{
 	public Data(int index, boolean lowDemand){
 		this.index = index;
 		this.lowDemand = lowDemand;
-		this.size = random.nextInt(maxSize)+1;
+		this.size = maxSize;
 		cycle = 0;
 		
 		// 低需要
 		if(lowDemand){
 			// int maxReplications = random.nextInt(Network.size()/100);
-			peakCycle = 20;
+			peakCycle = 50;
 			// lambda = random.nextDouble()/((double) maxCycle);
 			double tmp;
 			while(true){
@@ -60,7 +60,14 @@ public class Data implements Control{
 
 		// 通常
 		else {
-			peakCycle = 100 + random.nextInt(25);
+			int sign = 1;
+			// boolean flag = random.nextBoolean();
+			// if(flag)
+			// 	sign = 1;
+			// else
+			// 	sign = -1;
+
+			peakCycle = 10 + (sign * random.nextInt(60));
 			// lambda = random.nextDouble()/((double) maxCycle);
 			// lambda = random.nextDouble()/500.0;
 			lambda = 1.0/500.0;
@@ -68,9 +75,14 @@ public class Data implements Control{
 	}
 
 	public static void makeData(){
-		int probability = random.nextInt(3);
-		if(probability == 0) dataList.add(new Data(variety, false));
-		else dataList.add(new Data(variety, true));
+		// int probability = random.nextInt(2);
+		// if(probability == 0) dataList.add(new Data(variety, false));
+		// else dataList.add(new Data(variety, true));
+
+		// int probability = random.nextInt(5);
+		// if(probability == 0) dataList.add(new Data(variety, true));
+		// else dataList.add(new Data(variety, false));
+		dataList.add(new Data(variety, false));
 		variety++;
 	}
 

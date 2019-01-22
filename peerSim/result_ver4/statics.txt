@@ -1,0 +1,112 @@
+Owner Num: Fail setData 19100
+Owner Num: Success setData 41026
+
+Path Num: Fail setData 284120
+Path Num: Success setData 44042
+
+Relate Num: Fail setData 19635
+Relate Num: Success setData 40707
+
+Cuckoo Num: Fail setData 18792
+Cuckoo Num: Success setData 41202
+
+Data 0 start Replication cycle
+Relate: 97 Cuckoo: 96
+Data 1 start Replication cycle
+Relate: 36 Cuckoo: 36
+Data 2 start Replication cycle
+Relate: 98 Cuckoo: 97
+Data 3 start Replication cycle
+Relate: 118 Cuckoo: 117
+Data 4 start Replication cycle
+Relate: 121 Cuckoo: 120
+Data 5 start Replication cycle
+Relate: 129 Cuckoo: 128
+Data 6 start Replication cycle
+Relate: 96 Cuckoo: 95
+Data 7 start Replication cycle
+Relate: 115 Cuckoo: 115
+Data 8 start Replication cycle
+Relate: 95 Cuckoo: 95
+Data 9 start Replication cycle
+Relate: 171 Cuckoo: 170
+Data 10 start Replication cycle
+Relate: 145 Cuckoo: 144
+Data 11 start Replication cycle
+Relate: 130 Cuckoo: 130
+Data 12 start Replication cycle
+Relate: 93 Cuckoo: 93
+Data 13 start Replication cycle
+Relate: 171 Cuckoo: 170
+Data 14 start Replication cycle
+Relate: 100 Cuckoo: 100
+Data 15 start Replication cycle
+Relate: 97 Cuckoo: 97
+Data 16 start Replication cycle
+Relate: 102 Cuckoo: 102
+Data 17 start Replication cycle
+Relate: 194 Cuckoo: 193
+Data 18 start Replication cycle
+Relate: 111 Cuckoo: 111
+Data 19 start Replication cycle
+Relate: 120 Cuckoo: 120
+Data 20 start Replication cycle
+Relate: 125 Cuckoo: 125
+Data 21 start Replication cycle
+Relate: 124 Cuckoo: 124
+Data 22 start Replication cycle
+Relate: 210 Cuckoo: 209
+Data 23 start Replication cycle
+Relate: 133 Cuckoo: 133
+Data 24 start Replication cycle
+Relate: 142 Cuckoo: 142
+Data 25 start Replication cycle
+Relate: 230 Cuckoo: 229
+Data 26 start Replication cycle
+Relate: 197 Cuckoo: 196
+Data 27 start Replication cycle
+Relate: 152 Cuckoo: 151
+Data 28 start Replication cycle
+Relate: 204 Cuckoo: 203
+Data 29 start Replication cycle
+Relate: 197 Cuckoo: 197
+Data 30 start Replication cycle
+Relate: 224 Cuckoo: 223
+Data 31 start Replication cycle
+Relate: 276 Cuckoo: 275
+Data 32 start Replication cycle
+Relate: 179 Cuckoo: 179
+Data 33 start Replication cycle
+Relate: 250 Cuckoo: 249
+Data 34 start Replication cycle
+Relate: 232 Cuckoo: 231
+Data 35 start Replication cycle
+Relate: 209 Cuckoo: 209
+Data 36 start Replication cycle
+Relate: 251 Cuckoo: 251
+Data 37 start Replication cycle
+Relate: 238 Cuckoo: 238
+Data 38 start Replication cycle
+Relate: 265 Cuckoo: 264
+Data 39 start Replication cycle
+Relate: 219 Cuckoo: 219
+Data 40 start Replication cycle
+Relate: 309 Cuckoo: 308
+Data 41 start Replication cycle
+Relate: 290 Cuckoo: 290
+Data 42 start Replication cycle
+Relate: 292 Cuckoo: 291
+Data 43 start Replication cycle
+Relate: 316 Cuckoo: 316
+Data 44 start Replication cycle
+Relate: 337 Cuckoo: 337
+Data 45 start Replication cycle
+Relate: 314 Cuckoo: 313
+Data 46 start Replication cycle
+Relate: 347 Cuckoo: 346
+Data 47 start Replication cycle
+Relate: 373 Cuckoo: 372
+Data 48 start Replication cycle
+Relate: 352 Cuckoo: 352
+Data 49 start Replication cycle
+Relate: 377 Cuckoo: 377

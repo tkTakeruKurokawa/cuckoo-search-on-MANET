@@ -15,9 +15,11 @@ public class StorageCuckoo implements Storage{
 	private HashMap<Data, Integer> replicaTTL = new HashMap<Data, Integer>();
 	private static ArrayList<Integer> dataCounter;
 	private static ArrayList<Integer> replicaCounter;
+	private static Queue<Data> removeList = new ArrayDeque<Data>();
 
 	private static Random random = new Random();
 	private int ttl;
+	private boolean flag = false;
 
 
 	public StorageCuckoo(String prefix){
@@ -48,7 +50,7 @@ public class StorageCuckoo implements Storage{
 			dataList.add(data);
 			replicaList.add(data);
 
-			ttl = SharedResource.getTTL(50);
+			ttl = 50 + random.nextInt(10);
 			dataTTL.put(data, ttl);
 			replicaTTL.put(data, ttl);
 
@@ -144,6 +146,8 @@ public class StorageCuckoo implements Storage{
 		}
 		SharedResource.setCuckooCounter(dataCounter);
 		parameter.setCapacity(newCapacity);
+
+		return;
 	}
 
 	public void removeReplica(Node node, Data data){
@@ -159,22 +163,71 @@ public class StorageCuckoo implements Storage{
 			}
 		}
 		SharedResource.setReplicaCounter(replicaCounter);
+
+		return;
+	}
+
+	public void reduceReplicaTTL(Node node){
+		for(int i=0; i<replicaList.size(); i++){
+			Data replica = replicaList.get(i);
+			ttl = replicaTTL.get(replica);
+
+			if(ttl > 0){
+				replicaTTL.put(replica, ttl-1); 
+			}
+			if(ttl == 0){
+				// removeReplica(node, replica);
+				removeList.add(replica);
+			}
+		}
+
+		while(true){
+			Data data = removeList.poll();
+			if(data == null){
+				break;
+			}
+			replicaCounter = SharedResource.getReplicaCounter();
+
+			replicaCounter.set(data.getID(), replicaCounter.get(data.getID())-1);
+			replicaTTL.remove(data);
+			replicaList.remove(data);
+
+			SharedResource.setReplicaCounter(replicaCounter);
+		}
 	}
 
 	public void reduceTTL(Node node){
 		for(int i=0; i<dataList.size(); i++){
 			Data data = dataList.get(i);
 			ttl = dataTTL.get(data);
-			if(ttl > 0) dataTTL.put(data, ttl-1); 
-			if(ttl == 0) removeData(node, data);
 
+			if(ttl > 0){
+				dataTTL.put(data, ttl-1); 	
+			} 
+			if(ttl == 0){
+				// removeData(node, data);
+				removeList.add(data);
+			}
 		}
 
-		for(int i=0; i<replicaList.size(); i++){
-			Data replica = replicaList.get(i);
-			ttl = replicaTTL.get(replica);
-			if(ttl > 0) replicaTTL.put(replica, ttl-1); 
-			if(ttl == 0) removeReplica(node, replica);
+		while(true){
+			Data data = removeList.poll();
+			if(data == null){
+				break;
+			}
+			dataCounter = SharedResource.getCuckooCounter();
+
+			NPCuckoo parameter = (NPCuckoo) node.getProtocol(pid_prm);
+			int capacity = parameter.getCapacity();
+			int occupancy = data.getSize();
+			int newCapacity = capacity+occupancy;
+
+			dataCounter.set(data.getID(), dataCounter.get(data.getID())-1);
+			dataTTL.remove(data);
+			dataList.remove(data);
+
+			SharedResource.setCuckooCounter(dataCounter);
+			parameter.setCapacity(newCapacity);
 		}
 	}
 

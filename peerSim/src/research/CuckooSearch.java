@@ -36,9 +36,16 @@ public class CuckooSearch implements Control{
 		// long end = System.nanoTime();
 		// System.out.println("Cuckoo Time:" + (end - start) / 1000000f + "ms");
 
-		Node bestNode;
+				// ArrayList<Nest> nest = ns.getNestSet();
+		// System.out.println("NOWNEST:");
+		// for(int k=0; k<20; k++){
+		// 		System.out.printf("\t%d: ",k);
+		// 		System.out.println("Node: " + nest.get(k).getNode().getIndex() + " value " + nest.get(k).getValue() + " (" + nest.get(k).egg[0] + ", " + nest.get(k).egg[1] + ")");
+		// }
+
+		Node bestNode = null;
 		int addNum=0;
-		while(true){
+		while(addNum<ns.SET_SIZE){
 			bestNode = ns.getBestNode(addNum);
 			StorageCuckoo storage = SharedResource.getSCuckoo(bestNode);
 			NPCuckoo parameter = SharedResource.getNPCuckoo(bestNode);
@@ -49,17 +56,9 @@ public class CuckooSearch implements Control{
 			if(!storage.contains(data) && newCapacity>=0){
 				break;
 			}
+			System.out.println(addNum);
 			addNum++;
 		}
-
-		// ArrayList<Nest> nest = ns.getNestSet();
-		// System.out.println("NOWNEST:");
-		// for(int k=0; k<200; k++){
-		// 	if(k>200-10){
-		// 		System.out.printf("\t%d: ",k);
-		// 		System.out.println("Node: " + nest.get(k).getNode().getIndex() + " value " + nest.get(k).getValue() + " (" + nest.get(k).egg[0] + ", " + nest.get(k).egg[1] + ")");
-		// 	}
-		// }
 
 		return bestNode;
 	}

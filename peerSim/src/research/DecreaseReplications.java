@@ -29,6 +29,7 @@ public class DecreaseReplications implements Control{
 
 	public static void cuckoo(){
 		StorageCuckoo sCuckoo = SharedResource.getSCuckoo(node);
+		sCuckoo.reduceReplicaTTL(node);
 		sCuckoo.reduceTTL(node);
 	}
 

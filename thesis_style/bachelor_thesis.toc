@@ -1,41 +1,40 @@
 \contentsline {chapter}{\numberline {第1章}はじめに}{1}
 \contentsline {section}{\numberline {1.1}背景}{1}
 \contentsline {section}{\numberline {1.2}問題点}{1}
-\contentsline {section}{\numberline {1.3}目的}{1}
-\contentsline {section}{\numberline {1.4}論文構成}{1}
-\contentsline {section}{\numberline {1.5}タイトル}{1}
-\contentsline {subsection}{\numberline {1.5.1}title}{1}
-\contentsline {section}{\numberline {1.6}著者}{2}
-\contentsline {subsection}{\numberline {1.6.1}author}{2}
-\contentsline {subsection}{\numberline {1.6.2}bachelar/master}{2}
-\contentsline {subsection}{\numberline {1.6.3}department}{2}
-\contentsline {subsection}{\numberline {1.6.4}studentid}{2}
-\contentsline {subsection}{\numberline {1.6.5}supervisor}{2}
-\contentsline {subsection}{\numberline {1.6.6}gyear}{2}
-\contentsline {section}{\numberline {1.7}提出日}{2}
-\contentsline {subsection}{\numberline {1.7.1}date}{2}
-\contentsline {chapter}{\numberline {第2章}既存の検索・複製手法}{3}
+\contentsline {section}{\numberline {1.3}目的}{2}
+\contentsline {section}{\numberline {1.4}論文構成}{2}
+\contentsline {chapter}{\numberline {第2章}既存の検索・複製配置手法}{3}
 \contentsline {section}{\numberline {2.1}検索手法}{3}
-\contentsline {section}{\numberline {2.2}複製手法}{3}
-\contentsline {chapter}{\numberline {第3章}関連研究}{4}
-\contentsline {section}{\numberline {3.1}提案手法}{4}
-\contentsline {section}{\numberline {3.2}問題点}{4}
-\contentsline {chapter}{\numberline {第4章}ネットワークモデル}{5}
-\contentsline {section}{\numberline {4.1}アドホックネットワーク}{5}
-\contentsline {section}{\numberline {4.2}ランダムジオメトリックグラフ}{5}
-\contentsline {chapter}{\numberline {第5章}カッコウ探索による複製配置}{6}
-\contentsline {section}{\numberline {5.1}カッコウ探索}{6}
-\contentsline {section}{\numberline {5.2}Levy walk}{6}
-\contentsline {section}{\numberline {5.3}ランダムジオメトリックグラフ上のLevy walk}{6}
-\contentsline {chapter}{\numberline {第6章}シミュレーション}{7}
-\contentsline {section}{\numberline {6.1}概要}{7}
-\contentsline {section}{\numberline {6.2}環境}{7}
-\contentsline {section}{\numberline {6.3}結果}{7}
-\contentsline {section}{\numberline {6.4}考察}{7}
-\contentsline {chapter}{\numberline {第7章}まとめと今後の課題}{8}
-\contentsline {chapter}{\numberline {第8章}図，表，数式}{9}
-\contentsline {section}{\numberline {8.1}図}{9}
-\contentsline {section}{\numberline {8.2}表}{9}
-\contentsline {section}{\numberline {8.3}数式}{9}
-\contentsline {chapter}{\numberline {第9章}参考文献}{11}
-\contentsline {chapter}{\numberline {付 録A }サンプルプログラム}{13}
+\contentsline {section}{\numberline {2.2}複製配置手法}{3}
+\contentsline {section}{\numberline {2.3}問題点}{4}
+\contentsline {chapter}{\numberline {第3章}関連研究}{5}
+\contentsline {section}{\numberline {3.1}提案手法}{5}
+\contentsline {subsection}{\numberline {3.1.1}概要}{5}
+\contentsline {subsection}{\numberline {3.1.2}スーパーノード型P2Pネットワーク}{5}
+\contentsline {subsection}{\numberline {3.1.3}需要予測}{5}
+\contentsline {subsection}{\numberline {3.1.4}複製配置}{6}
+\contentsline {section}{\numberline {3.2}問題点}{7}
+\contentsline {chapter}{\numberline {第4章}ネットワークモデル}{8}
+\contentsline {section}{\numberline {4.1}アドホックネットワーク}{8}
+\contentsline {section}{\numberline {4.2}Random Geometric Graph}{8}
+\contentsline {chapter}{\numberline {第5章}提案手法}{9}
+\contentsline {section}{\numberline {5.1}概要}{9}
+\contentsline {section}{\numberline {5.2}データの需要}{9}
+\contentsline {subsection}{\numberline {5.2.1}データ要求}{9}
+\contentsline {subsection}{\numberline {5.2.2}低需要データ}{9}
+\contentsline {section}{\numberline {5.3}複製配置先，複製個数の決定}{10}
+\contentsline {section}{\numberline {5.4}カッコウ探索による複製配置}{10}
+\contentsline {subsection}{\numberline {5.4.1}カッコウ探索}{11}
+\contentsline {subsection}{\numberline {5.4.2}Levy walk}{11}
+\contentsline {subsection}{\numberline {5.4.3}Random Geometric Graph上のLevy walk}{12}
+\contentsline {subsection}{\numberline {5.4.4}カッコウ探索のアルゴリズム}{12}
+\contentsline {subsection}{\numberline {5.4.5}提案手法でのカッコウ探索のアルゴリズム}{13}
+\contentsline {chapter}{\numberline {第6章}シミュレーション}{15}
+\contentsline {section}{\numberline {6.1}概要}{15}
+\contentsline {section}{\numberline {6.2}シナリオ}{15}
+\contentsline {section}{\numberline {6.3}環境}{16}
+\contentsline {section}{\numberline {6.4}結果と考察}{16}
+\contentsline {subsection}{\numberline {6.4.1}サイクル毎のデータ生存数}{16}
+\contentsline {subsection}{\numberline {6.4.2}サイクル毎の全ノードのストレージ占有率の平均}{21}
+\contentsline {subsection}{\numberline {6.4.3}カッコウ探索とFloodingの比較}{26}
+\contentsline {chapter}{\numberline {第7章}まとめと今後の課題}{27}

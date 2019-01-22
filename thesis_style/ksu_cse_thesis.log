@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.7.1-161114-2.6 (utf8.euc) (TeX Live 2017) (preloaded format=platex 2017.9.29)  5 JAN 2019 02:43
+This is e-pTeX, Version 3.14159265-p3.7.1-161114-2.6 (utf8.euc) (TeX Live 2017) (preloaded format=platex 2017.9.29)  14 JAN 2019 16:22
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -17,16 +17,14 @@ Type  H <return>  for immediate help.
                                                   
 l.9 \usepackage{
                 ifthen}
-? H
-\usepackage may only appear in the document preamble, i.e.,
-between \documentclass and \begin{document}.
 ? 
 ./ksu_cse_thesis.sty:9: Emergency stop.
  ...                                              
                                                   
 l.9 \usepackage{
                 ifthen}
-End of file on the terminal!
+\usepackage may only appear in the document preamble, i.e.,
+between \documentclass and \begin{document}.
 
  
 Here is how much of TeX's memory you used:

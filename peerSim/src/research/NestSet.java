@@ -7,7 +7,7 @@ import java.util.*;
 
 public class NestSet implements Control{
 	private static final String PAR_SET_SIZE = "nestSize";
-	private static int SET_SIZE;
+	public static int SET_SIZE;
 	private static final String PAR_ABA_RATE = "abandonRate";
 	private static double ABA_RATE;
 
@@ -62,7 +62,6 @@ public class NestSet implements Control{
 		// System.out.println("After UPDATE");
 		// System.out.println("Target Node: " + nest.get(r2).getNode().getIndex() + " value " + nest.get(r2).getValue() + " (" + nest.get(r2).egg[0] + ", " + nest.get(r2).egg[1] + ")");
 
-
 		int i = 0;
 		int id = 0;
 		int j = (int) Math.floor((double)SET_SIZE * ABA_RATE);
@@ -77,11 +76,11 @@ public class NestSet implements Control{
 			// System.out.printf("\t%d: ",i);
 			// System.out.println("Node: " + nest.get(i).getNode().getIndex() + " value " + nest.get(i).getValue() + " (" + nest.get(i).egg[0] + ", " + nest.get(i).egg[1] + ")");
 			nest.get(i).abandon(nodeID);
+			// nest.get(i).abandon();
 			nodeList.set(i, nodeID);
 			id++;
 			i++;
 		}
-
 		sort(0, SET_SIZE-1);
 	}
 

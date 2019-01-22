@@ -170,7 +170,7 @@ public class ModifyNetwork implements Control{
 
 		int num = (int) Math.round(p*100);
 		if(num > 0)
-			num = random.nextInt(num+1);
+			num = random.nextInt(num);
 		for(int i=0; i<num; i++)
 			hit.add(rnd.get(i));
 

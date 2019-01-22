@@ -3,6 +3,7 @@
 #Configファイル内変数の設定
 K 3
 cycleNum 500
+Capacity 10.0
 
 ############## Network ###############
 
@@ -25,7 +26,7 @@ protocol.crd.d 200.0
 #ノードの情報(バッテリー残量、ストレージ残量)
 protocol.prm NodeParameter
 protocol.prm.baseBattery 50.0
-protocol.prm.maxCapacity 10
+protocol.prm.maxCapacity Capacity
 
 #各手法用パラメータ。値はサイクル毎にNodeParameterからコピー
 protocol.npo NPOwner
@@ -85,7 +86,7 @@ init.data.cycles cycleNum
 
 #ランダムジオメトリックグラフを構成
 init.rgg RandomGeometricGraph
-init.rgg.r 5.0
+init.rgg.r 30.0
 
 #Linkクラスを元に無向グラフを形成
 init.wrgg WireRGG
@@ -94,7 +95,7 @@ init.wrgg.k K
 
 #データの検索手法のFlooading
 init.fld Flooding
-init.fld.ttl 50
+init.fld.ttl 1000
 
 #複製配置先を決定するためのCuckoo Search
 init.cs CuckooSearch
@@ -103,16 +104,18 @@ init.cs.generation 100
 #Cuckoo Searchで扱う巣の集合
 init.ns NestSet
 init.ns.nestSize 10
-init.ns.abandonRate 0.25
+init.ns.abandonRate 0.2
 
 #Cuckoo Searchで扱う巣
 init.nest Nest
 init.nest.protocol0 prm
 init.nest.delta 45.0
+init.nest.capacity Capacity
 
 #関連研究での複製配置先の決定に用いるFlooading
 init.rr RelatedResearch
-init.rr.ttl 100
+init.rr.ttl 200
+init.rr.capacity Capacity
 
 #init.stat printStatus
 
@@ -125,7 +128,7 @@ order.init sr iniNet data rgg wrgg fld cs ns nest rr
 #control.tst Test
 #control.tst.protocol prm
 
-#ノード・リンクの追加・削除
+#ノード・リンクの追加・削除。バッテリーの減少
 control.mn ModifyNetwork
 control.mn.capacity 10
 
@@ -139,16 +142,17 @@ control.mn.capacity 10
 #各ノードの各データに対するダウンロード要求
 control.ir IncreaseReplications
 
-#各ノードの保有データのTTLを減少
-control.dr DecreaseReplications
-
 #各ノードで保有されているデータの総数を表示
 control.gr GetReplications
 control.gr.alpha 0.6
+control.gr.capacity Capacity
+
+#各ノードの保有データのTTLを減少
+control.dr DecreaseReplications
 
 #データの需要のサイクルを進める
 control.data Data
 control.data.cycle cycleNum 
 
-order.control mn ir dr gr data
+order.control mn ir gr dr data
 #order.control mn tst data

@@ -9,6 +9,8 @@ import java.util.*;
 public class Nest implements Control{
 	private static final String PAR_DELTA = "delta";
 	private static double delta;
+	private static final String PAR_CAPACITY = "capacity";
+	private static double capacity;
 
 	private final double GAMMA = 1.329340388179137020474;
 	private final double GAMMA2 = 0.9064024770554770779827;
@@ -41,6 +43,7 @@ public class Nest implements Control{
 
 	public Nest(String prefix){
 		delta = Configuration.getDouble(prefix + "." + PAR_DELTA);
+		capacity = Configuration.getDouble(prefix + "." + PAR_CAPACITY);
 	}
 
 
@@ -195,10 +198,28 @@ public class Nest implements Control{
 			egg = newEgg;
 			newEgg = tmp;
 			value = newValue;
+			NestSet ns = new NestSet();
+			ns.sort(0, ns.SET_SIZE-1);
 		}
 
 		addID = this.node.getIndex();
 		return true;
+	}
+
+	public void abandon(){
+		Node newNode = null;
+
+		while(true){
+			newNode = levyWalk(node);
+			if(!Objects.equals(newNode, null))
+				break;
+		}
+		NPCuckoo parameter = SharedResource.getNPCuckoo(newNode);
+
+		this.node = newNode;
+		egg[0] = parameter.getBattery();
+		egg[1] = parameter.getCapacity();
+		value = evaluate(egg);
 	}
 
 	public void abandon(int nodeID){
@@ -213,7 +234,7 @@ public class Nest implements Control{
 
 	public double evaluate(double[] egg){
 		double battery = egg[0]/100.0;
-		double capacity = egg[1]/10.0;
+		double capacity = egg[1]/ this.capacity;
 
 		double value = 1.0 * battery + 0.5 * capacity;
 		if(egg[1]<1.0)

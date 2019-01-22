@@ -43,7 +43,7 @@ public class StorageRelate implements Storage{
 		if(!dataList.contains(data) && (newCapacity>=0)){
 			dataList.add(data);
 
-			ttl = SharedResource.getTTL(50);
+			ttl = 50 + random.nextInt(10);
 			dataTTL.put(data, ttl);
 
 			dataCounter = SharedResource.getRelateCounter();

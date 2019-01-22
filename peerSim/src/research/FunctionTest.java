@@ -151,8 +151,12 @@ public class FunctionTest{
 		double sum = 0.0;
 		int maxNode = 2000;
 		double increase = 0.0;
-		for(int cycle=0; cycle<10; cycle++){
+		for(int cycle=0; cycle<500; cycle++){
 
+			double lambda = 2.0;
+			double c = (double) cycle;
+
+			System.out.println( Math.exp(-1*lambda)*Math.pow(lambda, c)/loop(c) );
 			tr = 0;
 			makeLambda();
 
@@ -214,38 +218,41 @@ public class FunctionTest{
 			// System.out.println(d);
 			// System.out.println(Math.cos(PI*2.0*i));
 		}
-		for(int i=0; i<10; i++){
-			double x=random.nextDouble()*200.0;
-			double x2=random.nextDouble()*200.0;
-			double y=random.nextDouble()*200.0;
-			double y2=random.nextDouble()*200.0;
-			double threshold = 45.0;
-			double radian = Math.atan2(y2-y, x2-x);
-			double o = random.nextDouble()*359.9999999999d;
-			double degree = radian*180.0/PI;
-			if(y2-y<0.0)
-				degree = 360.0 - Math.abs(degree);
+		// for(int i=0; i<10; i++){
+		// 	double x=random.nextDouble()*200.0;
+		// 	double x2=random.nextDouble()*200.0;
+		// 	double y=random.nextDouble()*200.0;
+		// 	double y2=random.nextDouble()*200.0;
+		// 	double threshold = 45.0;
+		// 	double radian = Math.atan2(y2-y, x2-x);
+		// 	double o = random.nextDouble()*359.9999999999d;
+		// 	double degree = radian*180.0/PI;
+		// 	if(y2-y<0.0)
+		// 		degree = 360.0 - Math.abs(degree);
 
-			double up = degree + threshold;
-			double bottom = degree - threshold;
-			System.out.println(degree + ", "+up + ", " + bottom);
-			System.out.println("o: " + o);
-			if(bottom<= o && o<=up)
-				System.out.println("true");
-			if(bottom < 0.0){
-				bottom = 360.0 + bottom;
-				System.out.println("bottom: " + bottom);
-				if((bottom<=o && o<=360.0) || (0.0<o && o<=up))
-					System.out.println("true");
-			}
-			if(up > 360.0){
-				up = up - 360.0;
-				System.out.println("up: " + up);
-				if((bottom<=o && o<=360.0) || (0.0<=o && o<=up))
-					System.out.println("true");
-			}
-		}
+		// 	double up = degree + threshold;
+		// 	double bottom = degree - threshold;
+		// 	System.out.println(degree + ", "+up + ", " + bottom);
+		// 	System.out.println("o: " + o);
+		// 	if(bottom<= o && o<=up)
+		// 		System.out.println("true");
+		// 	if(bottom < 0.0){
+		// 		bottom = 360.0 + bottom;
+		// 		System.out.println("bottom: " + bottom);
+		// 		if((bottom<=o && o<=360.0) || (0.0<o && o<=up))
+		// 			System.out.println("true");
+		// 	}
+		// 	if(up > 360.0){
+		// 		up = up - 360.0;
+		// 		System.out.println("up: " + up);
+		// 		if((bottom<=o && o<=360.0) || (0.0<=o && o<=up))
+		// 			System.out.println("true");
+		// 	}
+		// }
 
+		double a = 200.0*200.0;
+		double d = 2000.0/a;
+		System.out.println( Math.sqrt((1.0-0.3)*Math.log(a)/d*Math.PI) );
 
 
 		// System.out.println(Gamma.logGamma(1.5));

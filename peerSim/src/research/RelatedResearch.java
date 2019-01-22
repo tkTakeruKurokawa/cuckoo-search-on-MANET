@@ -7,6 +7,8 @@ import java.util.*;
 public class RelatedResearch implements Control{
 	private static final String PAR_TTL = "ttl";
 	private static int ttl;
+	private static final String PAR_CAPACITY = "capacity";
+	private static double maxCapacity;
 
 	private static ArrayList<Node> checkedList = new ArrayList<Node>();
 	private static HashMap<Node, Integer> next = new HashMap<Node, Integer>(); 
@@ -18,6 +20,7 @@ public class RelatedResearch implements Control{
 
 	public RelatedResearch(String prefix){
 		ttl = Configuration.getInt(prefix + "." + PAR_TTL);
+		maxCapacity = Configuration.getDouble(prefix + "." + PAR_TTL);
 	}
 
 
@@ -32,7 +35,7 @@ public class RelatedResearch implements Control{
 
 		if(!storage.contains(target) && newCapacity>=0){
 			double b = battery/100.0;
-			double c = ((double)capacity)/10.0;
+			double c = ((double)capacity)/maxCapacity;
 			double value = 1.0 * b + 0.5 * c;
 			if(value>bestValue){
 				bestNode = node;
