@@ -12,6 +12,8 @@ public class StorageOwner implements Storage{
 	private ArrayList<Data> dataList = new ArrayList<Data>();
 	private HashMap<Data, Integer> dataTTL = new HashMap<Data, Integer>();
 	private static ArrayList<Integer> dataCounter;
+	private static Deque<Data> removeList = new ArrayDeque<Data>();
+
 	private static Random random = new Random();
 	private int ttl;
 
@@ -48,16 +50,15 @@ public class StorageOwner implements Storage{
 				ttl = SharedResource.getTTL(data.getPeakCycle());
 			dataTTL.put(data, ttl);
 
+
 			dataCounter = SharedResource.getOwnerCounter();
 			dataCounter.set(data.getID(), dataCounter.get(data.getID())+1);
 			SharedResource.setOwnerCounter(dataCounter);
 
 			parameter.setCapacity(newCapacity);
-			// System.out.println("Node " + node.getIndex() + " capacity: " + newCapacity);
 
 			return true;
 		}
-		// System.out.println("*****  fail to setData. Re Roll   *****");
 		return false;
 	}
 
@@ -84,27 +85,24 @@ public class StorageOwner implements Storage{
 		SharedResource.setOwnerCounter(dataCounter);
 	}
 
-	public void removeData(Node node, Data data){
-		dataCounter = SharedResource.getOwnerCounter();
+	public void removeData(Node node){
+		while(removeList.size() > 0){
+			Data data = removeList.removeFirst();
 
-		NPOwner parameter = (NPOwner) node.getProtocol(pid_prm);
-		int capacity = parameter.getCapacity();
-		int occupancy = data.getSize();
-		int newCapacity = capacity+occupancy;	
+			dataCounter = SharedResource.getOwnerCounter();
 
-		Iterator<Data> itr = dataList.iterator();
-		while(itr.hasNext()){
-			Data currentData = itr.next();
-			if(Objects.equals(currentData, data)) {
-				dataCounter.set(data.getID(), dataCounter.get(data.getID())-1);
-				dataTTL.remove(currentData);
-				itr.remove();
-			}
+			NPOwner parameter = (NPOwner) node.getProtocol(pid_prm);
+			int capacity = parameter.getCapacity();
+			int occupancy = data.getSize();
+			int newCapacity = capacity+occupancy;
+
+			dataCounter.set(data.getID(), dataCounter.get(data.getID())-1);
+			dataTTL.remove(data);
+			dataList.remove(data);
+
+			SharedResource.setOwnerCounter(dataCounter);
+			parameter.setCapacity(newCapacity);
 		}
-		SharedResource.setOwnerCounter(dataCounter);
-		parameter.setCapacity(newCapacity);
-		// System.out.println("Node " + node.getIndex() + " capacity: " + newCapacity);
-		
 	}
 
 	public void reduceTTL(Node node){
@@ -113,9 +111,15 @@ public class StorageOwner implements Storage{
 			Data data = dataList.get(i);
 			ttl = dataTTL.get(data);
 			// System.out.println("   Data :" + data.getID() + " TTL :" + ttl);
-			if(ttl > 0) dataTTL.put(data, ttl-1); 
-			if(ttl == 0) removeData(node, data);
+			if(ttl > 0){
+				dataTTL.put(data, ttl-1); 
+			}
+			if(ttl == 0){
+				removeList.addFirst(data);	
+			}
 		}
+
+		removeData(node);
 	}
 
 

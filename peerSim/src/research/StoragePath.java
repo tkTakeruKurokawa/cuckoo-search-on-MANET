@@ -11,6 +11,8 @@ public class StoragePath implements Storage{
 
 	private ArrayList<Data> dataList = new ArrayList<Data>();
 	private HashMap<Data, Integer> dataTTL = new HashMap<Data, Integer>();
+	private static Deque<Data> removeList = new ArrayDeque<Data>();
+
 	private static ArrayList<Integer> dataCounter;
 	private static Random random = new Random();
 	private int ttl;
@@ -83,27 +85,24 @@ public class StoragePath implements Storage{
 		SharedResource.setPathCounter(dataCounter);
 	}
 
-	public void removeData(Node node, Data data){
-		dataCounter = SharedResource.getPathCounter();
+	public void removeData(Node node){
+		while(removeList.size() > 0){
+			Data data = removeList.removeFirst();
 
-		NPPath parameter = (NPPath) node.getProtocol(pid_prm);
-		int capacity = parameter.getCapacity();
-		int occupancy = data.getSize();
-		int newCapacity = capacity+occupancy;	
+			dataCounter = SharedResource.getPathCounter();
 
-		Iterator<Data> itr = dataList.iterator();
-		while(itr.hasNext()){
-			Data currentData = itr.next();
-			if(Objects.equals(currentData, data)) {
-				dataCounter.set(data.getID(), dataCounter.get(data.getID())-1);
-				dataTTL.remove(currentData);
-				itr.remove();
-			}
-		}
-		SharedResource.setPathCounter(dataCounter);
-		parameter.setCapacity(newCapacity);
-		// System.out.println("Node " + node.getIndex() + " capacity: " + newCapacity);
-		
+			NPPath parameter = (NPPath) node.getProtocol(pid_prm);
+			int capacity = parameter.getCapacity();
+			int occupancy = data.getSize();
+			int newCapacity = capacity+occupancy;
+
+			dataCounter.set(data.getID(), dataCounter.get(data.getID())-1);
+			dataTTL.remove(data);
+			dataList.remove(data);
+
+			SharedResource.setPathCounter(dataCounter);
+			parameter.setCapacity(newCapacity);
+		}		
 	}
 
 	public void reduceTTL(Node node){
@@ -112,9 +111,15 @@ public class StoragePath implements Storage{
 			Data data = dataList.get(i);
 			ttl = dataTTL.get(data);
 			// System.out.println("   Data :" + data.getID() + " TTL :" + ttl);
-			if(ttl > 0) dataTTL.put(data, ttl-1); 
-			if(ttl == 0) removeData(node, data);
+			if(ttl > 0){
+				dataTTL.put(data, ttl-1);	
+			} 
+			if(ttl == 0){
+				removeList.addFirst(data);
+			}
 		}
+
+		removeData(node);
 	}
 
 

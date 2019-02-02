@@ -19,7 +19,7 @@ public interface Storage extends Protocol{
 
 	public void clear();
 
-	public void removeData(Node node, Data data);
+	public void removeData(Node node);
 
 	public void reduceTTL(Node node);
 

@@ -15,11 +15,10 @@ public class StorageCuckoo implements Storage{
 	private HashMap<Data, Integer> replicaTTL = new HashMap<Data, Integer>();
 	private static ArrayList<Integer> dataCounter;
 	private static ArrayList<Integer> replicaCounter;
-	private static Queue<Data> removeList = new ArrayDeque<Data>();
+	private static Deque<Data> removeList = new ArrayDeque<Data>();
 
 	private static Random random = new Random();
 	private int ttl;
-	private boolean flag = false;
 
 
 	public StorageCuckoo(String prefix){
@@ -55,16 +54,17 @@ public class StorageCuckoo implements Storage{
 			replicaTTL.put(data, ttl);
 
 			dataCounter = SharedResource.getCuckooCounter();
-			replicaCounter = SharedResource.getReplicaCounter();
+			replicaCounter = SharedResource.getReplicaCounterC();
 			dataCounter.set(data.getID(), dataCounter.get(data.getID())+1);
 			replicaCounter.set(data.getID(), replicaCounter.get(data.getID())+1);
 			SharedResource.setCuckooCounter(dataCounter);
-			SharedResource.setReplicaCounter(replicaCounter);
+			SharedResource.setReplicaCounterC(replicaCounter);
 
 			parameter.setCapacity(newCapacity);
 
 			return true;
 		}
+
 		return false;
 	}
 
@@ -75,6 +75,7 @@ public class StorageCuckoo implements Storage{
 		int occupancy = data.getSize();
 		int newCapacity = capacity-occupancy;
 
+
 		if(!dataList.contains(data) && (newCapacity>=0)){
 			dataList.add(data);
 			// dataTTL.put(data, data.getPeakCycle());
@@ -84,16 +85,15 @@ public class StorageCuckoo implements Storage{
 				ttl = SharedResource.getTTL(data.getPeakCycle());
 			dataTTL.put(data, ttl);
 
+
 			dataCounter = SharedResource.getCuckooCounter();
 			dataCounter.set(data.getID(), dataCounter.get(data.getID())+1);
 			SharedResource.setCuckooCounter(dataCounter);
 
 			parameter.setCapacity(newCapacity);
-			// System.out.println("Node " + node.getIndex() + " capacity: " + newCapacity);
 
 			return true;
 		}
-		// System.out.println("*****  fail to setData. Re Roll   *****");
 		return false;
 	}
 
@@ -111,7 +111,7 @@ public class StorageCuckoo implements Storage{
 
 	public void clear(){
 		dataCounter = SharedResource.getCuckooCounter();
-		replicaCounter = SharedResource.getReplicaCounter();
+		replicaCounter = SharedResource.getReplicaCounterC();
 
 		for(Data data: dataList){
 			dataCounter.set(data.getID(), dataCounter.get(data.getID())-1);	
@@ -124,97 +124,13 @@ public class StorageCuckoo implements Storage{
 		replicaList.clear();
 
 		SharedResource.setCuckooCounter(dataCounter);
-		SharedResource.setReplicaCounter(replicaCounter);
+		SharedResource.setReplicaCounterC(replicaCounter);
 	}
 
-	public void removeData(Node node, Data data){
-		dataCounter = SharedResource.getCuckooCounter();
+	public void removeData(Node node){
+		while(removeList.size() > 0){
+			Data data = removeList.removeFirst();
 
-		NPCuckoo parameter = (NPCuckoo) node.getProtocol(pid_prm);
-		int capacity = parameter.getCapacity();
-		int occupancy = data.getSize();
-		int newCapacity = capacity+occupancy;	
-
-		Iterator<Data> itr = dataList.iterator();
-		while(itr.hasNext()){
-			Data currentData = itr.next();
-			if(Objects.equals(currentData, data)) {
-				dataCounter.set(data.getID(), dataCounter.get(data.getID())-1);
-				dataTTL.remove(currentData);
-				itr.remove();
-			}
-		}
-		SharedResource.setCuckooCounter(dataCounter);
-		parameter.setCapacity(newCapacity);
-
-		return;
-	}
-
-	public void removeReplica(Node node, Data data){
-		replicaCounter = SharedResource.getReplicaCounter();
-
-		Iterator<Data> itr = replicaList.iterator();
-		while(itr.hasNext()){
-			Data currentData = itr.next();
-			if(Objects.equals(currentData, data)) {
-				replicaCounter.set(data.getID(), replicaCounter.get(data.getID())-1);
-				replicaTTL.remove(currentData);
-				itr.remove();
-			}
-		}
-		SharedResource.setReplicaCounter(replicaCounter);
-
-		return;
-	}
-
-	public void reduceReplicaTTL(Node node){
-		for(int i=0; i<replicaList.size(); i++){
-			Data replica = replicaList.get(i);
-			ttl = replicaTTL.get(replica);
-
-			if(ttl > 0){
-				replicaTTL.put(replica, ttl-1); 
-			}
-			if(ttl == 0){
-				// removeReplica(node, replica);
-				removeList.add(replica);
-			}
-		}
-
-		while(true){
-			Data data = removeList.poll();
-			if(data == null){
-				break;
-			}
-			replicaCounter = SharedResource.getReplicaCounter();
-
-			replicaCounter.set(data.getID(), replicaCounter.get(data.getID())-1);
-			replicaTTL.remove(data);
-			replicaList.remove(data);
-
-			SharedResource.setReplicaCounter(replicaCounter);
-		}
-	}
-
-	public void reduceTTL(Node node){
-		for(int i=0; i<dataList.size(); i++){
-			Data data = dataList.get(i);
-			ttl = dataTTL.get(data);
-
-			if(ttl > 0){
-				dataTTL.put(data, ttl-1); 	
-			} 
-			if(ttl == 0){
-				// removeData(node, data);
-				removeList.add(data);
-			}
-		}
-
-		while(true){
-			Data data = removeList.poll();
-			if(data == null){
-				break;
-			}
 			dataCounter = SharedResource.getCuckooCounter();
 
 			NPCuckoo parameter = (NPCuckoo) node.getProtocol(pid_prm);
@@ -229,6 +145,54 @@ public class StorageCuckoo implements Storage{
 			SharedResource.setCuckooCounter(dataCounter);
 			parameter.setCapacity(newCapacity);
 		}
+	}
+
+	public void removeReplica(){
+		while(removeList.size() > 0){
+			Data data = removeList.removeFirst();
+
+			replicaCounter = SharedResource.getReplicaCounterC();
+
+			replicaCounter.set(data.getID(), replicaCounter.get(data.getID())-1);
+			replicaTTL.remove(data);
+			replicaList.remove(data);
+
+			SharedResource.setReplicaCounterC(replicaCounter);
+		}
+	}
+
+	public void reduceReplicaTTL(Node node){
+		for(int i=0; i<replicaList.size(); i++){
+			Data replica = replicaList.get(i);
+			ttl = replicaTTL.get(replica);
+
+			if(ttl > 0){
+				replicaTTL.put(replica, ttl-1); 
+			}
+			if(ttl == 0){
+				// removeReplica(node, replica);
+				removeList.addFirst(replica);
+			}
+		}
+
+		removeReplica();
+	}
+
+	public void reduceTTL(Node node){
+		for(int i=0; i<dataList.size(); i++){
+			Data data = dataList.get(i);
+			ttl = dataTTL.get(data);
+
+			if(ttl > 0){
+				dataTTL.put(data, ttl-1); 	
+			} 
+			if(ttl == 0){
+				// removeData(node, data);
+				removeList.addFirst(data);
+			}
+		}
+
+		removeData(node);
 	}
 
 

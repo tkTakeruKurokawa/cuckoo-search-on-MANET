@@ -64,10 +64,27 @@ set yrange [0:600]
 set ylabel 'Num of Replica'
 plot "owner_counter.csv" every ::1 using 1:5 with lines title "Owner" lc rgb "blue",\
 	"path_counter.csv" every ::1 using 1:5 with lines title "Path" lc rgb "magenta",\
-	"relate_counter.csv" every ::1 using 1:5 with lines title "Relate" lc rgb "dark-green",\
+	"relate_counter.csv" every ::1 using 1:5 with lines title "Kageyama" lc rgb "dark-green",\
 	"cuckoo_counter.csv" every ::1 using 1:5 with lines title "Cuckoo" lc rgb "red",\
 
 
 set output 'counter_comp.eps'
+set terminal postscript eps color
+replot
+
+set output 'cuckoo_counter.eps'
+set terminal postscript eps color
+replot
+
+set xrange [200:350]
+set xlabel 'Num of cycle'
+set yrange [0:400]
+set ylabel 'Num of Replica'
+plot "owner_counter.csv" every ::1 using 1:5 with lines title "Owner" lc rgb "blue",\
+	"relate_counter.csv" every ::1 using 1:5 with lines title "Kageyama" lc rgb "dark-green",\
+	"cuckoo_counter.csv" every ::1 using 1:5 with lines title "Cuckoo" lc rgb "red",\
+
+
+set output 'counter_expansion.eps'
 set terminal postscript eps color
 replot

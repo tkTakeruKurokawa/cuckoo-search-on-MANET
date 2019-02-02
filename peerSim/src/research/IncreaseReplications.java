@@ -6,15 +6,19 @@ import java.util.*;
 
 public class IncreaseReplications implements Control{
 	private static Random random = new Random();
-	private static ArrayList<Data> tmp = new ArrayList<Data>();
 	private static ArrayList<Boolean> upLoaded;
 	private static ArrayList<Data> requestList;
 	private static Node node;
+	private static Data data;
 
 	private static int successFloodO=0;
 	private static int successFloodP=0;
 	private static int successFloodR=0;
 	private static int successFloodC=0;
+	private static int countO=0;
+	private static int countP=0;
+	private static int countR=0;
+	private static int countC=0;
 	private static int failFloodO=0;
 	private static int failFloodP=0;
 	private static int failFloodR=0;
@@ -31,11 +35,12 @@ public class IncreaseReplications implements Control{
 	public static int replicaR=0;
 
 
+
 	public IncreaseReplications(String prefix){
 	}
 
 
-	private static boolean check(Storage storage, Parameter parameter, Data data){
+	private static boolean check(Parameter parameter, Storage storage){
 		int capacity = parameter.getCapacity();
 		int occupancy = data.getSize();
 		int newCapacity = capacity-occupancy;
@@ -47,7 +52,46 @@ public class IncreaseReplications implements Control{
 		return false;
 	}
 
-	private static void pathReplication(Data data){
+	private static void firstUL(){
+		while(true){
+			Parameter parOwner = SharedResource.getNPOwner(node);
+			Storage strOwner = SharedResource.getSOwner(node);
+			Parameter parRelate = SharedResource.getNPRelate(node);
+			Storage strRelate = SharedResource.getSRelate(node);
+			Parameter parCuckoo = SharedResource.getNPCuckoo(node);
+			Storage strCuckoo = SharedResource.getSCuckoo(node);
+
+			boolean sucOwner = check(parOwner, strOwner);
+			boolean sucRelate = check(parRelate, strRelate);
+			boolean sucCuckoo = check(parCuckoo, strCuckoo);
+
+			if(sucOwner == true && sucRelate == true && sucCuckoo == true){
+				break;
+			}
+
+			node = Network.get(random.nextInt(Network.size()));
+		}
+	}
+
+	private static void ownerReplication(Parameter parameter, Storage storage, int id){
+		if(!upLoaded.get(data.getID())){
+			firstUL();
+			storage.setData(node, data);
+		}else{
+			if(check(parameter, storage)){
+				boolean hit = Flooding.search(node, data, id);
+				if(hit){
+					if(storage.setData(node, data)){
+					}else{
+					}
+				}else{
+				// System.out.println("FALSE FLOODING. ID: " + id);
+				}
+			}
+		}
+	}
+
+	private static void pathReplication(){
 		for(Map.Entry<Integer, Node> path : Flooding.getPath().entrySet()){
 			StoragePath sPath = SharedResource.getSPath(path.getValue());
 			if(sPath.setData(path.getValue(), data)){
@@ -55,201 +99,144 @@ public class IncreaseReplications implements Control{
 			}else{
 				failSetP++;
 			}
-			// System.out.println("TTL " + path.getKey() + ", Node " + path.getValue().getIndex());
 		}
 	}
 
 
 	public static void owner(){
-		StorageOwner sOwner = SharedResource.getSOwner(node);
+		Parameter parameter = SharedResource.getNPOwner(node);
+		Storage storage = SharedResource.getSOwner(node);
 
-		for(int dataID=0; dataID<requestList.size(); dataID++){
-			Data data = requestList.get(dataID);
-			if(!upLoaded.get(data.getID())){
-				while(true){
-					Parameter parameter = SharedResource.getNPOwner(node);
-					Storage storage = SharedResource.getSOwner(node);
+		ownerReplication(parameter, storage, 0);
 
-					boolean success = check(storage, parameter, data);
-					if(success){
-						break;
-					}
+		// if(!upLoaded.get(data.getID())){
+		// 	while(true){
+		// 		parameter = SharedResource.getNPOwner(node);
+		// 		storage = SharedResource.getSOwner(node);
 
-					node = Network.get(random.nextInt(Network.size()));
-				}
-				sOwner.setData(node, data);
-			}else{
-				if(!sOwner.contains(data)){
-					boolean hit = Flooding.search(node, data, 0);
-					if(hit){
-						successFloodO++;
-						if(sOwner.setData(node, data)){
-							successSetO++;
-						}else{
-							failSetO++;
-						}
-					}else{
-						failFloodO++;
-					}
-				}
-			}
-		}
+		// 		boolean success = check(parameter, storage);
+		// 		if(success){
+		// 			break;
+		// 		}
+
+		// 		node = Network.get(random.nextInt(Network.size()));
+		// 	}
+		// 	storage.setData(node, data);
+		// }else{
+		// 	ownerReplication(parameter, storage, 0);
+		// }
 	}
 
 	public static void path(){
-		StoragePath sPath = SharedResource.getSPath(node);
+		Parameter parameter = SharedResource.getNPPath(node);
+		Storage storage = SharedResource.getSPath(node);
 
-		for(int dataID=0; dataID<requestList.size(); dataID++){
-			Data data = requestList.get(dataID);
+		if(!upLoaded.get(data.getID())){
+			while(true){
+				parameter = SharedResource.getNPPath(node);
+				storage = SharedResource.getSPath(node);
 
-			if(!upLoaded.get(data.getID())){
-				while(true){
-					Parameter parameter = SharedResource.getNPPath(node);
-					Storage storage = SharedResource.getSPath(node);
-
-					boolean success = check(storage, parameter, data);
-					if(success){
-						break;
-					}
-
-					node = Network.get(random.nextInt(Network.size()));
+				boolean success = check(parameter, storage);
+				if(success){
+					break;
 				}
-				sPath.setData(node, data);
-			}else{
-				if(!sPath.contains(data)){
-					boolean hit = Flooding.search(node, data, 1);
-					if(hit){
-						successFloodP++;
-						pathReplication(data);
-					}else{
-						failFloodP++;
-					}
+
+				node = Network.get(random.nextInt(Network.size()));
+			}
+
+			storage.setData(node, data);
+		}else{
+			if(check(parameter, storage)){
+				boolean hit = Flooding.search(node, data, 1);
+				if(hit){
+					successFloodP++;
+					pathReplication();
+				}else{
+					failFloodP++;
 				}
 			}
 		}
 	}
 
 	public static void relate(){
-		StorageRelate sRelate = SharedResource.getSRelate(node);
+		Parameter parameter = SharedResource.getNPRelate(node);
+		Storage storage = SharedResource.getSRelate(node);
 
-		for(int dataID=0; dataID<requestList.size(); dataID++){
-			Data data = requestList.get(dataID);
-			if(!upLoaded.get(data.getID())){
-				while(true){
-					Parameter parameter = SharedResource.getNPRelate(node);
-					Storage storage = SharedResource.getSRelate(node);
+		ownerReplication(parameter, storage, 2);
 
-					boolean success = check(storage, parameter, data);
-					if(success){
-						break;
-					}
+		// if(!upLoaded.get(data.getID())){
+		// 	while(true){
+		// 		parameter = SharedResource.getNPRelate(node);
+		// 		storage = SharedResource.getSRelate(node);
 
-					node = Network.get(random.nextInt(Network.size()));
-				}
-				sRelate.setData(node, data);
-			}else{
-				if(!sRelate.contains(data)){
-					boolean hit = Flooding.search(node, data, 2);
-					if(hit){
-						successFloodR++;
-						if(sRelate.setData(node, data)){
-							successSetR++;
-						}else{
-							failSetR++;
-						}
-					}else{
-						failFloodR++;
-					}
-				}
-			}
-		}
+		// 		boolean success = check(parameter, storage);
+		// 		if(success){
+		// 			break;
+		// 		}
+
+		// 		node = Network.get(random.nextInt(Network.size()));
+		// 	}
+		// 	storage.setData(node, data);
+		// }else{
+		// 	ownerReplication(parameter, storage, 2);
+		// }
 	}
 
 	public static void cuckoo(){
-		StorageCuckoo sCuckoo = SharedResource.getSCuckoo(node);
+		Parameter parameter = SharedResource.getNPCuckoo(node);
+		Storage storage = SharedResource.getSCuckoo(node);
 
-		for(int dataID=0; dataID<requestList.size(); dataID++){
-			Data data = requestList.get(dataID);
-			if(!upLoaded.get(data.getID())){
-				while(true){
-					Parameter parameter = SharedResource.getNPCuckoo(node);
-					Storage storage = SharedResource.getSCuckoo(node);
+		ownerReplication(parameter, storage, 3);
 
-					boolean success = check(storage, parameter, data);
-					if(success){
-						break;
-					}
+		// if(!upLoaded.get(data.getID())){
+		// 	while(true){
+		// 		parameter = SharedResource.getNPCuckoo(node);
+		// 		storage = SharedResource.getSCuckoo(node);
 
-					node = Network.get(random.nextInt(Network.size()));
-				}
-				sCuckoo.setData(node, data);
-			}else{
-				if(!sCuckoo.contains(data)){
-					boolean hit = Flooding.search(node, data, 3);
-					if(hit){
-						successFloodC++;
-						if(sCuckoo.setData(node, data)){
-							successSetC++;
-						}else{
-							failSetC++;
-						}
-					}else{
-						failFloodC++;
-					}
-				}
-			}
-		}
+		// 		boolean success = check(parameter, storage);
+		// 		if(success){
+		// 			break;
+		// 		}
+
+		// 		node = Network.get(random.nextInt(Network.size()));
+		// 	}
+		// 	storage.setData(node, data);
+		// }else{
+		// 	ownerReplication(parameter, storage, 3);
+		// }
 	}
 
 	public boolean execute(){
-		// countC = 0;
-		// countR = 0;
-		tmp.clear();
 		upLoaded = SharedResource.getUpLoaded();
 		ArrayList<Data> cyclesRequestList = SharedResource.getCyclesRequestList();
 
 		for(int nodeID=0; nodeID<Network.size(); nodeID++){
+			SharedResource.nextRand();
+
 			node = Network.get(nodeID);
 
 			RequestProbability request = SharedResource.getRequestProbability(node);
 			requestList = request.dataRequests();
 
-			owner();
-			path();
-			relate();
-			cuckoo();
-
-			SharedResource.nextRand();
-
 			for(int dataID=0; dataID<requestList.size(); dataID++){
-				Data data = requestList.get(dataID);
+				data = requestList.get(dataID);
+
 				if(!cyclesRequestList.contains(data)){
 					cyclesRequestList.set(data.getID(), data);
 				}
 
-				if(!upLoaded.get(data.getID())){
-					tmp.add(data);
-				}
+				owner();
+				path();
+				relate();
+				cuckoo();
 			}
-
-			// 		sOwner.setData(node, data);
-			// 		sPath.setData(node, data);
-			// 		sRelate.setData(node, data);
-			// 		sCuckoo.setData(node, data);
-			// 	}
-			// 	else{
-			// 		if(!storage.contains(data)){
-			// 			boolean hit = Flooding.search(node, data);
-			// 			if(hit){
-			// 				storage.setData(node, data);
-			// 			}
-			// 		}
-			// 	}
 		}
 
-		for(int i=0; i<tmp.size(); i++){
-			upLoaded.set(tmp.get(i).getID(), true);
+		for(int i=0; i<Data.getNowVariety(); i++){
+			if(cyclesRequestList.get(i) != null)
+				upLoaded.set(i, true);
 		}
+
 
 		// System.out.println("Owner Num: Success Flooding " + successFloodO);
 		// System.out.println("Owner Num: Fail Flooding " + failFloodO);
@@ -278,6 +265,11 @@ public class IncreaseReplications implements Control{
 
 		// System.out.println("Cuckoo Num: setData to seting Replica Node " + replicaC);
 		// System.out.println();
+
+		// System.out.println("Owner Count: " + countO);
+		// System.out.println("Path Count: " + countP);
+		// System.out.println("Relate Count: " + countR);
+		// System.out.println("Cuckoo Count: " + countC);
 
 		SharedResource.setUpLoaded(upLoaded);
 		SharedResource.setCyclesRequestList(cyclesRequestList);

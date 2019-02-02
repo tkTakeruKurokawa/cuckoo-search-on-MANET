@@ -24,6 +24,7 @@ public class DecreaseReplications implements Control{
 
 	public static void relate(){
 		StorageRelate sRelate = SharedResource.getSRelate(node);
+		sRelate.reduceReplicaTTL(node);
 		sRelate.reduceTTL(node);
 	}
 

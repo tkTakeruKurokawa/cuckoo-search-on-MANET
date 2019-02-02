@@ -3,7 +3,7 @@
 #Configファイル内変数の設定
 K 3
 cycleNum 500
-Capacity 10.0
+Capacity 100.0
 
 ############## Network ###############
 
@@ -95,7 +95,7 @@ init.wrgg.k K
 
 #データの検索手法のFlooading
 init.fld Flooding
-init.fld.ttl 1000
+init.fld.ttl 2000
 
 #複製配置先を決定するためのCuckoo Search
 init.cs CuckooSearch

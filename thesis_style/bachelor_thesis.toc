@@ -17,24 +17,24 @@
 \contentsline {chapter}{\numberline {第4章}ネットワークモデル}{8}
 \contentsline {section}{\numberline {4.1}アドホックネットワーク}{8}
 \contentsline {section}{\numberline {4.2}Random Geometric Graph}{8}
-\contentsline {chapter}{\numberline {第5章}提案手法}{9}
-\contentsline {section}{\numberline {5.1}概要}{9}
-\contentsline {section}{\numberline {5.2}データの需要}{9}
-\contentsline {subsection}{\numberline {5.2.1}データ要求}{9}
-\contentsline {subsection}{\numberline {5.2.2}低需要データ}{9}
-\contentsline {section}{\numberline {5.3}複製配置先，複製個数の決定}{10}
-\contentsline {section}{\numberline {5.4}カッコウ探索による複製配置}{10}
-\contentsline {subsection}{\numberline {5.4.1}カッコウ探索}{11}
-\contentsline {subsection}{\numberline {5.4.2}Levy walk}{11}
-\contentsline {subsection}{\numberline {5.4.3}Random Geometric Graph上のLevy walk}{12}
-\contentsline {subsection}{\numberline {5.4.4}カッコウ探索のアルゴリズム}{12}
-\contentsline {subsection}{\numberline {5.4.5}提案手法でのカッコウ探索のアルゴリズム}{13}
-\contentsline {chapter}{\numberline {第6章}シミュレーション}{15}
-\contentsline {section}{\numberline {6.1}概要}{15}
-\contentsline {section}{\numberline {6.2}シナリオ}{15}
-\contentsline {section}{\numberline {6.3}環境}{16}
-\contentsline {section}{\numberline {6.4}結果と考察}{16}
-\contentsline {subsection}{\numberline {6.4.1}サイクル毎のデータ生存数}{16}
-\contentsline {subsection}{\numberline {6.4.2}サイクル毎の全ノードのストレージ占有率の平均}{21}
-\contentsline {subsection}{\numberline {6.4.3}カッコウ探索とFloodingの比較}{26}
-\contentsline {chapter}{\numberline {第7章}まとめと今後の課題}{27}
+\contentsline {chapter}{\numberline {第5章}提案手法}{10}
+\contentsline {section}{\numberline {5.1}概要}{10}
+\contentsline {section}{\numberline {5.2}データの需要}{10}
+\contentsline {subsection}{\numberline {5.2.1}データ要求}{10}
+\contentsline {subsection}{\numberline {5.2.2}低需要データ}{10}
+\contentsline {section}{\numberline {5.3}複製配置先，複製個数の決定}{11}
+\contentsline {section}{\numberline {5.4}カッコウ探索による複製配置}{11}
+\contentsline {subsection}{\numberline {5.4.1}カッコウ探索}{12}
+\contentsline {subsection}{\numberline {5.4.2}Levy walk}{12}
+\contentsline {subsection}{\numberline {5.4.3}Random Geometric Graph上のLevy walk}{13}
+\contentsline {subsection}{\numberline {5.4.4}カッコウ探索のアルゴリズム}{13}
+\contentsline {subsection}{\numberline {5.4.5}提案手法でのカッコウ探索のアルゴリズム}{14}
+\contentsline {chapter}{\numberline {第6章}シミュレーション}{16}
+\contentsline {section}{\numberline {6.1}概要}{16}
+\contentsline {section}{\numberline {6.2}シナリオ}{16}
+\contentsline {section}{\numberline {6.3}環境}{17}
+\contentsline {section}{\numberline {6.4}結果と考察}{17}
+\contentsline {subsection}{\numberline {6.4.1}サイクル毎のデータ生存数}{17}
+\contentsline {subsection}{\numberline {6.4.2}サイクル毎の全ノードのストレージ占有率の平均}{22}
+\contentsline {subsection}{\numberline {6.4.3}カッコウ探索とFloodingの比較}{27}
+\contentsline {chapter}{\numberline {第7章}まとめと今後の課題}{28}

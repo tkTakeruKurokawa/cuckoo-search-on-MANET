@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.7.1-161114-2.6 (utf8.euc) (TeX Live 2017) (preloaded format=platex 2017.9.29)  22 JAN 2019 20:01
+This is e-pTeX, Version 3.14159265-p3.7.1-161114-2.6 (utf8.euc) (TeX Live 2017) (preloaded format=platex 2017.9.29)  22 JAN 2019 16:09
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -183,46 +183,46 @@ File: ./figure/rgg.png Graphic file (type bmp)
 <./figure/rgg.png>
 [8
 
-]
+] [9]
 第 5 章
-[9
+[10
 
-] [10] [11] [12] [13] [14]
+] [11] [12] [13] [14] [15]
 第 6 章
-[15
+[16
 
 ]
 File: ./figure/owner_counter.eps Graphic file (type eps)
 <./figure/owner_counter.eps>
- [16]
+ [17]
 File: ./figure/path_counter.eps Graphic file (type eps)
 <./figure/path_counter.eps>
- [17]
+ [18]
 File: ./figure/relate_counter.eps Graphic file (type eps)
 <./figure/relate_counter.eps>
 File: ./figure/cuckoo_counter.eps Graphic file (type eps)
 <./figure/cuckoo_counter.eps>
- [18]
+ [19]
 File: ./figure/counter_comp.eps Graphic file (type eps)
 <./figure/counter_comp.eps>
- [19] [20]
+ [20] [21]
 File: ./figure/owner_occupancy.eps Graphic file (type eps)
 <./figure/owner_occupancy.eps>
- [21]
+ [22]
 File: ./figure/path_occupancy.eps Graphic file (type eps)
 <./figure/path_occupancy.eps>
 File: ./figure/relate_occupancy.eps Graphic file (type eps)
 <./figure/relate_occupancy.eps>
- [22]
+ [23]
 File: ./figure/cuckoo_occupancy.eps Graphic file (type eps)
 <./figure/cuckoo_occupancy.eps>
 File: ./figure/occupancy_comp.eps Graphic file (type eps)
 <./figure/occupancy_comp.eps>
- [23] [24] [25] [26]
+ [24] [25] [26] [27]
 第 7 章
-[27
+[28
 
-] [28] [29] [30] (./bachelor_thesis.aux) ) 
+] [29] [30] [31] (./bachelor_thesis.aux) ) 
 Here is how much of TeX's memory you used:
  1492 strings out of 493648
  20133 string characters out of 6148806
@@ -232,4 +232,4 @@ Here is how much of TeX's memory you used:
  929 hyphenation exceptions out of 8191
  25i,7n,21p,1080b,348s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on bachelor_thesis.dvi (36 pages, 97940 bytes).
+Output written on bachelor_thesis.dvi (37 pages, 98272 bytes).

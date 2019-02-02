@@ -43,7 +43,8 @@ public class SharedResource implements Control{
 	private static ArrayList<Boolean> upLoaded;
 	private static ArrayList<Double> relateOccu;
 	private static ArrayList<Double> cuckooOccu;
-	private static ArrayList<Integer> replicaCounter;
+	private static ArrayList<Integer> replicaCounterR;
+	private static ArrayList<Integer> replicaCounterC;
 	private static ArrayList<Data> cyclesRequestList;
 
 
@@ -91,12 +92,17 @@ public class SharedResource implements Control{
 	public static void setRelateOccu(ArrayList<Double> ro){
 		relateOccu = ro;
 	}
+
 	public static void setCuckooOccu(ArrayList<Double> co){
 		cuckooOccu = co;
 	}
 
-	public static void setReplicaCounter(ArrayList<Integer> rc){
-		replicaCounter = rc;
+	public static void setReplicaCounterR(ArrayList<Integer> rc){
+		replicaCounterR = rc;
+	}
+
+	public static void setReplicaCounterC(ArrayList<Integer> rc){
+		replicaCounterC = rc;
 	}
 
 	public static void setCyclesRequestList(ArrayList<Data> crl){
@@ -192,8 +198,12 @@ public class SharedResource implements Control{
 		return cuckooOccu;
 	}
 
-	public static ArrayList<Integer> getReplicaCounter(){
-		return replicaCounter;
+	public static ArrayList<Integer> getReplicaCounterR(){
+		return replicaCounterR;
+	}	
+
+	public static ArrayList<Integer> getReplicaCounterC(){
+		return replicaCounterC;
 	}
 
 	public static ArrayList<Data> getCyclesRequestList(){
@@ -219,7 +229,8 @@ public class SharedResource implements Control{
 		upLoaded = new ArrayList<Boolean>();
 		relateOccu = new ArrayList<Double>();
 		cuckooOccu = new ArrayList<Double>();
-		replicaCounter = new ArrayList<Integer>();
+		replicaCounterR = new ArrayList<Integer>();
+		replicaCounterC = new ArrayList<Integer>();
 		cyclesRequestList = new ArrayList<Data>();
 		random = new Random();
 
@@ -234,7 +245,8 @@ public class SharedResource implements Control{
 			pathCounter.add(dataID, 0);
 			relateCounter.add(dataID, 0);
 			cuckooCounter.add(dataID, 0);
-			replicaCounter.add(dataID, 0);
+			replicaCounterR.add(dataID, 0);
+			replicaCounterC.add(dataID, 0);
 			cyclesRequestList.add(dataID, null);
 			upLoaded.add(dataID, false);
 		}
