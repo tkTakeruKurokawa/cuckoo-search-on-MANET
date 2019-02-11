@@ -6,37 +6,24 @@ import java.util.*;
 
 public class IncreaseReplications implements Control{
 	private static Random random = new Random();
+	private static ArrayList<Integer> succFlood = new ArrayList<Integer>();
+	private static ArrayList<Integer> failFlood = new ArrayList<Integer>();
+	private static ArrayList<Integer> succSet = new ArrayList<Integer>();
+	private static ArrayList<Integer> failSet = new ArrayList<Integer>();
+
 	private static ArrayList<Boolean> upLoaded;
 	private static ArrayList<Data> requestList;
 	private static Node node;
 	private static Data data;
 
-	private static int successFloodO=0;
-	private static int successFloodP=0;
-	private static int successFloodR=0;
-	private static int successFloodC=0;
-	private static int countO=0;
-	private static int countP=0;
-	private static int countR=0;
-	private static int countC=0;
-	private static int failFloodO=0;
-	private static int failFloodP=0;
-	private static int failFloodR=0;
-	private static int failFloodC=0;
-	private static int failSetO=0;
-	private static int failSetP=0;
-	private static int failSetR=0;
-	private static int failSetC=0;
-	private static int successSetO=0;
-	private static int successSetP=0;
-	private static int successSetR=0;
-	private static int successSetC=0;
-	public static int replicaC=0;
-	public static int replicaR=0;
-
-
 
 	public IncreaseReplications(String prefix){
+		for(int i=0; i<4; i++){
+			succFlood.add(i, 0);
+			failFlood.add(i, 0);
+			succSet.add(i, 0);
+			failSet.add(i, 0);
+		}
 	}
 
 
@@ -52,52 +39,92 @@ public class IncreaseReplications implements Control{
 		return false;
 	}
 
-	private static void firstUL(){
-		while(true){
-			Parameter parOwner = SharedResource.getNPOwner(node);
-			Storage strOwner = SharedResource.getSOwner(node);
-			Parameter parRelate = SharedResource.getNPRelate(node);
-			Storage strRelate = SharedResource.getSRelate(node);
-			Parameter parCuckoo = SharedResource.getNPCuckoo(node);
-			Storage strCuckoo = SharedResource.getSCuckoo(node);
+	private static void firstUL(int id){
+		if(id == 0){
+			while(true){
+				Parameter parOwner = SharedResource.getNPOwner(node);
+				Storage strOwner = SharedResource.getSOwner(node);
+				Parameter parRelate = SharedResource.getNPRelate(node);
+				Storage strRelate = SharedResource.getSRelate(node);
+				Parameter parCuckoo = SharedResource.getNPCuckoo(node);
+				Storage strCuckoo = SharedResource.getSCuckoo(node);
 
-			boolean sucOwner = check(parOwner, strOwner);
-			boolean sucRelate = check(parRelate, strRelate);
-			boolean sucCuckoo = check(parCuckoo, strCuckoo);
+				boolean sucOwner = check(parOwner, strOwner);
+				boolean sucRelate = check(parRelate, strRelate);
+				boolean sucCuckoo = check(parCuckoo, strCuckoo);
 
-			if(sucOwner == true && sucRelate == true && sucCuckoo == true){
-				break;
+				if(sucOwner == true){
+					if(sucRelate == true){
+						if(sucCuckoo == true){
+							return;
+						}
+					}
+				}
+
+				node = Network.get(random.nextInt(Network.size()));
 			}
 
-			node = Network.get(random.nextInt(Network.size()));
+		}else{
+			while(true){
+				Parameter parameter = SharedResource.getNPPath(node);
+				Storage storage = SharedResource.getSPath(node);
+
+				boolean success = check(parameter, storage);
+				if(success){
+					break;
+				}
+
+				node = Network.get(random.nextInt(Network.size()));
+			}
 		}
 	}
 
+	// private static void ownerReplication(Parameter parameter, Storage storage, int id){
+	// 	if(!upLoaded.get(data.getID())){
+	// 		firstUL();
+	// 		storage.setData(node, data);
+	// 	}else{
+	// 		if(check(parameter, storage)){
+	// 			boolean hit = Flooding.search(node, data, id);
+	// 			if(hit){
+	// 				storage.setData(node, data);
+	// 				succFlood.set(id, succFlood.get(id)+1);
+	// 				succSet.set(id, succSet.get(id)+1);
+	// 			}else{
+	// 				failFlood.set(id, failFlood.get(id)+1);
+	// 			}
+	// 		}
+	// 		failSet.set(id, failSet.get(id)+1);
+	// 	}
+	// }
+
 	private static void ownerReplication(Parameter parameter, Storage storage, int id){
-		if(!upLoaded.get(data.getID())){
-			firstUL();
-			storage.setData(node, data);
-		}else{
-			if(check(parameter, storage)){
-				boolean hit = Flooding.search(node, data, id);
-				if(hit){
-					if(storage.setData(node, data)){
-					}else{
-					}
+		// if(!upLoaded.get(data.getID())){
+		// 	firstUL();
+		// 	storage.setData(node, data);
+		// }else{
+			boolean hit = Flooding.search(node, data, id);
+			if(hit){
+				succFlood.set(id, succFlood.get(id)+1);
+				if(check(parameter, storage)){
+					storage.setData(node, data);
+					succSet.set(id, succSet.get(id)+1);
 				}else{
-				// System.out.println("FALSE FLOODING. ID: " + id);
+					failSet.set(id, failSet.get(id)+1);
 				}
+			}else{
+				failFlood.set(id, failFlood.get(id)+1);
 			}
-		}
+		// }
 	}
 
 	private static void pathReplication(){
 		for(Map.Entry<Integer, Node> path : Flooding.getPath().entrySet()){
 			StoragePath sPath = SharedResource.getSPath(path.getValue());
 			if(sPath.setData(path.getValue(), data)){
-				successSetP++;
+				succSet.set(1, succSet.get(1)+1);
 			}else{
-				failSetP++;
+				failSet.set(1, failSet.get(1)+1);
 			}
 		}
 	}
@@ -108,11 +135,16 @@ public class IncreaseReplications implements Control{
 		Storage storage = SharedResource.getSOwner(node);
 
 		ownerReplication(parameter, storage, 0);
+	}
+
+	public static void path(){
+		Parameter parameter = SharedResource.getNPPath(node);
+		Storage storage = SharedResource.getSPath(node);
 
 		// if(!upLoaded.get(data.getID())){
 		// 	while(true){
-		// 		parameter = SharedResource.getNPOwner(node);
-		// 		storage = SharedResource.getSOwner(node);
+		// 		parameter = SharedResource.getNPPath(node);
+		// 		storage = SharedResource.getSPath(node);
 
 		// 		boolean success = check(parameter, storage);
 		// 		if(success){
@@ -121,41 +153,19 @@ public class IncreaseReplications implements Control{
 
 		// 		node = Network.get(random.nextInt(Network.size()));
 		// 	}
+
 		// 	storage.setData(node, data);
 		// }else{
-		// 	ownerReplication(parameter, storage, 0);
-		// }
-	}
-
-	public static void path(){
-		Parameter parameter = SharedResource.getNPPath(node);
-		Storage storage = SharedResource.getSPath(node);
-
-		if(!upLoaded.get(data.getID())){
-			while(true){
-				parameter = SharedResource.getNPPath(node);
-				storage = SharedResource.getSPath(node);
-
-				boolean success = check(parameter, storage);
-				if(success){
-					break;
-				}
-
-				node = Network.get(random.nextInt(Network.size()));
-			}
-
-			storage.setData(node, data);
-		}else{
 			if(check(parameter, storage)){
 				boolean hit = Flooding.search(node, data, 1);
 				if(hit){
-					successFloodP++;
+					succFlood.set(1, succFlood.get(1)+1);
 					pathReplication();
 				}else{
-					failFloodP++;
+					failFlood.set(1, failFlood.get(1)+1);
 				}
 			}
-		}
+		// }
 	}
 
 	public static void relate(){
@@ -163,23 +173,6 @@ public class IncreaseReplications implements Control{
 		Storage storage = SharedResource.getSRelate(node);
 
 		ownerReplication(parameter, storage, 2);
-
-		// if(!upLoaded.get(data.getID())){
-		// 	while(true){
-		// 		parameter = SharedResource.getNPRelate(node);
-		// 		storage = SharedResource.getSRelate(node);
-
-		// 		boolean success = check(parameter, storage);
-		// 		if(success){
-		// 			break;
-		// 		}
-
-		// 		node = Network.get(random.nextInt(Network.size()));
-		// 	}
-		// 	storage.setData(node, data);
-		// }else{
-		// 	ownerReplication(parameter, storage, 2);
-		// }
 	}
 
 	public static void cuckoo(){
@@ -187,23 +180,6 @@ public class IncreaseReplications implements Control{
 		Storage storage = SharedResource.getSCuckoo(node);
 
 		ownerReplication(parameter, storage, 3);
-
-		// if(!upLoaded.get(data.getID())){
-		// 	while(true){
-		// 		parameter = SharedResource.getNPCuckoo(node);
-		// 		storage = SharedResource.getSCuckoo(node);
-
-		// 		boolean success = check(parameter, storage);
-		// 		if(success){
-		// 			break;
-		// 		}
-
-		// 		node = Network.get(random.nextInt(Network.size()));
-		// 	}
-		// 	storage.setData(node, data);
-		// }else{
-		// 	ownerReplication(parameter, storage, 3);
-		// }
 	}
 
 	public boolean execute(){
@@ -214,6 +190,7 @@ public class IncreaseReplications implements Control{
 			SharedResource.nextRand();
 
 			node = Network.get(nodeID);
+			Node pathNode = node;
 
 			RequestProbability request = SharedResource.getRequestProbability(node);
 			requestList = request.dataRequests();
@@ -221,55 +198,63 @@ public class IncreaseReplications implements Control{
 			for(int dataID=0; dataID<requestList.size(); dataID++){
 				data = requestList.get(dataID);
 
+				if(!upLoaded.get(data.getID())){
+					firstUL(0);
+					Storage ownerS = SharedResource.getSOwner(node);
+					ownerS.setData(node, data);
+					Storage relateS = SharedResource.getSRelate(node);
+					relateS.setData(node, data);
+					Storage cuckooS = SharedResource.getSCuckoo(node);
+					cuckooS.setData(node, data);
+
+					firstUL(1);
+					Storage pathS = SharedResource.getSPath(pathNode);
+					pathS.setData(node, data);
+				
+				}else{
+					owner();
+					relate();
+					cuckoo();
+					path();
+				}
+
 				if(!cyclesRequestList.contains(data)){
 					cyclesRequestList.set(data.getID(), data);
 				}
-
-				owner();
-				path();
-				relate();
-				cuckoo();
 			}
 		}
 
 		for(int i=0; i<Data.getNowVariety(); i++){
-			if(cyclesRequestList.get(i) != null)
+			if(cyclesRequestList.get(i) != null){
 				upLoaded.set(i, true);
+			}
 		}
 
 
-		// System.out.println("Owner Num: Success Flooding " + successFloodO);
-		// System.out.println("Owner Num: Fail Flooding " + failFloodO);
-		// System.out.println("Owner Num: Fail setData " + failSetO);
-		// System.out.println("Owner Num: Success setData " + successSetO);
-		// System.out.println();
+		System.out.println("Owner Num: Success Flooding " + succFlood.get(0));
+		System.out.println("Owner Num: Fail Flooding " + failFlood.get(0));
+		System.out.println("Owner Num: Fail setData " + failSet.get(0));
+		System.out.println("Owner Num: Success setData " + succSet.get(0));
+		System.out.println();
 
-		// System.out.println("Path Num: Success Flooding " + successFloodP);
-		// System.out.println("Path Num: Fail Flooding " + failFloodP);
-		// System.out.println("Path Num: Fail setData " + failSetP);
-		// System.out.println("Path Num: Success setData " + successSetP);
-		// System.out.println();
+		System.out.println("Path Num: Success Flooding " + succFlood.get(1));
+		System.out.println("Path Num: Fail Flooding " + failFlood.get(1));
+		System.out.println("Path Num: Fail setData " + failSet.get(1));
+		System.out.println("Path Num: Success setData " + succSet.get(1));
+		System.out.println();
 
 
-		// System.out.println("Relate Num: Success Flooding " + successFloodR);
-		// System.out.println("Relate Num: Fail Flooding " + failFloodR);
-		// System.out.println("Relate Num: Fail setData " + failSetR);
-		// System.out.println("Relate Num: Success setData " + successSetR);
-		// System.out.println("Relate Num: setData to seting Replica Node " + replicaR);
-		// System.out.println();
+		System.out.println("Relate Num: Success Flooding " + succFlood.get(2));
+		System.out.println("Relate Num: Fail Flooding " + failFlood.get(2));
+		System.out.println("Relate Num: Fail setData " + failSet.get(2));
+		System.out.println("Relate Num: Success setData " + succSet.get(2));
+		System.out.println();
 
-		// System.out.println("Cuckoo Num: Success Flooding " + successFloodC);
-		// System.out.println("Cuckoo Num: Fail Flooding " + failFloodC);
-		// System.out.println("Cuckoo Num: Fail setData " + failSetC);
-		// System.out.println("Cuckoo Num: Success setData " + successSetC);
-
-		// System.out.println("Cuckoo Num: setData to seting Replica Node " + replicaC);
-		// System.out.println();
-
-		// System.out.println("Owner Count: " + countO);
-		// System.out.println("Path Count: " + countP);
-		// System.out.println("Relate Count: " + countR);
-		// System.out.println("Cuckoo Count: " + countC);
+		System.out.println("Cuckoo Num: Success Flooding " + succFlood.get(3));
+		System.out.println("Cuckoo Num: Fail Flooding " + failFlood.get(3));
+		System.out.println("Cuckoo Num: Fail setData " + failSet.get(3));
+		System.out.println("Cuckoo Num: Success setData " + succSet.get(3));
+		System.out.println();
 
 		SharedResource.setUpLoaded(upLoaded);
 		SharedResource.setCyclesRequestList(cyclesRequestList);

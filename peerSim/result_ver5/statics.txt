@@ -1,0 +1,25 @@
+Owner Num: Success Flooding 81346
+Owner Num: Fail Flooding 0
+Owner Num: Fail setData 34007
+Owner Num: Success setData 47339
+
+Path Num: Success Flooding 42361
+Path Num: Fail Flooding 0
+Path Num: Fail setData 43317
+Path Num: Success setData 53659
+
+Relate Num: Success Flooding 81346
+Relate Num: Fail Flooding 0
+Relate Num: Fail setData 34147
+Relate Num: Success setData 47199
+
+Cuckoo Num: Success Flooding 81346
+Cuckoo Num: Fail Flooding 0
+Cuckoo Num: Fail setData 34012
+Cuckoo Num: Success setData 47334
+
+All Node: 1980
+Cuckoo / Owner = 1.0113580587924682
+Relate / Owner = 1.0294834828899289
+Relate / Cuckoo = 1.0179218664842615
+CDSimulator: cycle 499 done

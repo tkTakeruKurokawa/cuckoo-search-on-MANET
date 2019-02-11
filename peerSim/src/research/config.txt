@@ -3,7 +3,7 @@
 #Configファイル内変数の設定
 K 3
 cycleNum 500
-Capacity 100.0
+Capacity 10.0
 
 ############## Network ###############
 

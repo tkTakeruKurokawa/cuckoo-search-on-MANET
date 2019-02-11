@@ -12,7 +12,7 @@ public class Data implements Control{
 	private static final int DEFAULT_INITIAL_MAXVARIETY = 50;
 	private static final String PAR_MAXVARIETY = "maxVariety";
 	private static int maxVariety;
-	private static final int DEFAULT_INITIAL_MAXSIZE = 2;
+	private static final int DEFAULT_INITIAL_MAXSIZE = 1;
 	private static final String PAR_MAXSIZE = "maxSize";
 	private static int maxSize;
 

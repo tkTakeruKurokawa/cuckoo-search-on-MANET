@@ -5,14 +5,14 @@
 \contentsline {figure}{\numberline {4.1}{\ignorespaces Random Geometric Graphの例}}{8}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {6.1}{\ignorespaces Owner Replicationの，サイクル毎のデータ生存数}}{18}
-\contentsline {figure}{\numberline {6.2}{\ignorespaces Path Replicationの，サイクル毎のデータ生存数}}{19}
-\contentsline {figure}{\numberline {6.3}{\ignorespaces 関連研究の提案手法の，サイクル毎のデータ生存数}}{19}
-\contentsline {figure}{\numberline {6.4}{\ignorespaces 本提案手法の，サイクル毎のデータ生存数}}{20}
-\contentsline {figure}{\numberline {6.5}{\ignorespaces データ35の，複製配置手法ごとの，生存数の推移}}{20}
-\contentsline {figure}{\numberline {6.6}{\ignorespaces Owner Replicationの，サイクル毎の全ノードのストレージ占有率の平均}}{23}
-\contentsline {figure}{\numberline {6.7}{\ignorespaces Path Replicationの，サイクル毎の全ノードのストレージ占有率の平均}}{23}
-\contentsline {figure}{\numberline {6.8}{\ignorespaces 関連研究の提案手法の，サイクル毎の全ノードのストレージ占有率の平均}}{24}
-\contentsline {figure}{\numberline {6.9}{\ignorespaces 本提案手法の，サイクル毎の全ノードのストレージ占有率の平均}}{24}
-\contentsline {figure}{\numberline {6.10}{\ignorespaces 複製配置手法ごとの，全ノードのストレージ占有率の平均の推移}}{25}
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Owner Replicationの，データ生存数の推移}}{18}
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Path Replicationの，データ生存数の推移}}{19}
+\contentsline {figure}{\numberline {6.3}{\ignorespaces 関連研究の提案手法の，データ生存数の推移}}{19}
+\contentsline {figure}{\numberline {6.4}{\ignorespaces 本提案手法の，データ生存数の推移}}{20}
+\contentsline {figure}{\numberline {6.5}{\ignorespaces データ15の，複製配置手法ごとの，生存数の推移}}{20}
+\contentsline {figure}{\numberline {6.6}{\ignorespaces Owner Replicationの，累積ストレージ占有量の推移}}{23}
+\contentsline {figure}{\numberline {6.7}{\ignorespaces Path Replicationの，累積ストレージ占有量の推移}}{23}
+\contentsline {figure}{\numberline {6.8}{\ignorespaces 関連研究の提案手法の，累積ストレージ占有量の推移}}{24}
+\contentsline {figure}{\numberline {6.9}{\ignorespaces 本提案手法の，累積ストレージ占有量の推移}}{24}
+\contentsline {figure}{\numberline {6.10}{\ignorespaces 複製配置手法ごとの，累積ストレージ占有量の推移}}{25}
 \addvspace {10\p@ }

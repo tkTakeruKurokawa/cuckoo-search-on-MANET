@@ -34,7 +34,7 @@
 \contentsline {section}{\numberline {6.2}シナリオ}{16}
 \contentsline {section}{\numberline {6.3}環境}{17}
 \contentsline {section}{\numberline {6.4}結果と考察}{17}
-\contentsline {subsection}{\numberline {6.4.1}サイクル毎のデータ生存数}{17}
-\contentsline {subsection}{\numberline {6.4.2}サイクル毎の全ノードのストレージ占有率の平均}{22}
+\contentsline {subsection}{\numberline {6.4.1}データの生存数の推移}{17}
+\contentsline {subsection}{\numberline {6.4.2}累積ストレージ占有量の推移}{22}
 \contentsline {subsection}{\numberline {6.4.3}カッコウ探索とFloodingの比較}{27}
-\contentsline {chapter}{\numberline {第7章}まとめと今後の課題}{28}
+\contentsline {chapter}{\numberline {第7章}まとめと今後の課題}{29}

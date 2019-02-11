@@ -5,7 +5,7 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \contentsline {table}{\numberline {6.1}{\ignorespaces 低需要データの複製配置開始サイクル}}{21}
-\contentsline {table}{\numberline {6.2}{\ignorespaces 占有率が再び1.0になるサイクル}}{25}
+\contentsline {table}{\numberline {6.2}{\ignorespaces 累積ストレージ占有量が増加しなくなったサイクル}}{25}
 \contentsline {table}{\numberline {6.3}{\ignorespaces 複製配置先に選んだノードの各パラメータの平均値}}{27}
 \contentsline {table}{\numberline {6.4}{\ignorespaces 複製配置手法ごとの，複製配置成功・失敗回数}}{27}
 \addvspace {10\p@ }

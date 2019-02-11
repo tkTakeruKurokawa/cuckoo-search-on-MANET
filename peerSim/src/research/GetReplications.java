@@ -511,6 +511,9 @@ public class GetReplications implements Control{
 			}
 			close();
 			System.out.println("All Node: " + Network.size());
+			System.out.println("Cuckoo / Owner = " + (total.get(3)/total.get(0)));
+			System.out.println("Relate / Owner = " + (total.get(2)/total.get(0)));
+			System.out.println("Relate / Cuckoo = " + (total.get(2)/total.get(3)));
 		}
 
 		return false;
