@@ -507,13 +507,22 @@ public class GetReplications implements Control{
 
 			for(int i=0; i<Data.getMaxVariety(); i++){
 				startReplication.println("Data " + i + " start Replication cycle");
-				startReplication.println("Relate: " + startReplicaR.get(i) + " Cuckoo: " + startReplicaC.get(i));				
+				startReplication.println("Relate: " + startReplicaR.get(i) + " Cuckoo: " + startReplicaC.get(i));
 			}
 			close();
-			System.out.println("All Node: " + Network.size());
-			System.out.println("Cuckoo / Owner = " + (total.get(3)/total.get(0)));
-			System.out.println("Relate / Owner = " + (total.get(2)/total.get(0)));
-			System.out.println("Relate / Cuckoo = " + (total.get(2)/total.get(3)));
+			System.out.println("Final Nodes: " + Network.size());
+			System.out.println("Owner occupancy: " + total.get(0));
+			System.out.println("Path occupancy: " + total.get(1));
+			System.out.println("Relate occupancy: " + total.get(2));
+			System.out.println("Cuckoo occupancy: " + total.get(3));
+
+			System.out.println("Cuckoo_Owner= " + (1.0 - (total.get(0)/total.get(3))));
+			System.out.println("Relate_Owner = " + (1.0 - (total.get(0)/total.get(2))));
+			System.out.println("Relate_Cuckoo = " + (1.0 - (total.get(3)/total.get(2))));
+
+			System.out.println("Cuckoo-Owner= " + (total.get(3)-total.get(0)));
+			System.out.println("Relate-Owner= " + (total.get(2)-total.get(0)));
+			System.out.println("Relate-Cuckoo= " + (total.get(2)-total.get(3)));
 		}
 
 		return false;
