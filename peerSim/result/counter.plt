@@ -1,6 +1,6 @@
 set xrange [0:500]
 set xlabel 'Num of cycle'
-set yrange [0.0:0.2]
+set yrange [0.0:0.3]
 set ylabel 'Data Availavility'
 plot "owner_counter.csv" every ::2 with lines title "Owner" lw 1 lc rgb "red"
 
@@ -11,7 +11,7 @@ replot
 
 set xrange [0:500]
 set xlabel 'Num of cycle'
-set yrange [0.0:0.2]
+set yrange [0.0:0.3]
 set ylabel 'Data Availavility'
 plot "path_counter.csv" every ::2 with lines title "Path" lw 1 lc rgb "blue"
 
@@ -22,7 +22,7 @@ replot
 
 set xrange [0:500]
 set xlabel 'Num of cycle'
-set yrange [0.0:0.2]
+set yrange [0.0:0.3]
 set ylabel 'Data Availavility'
 plot "relate_counter.csv" every ::2 with lines title "Kageyama" lw 1 lc rgb "brown"
 	
@@ -33,7 +33,7 @@ replot
 
 set xrange [0:500]
 set xlabel 'Num of cycle'
-set yrange [0.0:0.2]
+set yrange [0.0:0.3]
 set ylabel 'Data Availavility'
 plot "cuckoo_counter.csv" every ::2 with lines title "Cuckoo" lw 1 lc rgb "magenta"
 
@@ -44,7 +44,7 @@ replot
 
 set xrange [0:500]
 set xlabel 'Num of cycle'
-set yrange [0.0:0.2]
+set yrange [0.0:0.3]
 set ylabel 'Data Availavility'
 plot "owner_counter.csv" every ::2 with lines title "Owner" lc rgb "blue",\
 	"path_counter.csv" every ::2 with lines title "Path" lc rgb "magenta",\

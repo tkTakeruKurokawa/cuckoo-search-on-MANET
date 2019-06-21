@@ -12,7 +12,7 @@ public class Link implements Protocol, Linkable{
 	protected int len;
 
 
-	public Link(String s){
+	protected Link(String s){
 		neighbors = new Node[Configuration.getInt(s + "." + PAR_INITCAP,
 			DEFAULT_INITIAL_CAPACITY)];
 		len = 0;
