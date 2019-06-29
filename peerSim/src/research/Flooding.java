@@ -2,144 +2,158 @@ package research;
 
 import peersim.config.*;
 import peersim.core.*;
+
+import java.io.PrintWriter;
 import java.util.*;
 
-public class Flooding implements Control{
+public class Flooding implements Control {
 	private static final String PAR_TTL = "ttl";
 	private static int ttl;
 
 	// private Node node;
-	private static ArrayList<Node> checkedList = new ArrayList<Node>();
-	private static HashMap<Node, Integer> next = new HashMap<Node, Integer>(); 
-	private static Deque<Node> stack = new ArrayDeque<Node>();
-	private static HashMap<Integer, Node> path = new HashMap<Integer, Node>();
-	
+	private static ArrayList<Node> addedQueueList = new ArrayList<Node>();
+	private static HashMap<Node, Integer> nodeTTL = new HashMap<Node, Integer>();
+	private static Queue<Node> queue = new ArrayDeque<Node>();
+	private static ArrayList<Node> path = new ArrayList<Node>();
+	private static HashMap<Node, Node> parent = new HashMap<Node, Node>();
+
 	private static Storage storage;
+	private static Node source;
 	private static Data target;
 	private static int id;
 	private static boolean hit;
+	private static int hop;
 
-
-	public Flooding(String prefix){
+	public Flooding(String prefix) {
 		ttl = Configuration.getInt(prefix + "." + PAR_TTL);
 	}
 
-	public static HashMap<Integer, Node> getPath(){
-		return path;		
+	public static ArrayList<Node> getPath() {
+		return path;
 	}
 
-	private static void removePath(int ttl){
-		Iterator<Map.Entry<Integer, Node>> iterator = path.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Map.Entry<Integer, Node> p = iterator.next();
-			if (p.getKey() < ttl) {
-				iterator.remove();
+	private static boolean nextSearch(Node node, int ttl) {
+		queue.add(node); // キューに引数のノードを入れる
+		nodeTTL.put(node, ttl); // ノードとttlを関連付け
+		addedQueueList.add(node); // キューに追加したノードを保持
+		parent.put(source, null);
+
+		// キューが空でない場合探し続ける
+		// ターゲートデータを持っているノードを発見したらtrueを返す
+		while (queue.peek() != null) {
+			node = queue.poll(); // キューからノードを取り出す
+			ttl = nodeTTL.get(node); // 取り出したノードに関連付けられたTTLを取り出す
+
+			// 取り出したノードがターゲットデータを持っているかチェック
+			if (contains(node)) {
+				hit = true;
+				// System.out.println("Node " + node.getID() + "Having");
+				while (node != null) {
+					path.add(node);
+					node = parent.get(node);
+				}
+				return true;
 			}
-		}
-	}
+			// 取り出したノードのTTLが0であった場合
+			if (ttl <= 0) {
+				if (queue.peek() == null) {
+					return false;
+				}
+				continue;
+			}
 
-	private static boolean nextSearch(Node node, int ttl){
-		// System.out.println("TTL" + ttl);
-		// System.out.printf("NodeIndex: %d\n   Neighbors Index:", node.getIndex());
-		// Link link = (Link) node.getProtocol(pid_lnk);
-		// for(int nodeID=0; nodeID<link.degree(); nodeID++){
-		// 	Node n = link.getNeighbor(nodeID);
-		// 	System.out.printf(" %d", n.getIndex());
-		// }		
-		// System.out.println();
+			// if (id == 1) {
+			// System.out.println("TTL" + ttl);
+			// System.out.printf("NodeIndex: %d\n Neighbors Index:", node.getIndex());
+			// Link link = SharedResource.getLink(node);
+			// for (int nodeID = 0; nodeID < link.degree(); nodeID++) {
+			// Node n = link.getNeighbor(nodeID);
+			// System.out.printf(" %d", n.getIndex());
+			// }
+			// System.out.println();
+			// }
 
-		path.put(ttl, node);
-
-		if(contains(node)){
-			hit = true;
-			removePath(ttl);
-			return true;
-		}
-
-		if(ttl == 0) 
-			return false;
-
-		checkedList.add(node);
-		Link linkable = SharedResource.getLink(node);
-		if(!hit){
-			for(int nodeID=0; nodeID<linkable.degree(); nodeID++){
+			int newTTL = ttl - 1;
+			Link linkable = SharedResource.getLink(node); // 繋がっているノードを取得
+			for (int nodeID = 0; nodeID < linkable.degree(); nodeID++) {
 				Node neighbor = linkable.getNeighbor(nodeID);
 
-				if(!checkedList.contains(neighbor)){
-					next.put(neighbor, ttl-1);
-					// queue.add(neighbor);
-					stack.push(neighbor);
-					// nextSearch(neighbor, ttl-1);
+				if (!addedQueueList.contains(neighbor)) {
+					nodeTTL.put(neighbor, newTTL); // 隣接ノードとttlを関連付け
+					queue.add(neighbor);
+					addedQueueList.add(neighbor); // キューに追加したノードを保持
+					parent.put(neighbor, node);
 				}
-			}			
+			}
 		}
-
-
-		// while(true){
-		// Node neighbor = queue.poll();
-		if(stack.size()==0) return false;
-		Node neighbor = stack.pop();
-		if(hit == true) return true;
-		if(neighbor == null) return false;
-			// System.out.println("neighbor " + neighbor.getIndex() + " " + next.get(neighbor));
-
-		nextSearch(neighbor, next.get(neighbor));
-		// }
-
 
 		return false;
 	}
 
-	private static boolean contains(Node node){
-		if(Objects.equals(id, 0)){
+	private static boolean contains(Node node) {
+		if (Objects.equals(id, 0)) {
 			storage = SharedResource.getSOwner(node);
 			return storage.contains(target);
 		}
 
-		if(Objects.equals(id, 1)){
+		if (Objects.equals(id, 1)) {
 			storage = SharedResource.getSPath(node);
 			return storage.contains(target);
 		}
 
-		if(Objects.equals(id, 2)){
+		if (Objects.equals(id, 2)) {
 			storage = SharedResource.getSRelate(node);
 			return storage.contains(target);
 		}
 
-		if(Objects.equals(id, 3)){
+		if (Objects.equals(id, 3)) {
 			storage = SharedResource.getSCuckoo(node);
 			return storage.contains(target);
 		}
-		// Storage storage = SharedResource.getStorage(node);
-		// for(Data d: storage.getData()){
-		// 	System.out.println("\tNode " + node.getIndex() + " having Data " + d.getID());
-		// }
-		// System.out.println(storage.contains(target));
-		// System.out.println();
+
 		return false;
 	}
 
-	public static boolean search(Node node, Data data, int num){
-		checkedList.clear();
-		checkedList.add(node);
+	public static boolean search(Node node, Data data, int num) {
+		addedQueueList = new ArrayList<Node>();
+		nodeTTL = new HashMap<Node, Integer>();
+		queue = new ArrayDeque<Node>();
+		path = new ArrayList<Node>();
+		parent = new HashMap<Node, Node>();
 
-		path.clear();
-		next.clear();
-
-		while(stack.size() != 0)
-			stack.pop();
-
+		source = node;
 		target = data;
 		id = num;
 		hit = false;
 
-		nextSearch(node, ttl-1);
-		if(!hit) return false;
+		nextSearch(node, ttl);
+		if (!hit)
+			return false;
 
 		return true;
 	}
 
-	public boolean execute(){
+	public static Integer hops(Node node, Data data, int num) {
+		addedQueueList = new ArrayList<Node>();
+		nodeTTL = new HashMap<Node, Integer>();
+		queue = new ArrayDeque<Node>();
+		path = new ArrayList<Node>();
+		parent = new HashMap<Node, Node>();
+
+		source = node;
+		target = data;
+		id = num;
+		hit = false;
+
+		nextSearch(node, ttl);
+		if (hit) {
+			return getPath().size() - 1;
+		}
+
+		return null;
+	}
+
+	public boolean execute() {
 		return false;
 	}
 

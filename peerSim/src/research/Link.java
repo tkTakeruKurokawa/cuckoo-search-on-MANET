@@ -3,7 +3,7 @@ package research;
 import peersim.config.*;
 import peersim.core.*;
 
-public class Link implements Protocol, Linkable{
+public class Link implements Protocol, Linkable {
 
 	private static final int DEFAULT_INITIAL_CAPACITY = 10;
 	private static final String PAR_INITCAP = "capacity";
@@ -11,19 +11,16 @@ public class Link implements Protocol, Linkable{
 	protected Node[] neighbors;
 	protected int len;
 
-
-	protected Link(String s){
-		neighbors = new Node[Configuration.getInt(s + "." + PAR_INITCAP,
-			DEFAULT_INITIAL_CAPACITY)];
+	public Link(String s) {
+		neighbors = new Node[Configuration.getInt(s + "." + PAR_INITCAP, DEFAULT_INITIAL_CAPACITY)];
 		len = 0;
 	}
 
-
-	public Object clone(){
+	public Object clone() {
 		Link link = null;
-		try { 
-			link = (Link) super.clone(); 
-		} catch( CloneNotSupportedException e ) {
+		try {
+			link = (Link) super.clone();
+		} catch (CloneNotSupportedException e) {
 		} // never happens
 		link.neighbors = new Node[neighbors.length];
 		System.arraycopy(neighbors, 0, link.neighbors, 0, len);
@@ -31,8 +28,7 @@ public class Link implements Protocol, Linkable{
 		return link;
 	}
 
-
-	public boolean contains(Node n){
+	public boolean contains(Node n) {
 		for (int i = 0; i < len; i++) {
 			if (neighbors[i] == n)
 				return true;
@@ -40,12 +36,10 @@ public class Link implements Protocol, Linkable{
 		return false;
 	}
 
-
-	public boolean addNeighbor(Node n){
+	public boolean addNeighbor(Node n) {
 		for (int i = 0; i < len; i++) {
-			if (neighbors[i] == n)
-			{
-			// System.out.println(len);
+			if (neighbors[i] == n) {
+				// System.out.println(len);
 				return false;
 			}
 		}
@@ -56,30 +50,27 @@ public class Link implements Protocol, Linkable{
 		}
 		neighbors[len] = n;
 		len++;
-	// System.out.println(len);
+		// System.out.println(len);
 		return true;
 	}
 
-	public boolean removeNeighbor(int i){
-		neighbors[i] = neighbors[len-1];
-		neighbors[len-1] = null;
+	public boolean removeNeighbor(int i) {
+		neighbors[i] = neighbors[len - 1];
+		neighbors[len - 1] = null;
 		len--;
-	// System.out.println(len);
+		// System.out.println(len);
 		return true;
 	}
 
-
-	public Node getNeighbor(int i){
+	public Node getNeighbor(int i) {
 		return neighbors[i];
 	}
 
-
-	public int degree(){
+	public int degree() {
 		return len;
 	}
 
-
-	public void pack(){
+	public void pack() {
 		if (len == neighbors.length)
 			return;
 		Node[] temp = new Node[len];
@@ -87,9 +78,9 @@ public class Link implements Protocol, Linkable{
 		neighbors = temp;
 	}
 
-
-	public String toString(){
-		if( neighbors == null ) return "DEAD!";
+	public String toString() {
+		if (neighbors == null)
+			return "DEAD!";
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("len=" + len + " maxlen=" + neighbors.length + " [");
 		for (int i = 0; i < len; ++i) {
@@ -98,8 +89,7 @@ public class Link implements Protocol, Linkable{
 		return buffer.append("]").toString();
 	}
 
-
-	public void onKill(){
+	public void onKill() {
 		neighbors = null;
 		len = 0;
 	}

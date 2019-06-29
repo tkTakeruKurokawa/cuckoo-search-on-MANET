@@ -5,7 +5,7 @@ import peersim.core.*;
 import peersim.config.*;
 import java.util.*;
 
-public interface Storage extends Protocol{
+public interface Storage extends Protocol {
 
 	public Object clone();
 
@@ -16,6 +16,8 @@ public interface Storage extends Protocol{
 	public boolean contains(Data data);
 
 	public ArrayList<Data> getData();
+
+	public int getTotal();
 
 	public void clear();
 

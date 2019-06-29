@@ -3,7 +3,7 @@
 #Configファイル内変数の設定
 K 3
 cycleNum 500
-Capacity 10.0
+Capacity 100.0
 
 ############## Network ###############
 
@@ -21,7 +21,7 @@ protocol.lnk Link
 
 #ノードの座標
 protocol.crd NodeCoordinate
-protocol.crd.d 200.0
+protocol.crd.d 1000.0
 
 #ノードの情報(バッテリー残量、ストレージ残量)
 protocol.prm NodeParameter
@@ -87,6 +87,7 @@ init.data.cycles cycleNum
 #ランダムジオメトリックグラフを構成
 init.rgg RandomGeometricGraph
 init.rgg.r 30.0
+#init.rgg.r 10.0
 
 #Linkクラスを元に無向グラフを形成
 init.wrgg WireRGG
@@ -134,10 +135,6 @@ control.mn.capacity 10
 
 #ノード・リンクの追加・削除をコントロール
 #control.stat printStatus
-
-#control.tst ControlTest
-#control.tst.protocol0 str
-#control.tst.protocol1 rp
 
 #各ノードの各データに対するダウンロード要求
 control.ir IncreaseReplications

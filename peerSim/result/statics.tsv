@@ -1,0 +1,25 @@
+Owner Num: Success Flooding 100035
+Owner Num: Fail Flooding 1025
+Owner Num: Fail setData 46493
+Owner Num: Success setData 53542
+
+Path Num: Success Flooding 100035
+Path Num: Fail Flooding 1025
+Path Num: Fail setData 102248
+Path Num: Success setData 64262
+
+Relate Num: Success Flooding 100035
+Relate Num: Fail Flooding 1025
+Relate Num: Fail setData 46507
+Relate Num: Success setData 53528
+
+Cuckoo Num: Success Flooding 100035
+Cuckoo Num: Fail Flooding 1025
+Cuckoo Num: Fail setData 46501
+Cuckoo Num: Success setData 53534
+
+Final Nodes: 1973
+Owner occupancy: 2.993477E7
+Path occupancy: 3.382867E7
+Relate occupancy: 3.069019E7
+Cuckoo occupancy: 3.020785E7
