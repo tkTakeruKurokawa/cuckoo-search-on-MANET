@@ -231,14 +231,13 @@ public class SharedResource implements Control {
 		int value = 0;
 		switch (dest) {
 		case "owner":
-			value = total.get(0);
-			break;
+			return total.get(0);
 		case "path":
-			value = total.get(1);
+			return total.get(1);
 		case "relate":
-			value = total.get(2);
+			return total.get(2);
 		case "cuckoo":
-			value = total.get(3);
+			return total.get(3);
 		default:
 			break;
 		}

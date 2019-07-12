@@ -2,7 +2,10 @@ package research;
 
 import peersim.config.*;
 import peersim.core.*;
+
+import java.io.PrintWriter;
 import java.util.*;
+import java.io.*;
 
 public class IncreaseReplications implements Control {
 	private static Random random = new Random();
@@ -15,6 +18,11 @@ public class IncreaseReplications implements Control {
 	private static ArrayList<Data> requestList;
 	private static Node node;
 	private static Data data;
+	private static int cycle = 0;
+
+	private static PrintWriter links;
+	private static int allLinks;
+	private static double totalLinks = 0.0;
 
 	public IncreaseReplications(String prefix) {
 		for (int i = 0; i < 4; i++) {
@@ -23,6 +31,14 @@ public class IncreaseReplications implements Control {
 			succSet.add(i, 0);
 			failSet.add(i, 0);
 		}
+		try {
+			String way = new File(".").getAbsoluteFile().getParent() + "/result/averageLinks.tsv";
+			File file = new File(way);
+			links = new PrintWriter(new BufferedWriter(new FileWriter(file, true)));
+		} catch (IOException e) {
+			System.out.println(e);
+		}
+		links.println("Cycle\tAvarage Links");
 	}
 
 	private static boolean check(Parameter parameter, Storage storage) {
@@ -37,8 +53,8 @@ public class IncreaseReplications implements Control {
 		return false;
 	}
 
-	private static void firstUL(int id) {
-		if (id == 0) {
+	private static void firstUL(String way) {
+		if (Objects.equals(way, "owner")) {
 			while (true) {
 				Parameter parOwner = SharedResource.getNPOwner(node);
 				Storage strOwner = SharedResource.getSOwner(node);
@@ -62,7 +78,9 @@ public class IncreaseReplications implements Control {
 				node = Network.get(random.nextInt(Network.size()));
 			}
 
-		} else {
+		}
+
+		if (Objects.equals(way, "path")) {
 			while (true) {
 				Parameter parameter = SharedResource.getNPPath(node);
 				Storage storage = SharedResource.getSPath(node);
@@ -94,9 +112,11 @@ public class IncreaseReplications implements Control {
 
 	private static void pathReplication() {
 		for (Node node : Flooding.getPath()) {
-			StoragePath sPath = SharedResource.getSPath(node);
+			Parameter parameter = SharedResource.getNPPath(node);
+			Storage storage = SharedResource.getSPath(node);
 			// System.out.println("Path: " + node.getID());
-			if (sPath.setData(node, data)) {
+			if (check(parameter, storage)) {
+				storage.setData(node, data);
 				succSet.set(1, succSet.get(1) + 1);
 			} else {
 				failSet.set(1, failSet.get(1) + 1);
@@ -144,10 +164,13 @@ public class IncreaseReplications implements Control {
 		upLoaded = SharedResource.getUpLoaded();
 		ArrayList<Data> cyclesRequestList = SharedResource.getCyclesRequestList();
 
+		allLinks = 0;
 		for (int nodeID = 0; nodeID < Network.size(); nodeID++) {
 			SharedResource.nextRand();
 
 			node = Network.get(nodeID);
+			Link linkable = SharedResource.getLink(node);
+			allLinks += linkable.degree();
 			Node pathNode = node;
 
 			RequestProbability request = SharedResource.getRequestProbability(node);
@@ -157,7 +180,7 @@ public class IncreaseReplications implements Control {
 				data = requestList.get(dataID);
 
 				if (!upLoaded.get(data.getID())) {
-					firstUL(0);
+					firstUL("owner");
 					Storage ownerS = SharedResource.getSOwner(node);
 					ownerS.setData(node, data);
 					Storage relateS = SharedResource.getSRelate(node);
@@ -165,7 +188,7 @@ public class IncreaseReplications implements Control {
 					Storage cuckooS = SharedResource.getSCuckoo(node);
 					cuckooS.setData(node, data);
 
-					firstUL(1);
+					firstUL("path");
 					Storage pathS = SharedResource.getSPath(pathNode);
 					pathS.setData(node, data);
 
@@ -214,6 +237,15 @@ public class IncreaseReplications implements Control {
 
 		SharedResource.setUpLoaded(upLoaded);
 		SharedResource.setCyclesRequestList(cyclesRequestList);
+
+		totalLinks += ((double) allLinks) / Network.size();
+		links.println(cycle + "\t" + ((double) allLinks) / Network.size());
+
+		cycle++;
+		if (cycle == 500) {
+			links.println("Average Links for 500 cycles:\t" + totalLinks / 500.0);
+			links.close();
+		}
 
 		return false;
 	}

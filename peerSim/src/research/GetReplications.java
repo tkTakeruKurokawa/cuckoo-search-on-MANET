@@ -47,6 +47,10 @@ public class GetReplications implements Control {
 	private PrintWriter hitP;
 	private PrintWriter hitR;
 	private PrintWriter hitC;
+	private PrintWriter rawO;
+	private PrintWriter rawP;
+	private PrintWriter rawR;
+	private PrintWriter rawC;
 	private PrintWriter startReplication;
 
 	private int cycle = 0;
@@ -77,37 +81,45 @@ public class GetReplications implements Control {
 
 			String way = new File(".").getAbsoluteFile().getParent();
 
-			String owner = way + "/result/owner_counter.tsv";
+			String owner = way + "/result/counter_owner.tsv";
 			File ownerR = new File(owner);
-			owner = way + "/result/owner_occupancy.tsv";
+			owner = way + "/result/occupancy_owner.tsv";
 			File ownerO = new File(owner);
-			owner = way + "/result/owner_hitRate.tsv";
+			owner = way + "/result/hitRate_owner.tsv";
 			File ownerH = new File(owner);
+			owner = way + "/result/rawCounter_owner.tsv";
+			File ownerRaw = new File(owner);
 
-			String path = way + "/result/path_counter.tsv";
+			String path = way + "/result/counter_path.tsv";
 			File pathR = new File(path);
-			path = way + "/result/path_occupancy.tsv";
+			path = way + "/result/occupancy_path.tsv";
 			File pathO = new File(path);
-			path = way + "/result/path_hitRate.tsv";
+			path = way + "/result/hitRate_path.tsv";
 			File pathH = new File(path);
+			path = way + "/result/rawCounter_path.tsv";
+			File pathRaw = new File(path);
 
-			String relate = way + "/result/relate_counter.tsv";
+			String relate = way + "/result/counter_relate.tsv";
 			File relateR = new File(relate);
-			relate = way + "/result/relate_occupancy.tsv";
+			relate = way + "/result/occupancy_relate.tsv";
 			File relateO = new File(relate);
-			relate = way + "/result/relate_hitRate.tsv";
+			relate = way + "/result/hitRate_relate.tsv";
 			File relateH = new File(relate);
-			relate = way + "/result/relate_compare.tsv";
+			relate = way + "/result/compare_relate.tsv";
 			File relateC = new File(relate);
+			relate = way + "/result/rawCounter_relate.tsv";
+			File relateRaw = new File(relate);
 
-			String cuckoo = way + "/result/cuckoo_counter.tsv";
+			String cuckoo = way + "/result/counter_cuckoo.tsv";
 			File cuckooR = new File(cuckoo);
-			cuckoo = way + "/result/cuckoo_occupancy.tsv";
+			cuckoo = way + "/result/occupancy_cuckoo.tsv";
 			File cuckooO = new File(cuckoo);
-			cuckoo = way + "/result/cuckoo_hitRate.tsv";
+			cuckoo = way + "/result/hitRate_cuckoo.tsv";
 			File cuckooH = new File(cuckoo);
-			cuckoo = way + "/result/cuckoo_compare.tsv";
+			cuckoo = way + "/result/compare_cuckoo.tsv";
 			File cuckooC = new File(cuckoo);
+			cuckoo = way + "/result/rawCounter_cuckoo.tsv";
+			File cuckooRaw = new File(cuckoo);
 
 			String start = way + "/result/startReplication.tsv";
 			File startRep = new File(start);
@@ -130,6 +142,11 @@ public class GetReplications implements Control {
 			hitR = new PrintWriter(new BufferedWriter(new FileWriter(relateH, true)));
 			hitC = new PrintWriter(new BufferedWriter(new FileWriter(cuckooH, true)));
 
+			rawO = new PrintWriter(new BufferedWriter(new FileWriter(ownerRaw, true)));
+			rawP = new PrintWriter(new BufferedWriter(new FileWriter(pathRaw, true)));
+			rawR = new PrintWriter(new BufferedWriter(new FileWriter(relateRaw, true)));
+			rawC = new PrintWriter(new BufferedWriter(new FileWriter(cuckooRaw, true)));
+
 			startReplication = new PrintWriter(new BufferedWriter(new FileWriter(startRep, true)));
 
 		} catch (IOException e) {
@@ -141,6 +158,15 @@ public class GetReplications implements Control {
 			miss.add(i, 0);
 			calcNum.add(i, 0);
 		}
+
+		rawO = setRawComments(rawO);
+		counterO = setAvailavilityComments(counterO);
+		rawP = setRawComments(rawP);
+		counterP = setAvailavilityComments(counterP);
+		rawR = setRawComments(rawR);
+		counterR = setAvailavilityComments(counterR);
+		rawC = setRawComments(rawC);
+		counterC = setAvailavilityComments(counterC);
 	}
 
 	public void closeFiles() {
@@ -171,19 +197,23 @@ public class GetReplications implements Control {
 		hitP.close();
 		hitR.close();
 		hitC.close();
+		rawO.close();
+		rawP.close();
+		rawR.close();
+		rawC.close();
 		compR.close();
 		compC.close();
 		startReplication.close();
 	}
 
 	public void calcHitRate() {
-		hitO.println("Number of Try\tAverage Hops\tNumber of Miss");
+		hitO.println("Number of Hit\tAverage Hops\tNumber of Miss");
 		hitO.println(calcNum.get(0) + "\t" + hit.get(0) / ((double) calcNum.get(0)) + "\t" + miss.get(0));
-		hitP.println("Number of Try\tAverage Hops\tNumber of Miss");
+		hitP.println("Number of Hit\tAverage Hops\tNumber of Miss");
 		hitP.println(calcNum.get(1) + "\t" + hit.get(1) / ((double) calcNum.get(1)) + "\t" + miss.get(1));
-		hitR.println("Number of Try\tAverage Hops\tNumber of Miss");
+		hitR.println("Number of Hit\tAverage Hops\tNumber of Miss");
 		hitR.println(calcNum.get(2) + "\t" + hit.get(2) / ((double) calcNum.get(2)) + "\t" + miss.get(2));
-		hitC.println("Number of Try\tAverage Hops\tNumber of Miss");
+		hitC.println("Number of Hit\tAverage Hops\tNumber of Miss");
 		hitC.println(calcNum.get(3) + "\t" + hit.get(3) / ((double) calcNum.get(3)) + "\t" + miss.get(3));
 	}
 
@@ -284,9 +314,17 @@ public class GetReplications implements Control {
 		occuC.println(cycle + "\t" + total.get(3));
 	}
 
-	public PrintWriter setComments(PrintWriter pw) {
+	public PrintWriter setRawComments(PrintWriter pw) {
 
-		pw.printf("Cycle\tData Avaiavility");
+		pw.println("Cycle\tNow Replications\tTotal Replications");
+		pw.println();
+
+		return pw;
+	}
+
+	public PrintWriter setAvailavilityComments(PrintWriter pw) {
+
+		pw.printf("Cycle\tData Availavility");
 		pw.println();
 
 		return pw;
@@ -369,10 +407,6 @@ public class GetReplications implements Control {
 	public void owner() {
 		ArrayList<Integer> dataCounter = SharedResource.getOwnerCounter();
 
-		if (cycle == 0) {
-			counterO = setComments(counterO);
-		}
-
 		counterO.printf("%d\t", cycle);
 		int totalNum = 0;
 		double availability = 0.0;
@@ -389,15 +423,12 @@ public class GetReplications implements Control {
 		int all = SharedResource.getTotal("owner");
 		availability = ((double) totalNum) / ((double) all);
 
+		rawO.println(cycle + "\t" + totalNum + "\t" + all);
 		counterO.println(availability);
 	}
 
 	public void path() {
 		ArrayList<Integer> dataCounter = SharedResource.getPathCounter();
-
-		if (cycle == 0) {
-			counterP = setComments(counterP);
-		}
 
 		counterP.printf("%d\t", cycle);
 		int totalNum = 0;
@@ -414,7 +445,12 @@ public class GetReplications implements Control {
 
 		int all = SharedResource.getTotal("path");
 		availability = ((double) totalNum) / ((double) all);
+		// System.out.println();
+		// System.out.println("Availability: " + availability);
+		// System.out.println("Now Replicas: " + totalNum);
+		// System.out.println("total Replicas: " + all);
 
+		rawP.println(cycle + "\t" + totalNum + "\t" + all);
 		counterP.println(availability);
 	}
 
@@ -430,17 +466,12 @@ public class GetReplications implements Control {
 
 			sum += occupancy;
 			relateOccu.set(i, relateOccu.get(i) + occupancy);
-
 		}
 		SharedResource.setRelateOccu(relateOccu);
 
 		int total = 0;
 		for (int i = 0; i < Data.getNowVariety(); i++) {
 			total += dataCounter.get(i);
-		}
-
-		if (cycle == 0) {
-			counterR = setComments(counterR);
 		}
 
 		counterR.printf("%d\t", cycle);
@@ -481,6 +512,7 @@ public class GetReplications implements Control {
 		int all = SharedResource.getTotal("relate");
 		availability = ((double) totalNum) / ((double) all);
 
+		rawR.println(cycle + "\t" + totalNum + "\t" + all);
 		counterR.println(availability);
 	}
 
@@ -506,10 +538,6 @@ public class GetReplications implements Control {
 			total += dataCounter.get(i);
 		}
 		// System.out.println(total*0.05);
-
-		if (cycle == 0) {
-			counterC = setComments(counterC);
-		}
 
 		counterC.printf("%d\t", cycle);
 		int totalNum = 0;
@@ -566,6 +594,7 @@ public class GetReplications implements Control {
 		int all = SharedResource.getTotal("cuckoo");
 		availability = ((double) totalNum) / ((double) all);
 
+		rawC.println(cycle + "\t" + totalNum + "\t" + all);
 		counterC.println(availability);
 	}
 
