@@ -4,7 +4,6 @@
 
 	2.シミュレータ実行: bash runSimulator.bash
 
-	3.ターミナルに，関連研究の提案手法(Relate)と，本提案手法(Cuckoo)の低需要データの複製配置開始サイクルが表示される．また，シミュレーション終了時点での全ノード数が表示される．
+	3.ターミナルに，複製配置手法ごとのFloodingの成功回数，失敗回数，複製配置成功回数，失敗回数が表示される
 
-	4.「peerSim/result」に，データ5，データ15，データ25，データ35，データ45の生存数の推移を保持するファイル「owner_counter.csv」「path_counter.csv」「relate_counter.csv」「cuckoo_counter.csv」ができる．
-	また，提案手法ごとのストレージ使用率の推移を保持するファイル「owner_occupancy.csv」「path_occupancy.csv」「relate_occupancy.csv」「cuckoo_occupancy.csv」ができる．
+	4.「peerSim/result」にデータ利用可能率
