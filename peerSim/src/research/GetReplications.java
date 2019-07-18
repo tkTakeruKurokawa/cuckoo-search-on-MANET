@@ -142,24 +142,34 @@ public class GetReplications implements Control {
 		// highRemainingSum.set(id, highRemainingSum.get(id)+occupancy);
 		boolean high = false;
 		boolean low = false;
+		double highRemaining = capacity;
+		double lowRemaining = capacity;
 		for (Data data : storage.getData()) {
-			if (Objects.equals(data.getType(), "high") && high == false) {
-				highRemainingValue.add(((double) parameter.getCapacity()));
-				highRemainingSum.set(id, highRemainingSum.get(id) + ((double) parameter.getCapacity()));
-				highOccupancyCount.set(id, highOccupancyCount.get(id) + 1.0);
-				highRemainingAverage.set(id, highRemainingSum.get(id) / highOccupancyCount.get(id));
-				highOccupancy.set(id, highOccupancy.get(id) + (capacity - ((double) parameter.getCapacity())));
+			if (Objects.equals(data.getType(), "high")) {
+				highRemaining -= ((double) data.getSize());
+				highOccupancy.set(id, highOccupancy.get(id) + (double) data.getSize());
 				high = true;
 			}
-			if (Objects.equals(data.getType(), "low") && low == false) {
-				lowRemainingValue.add(((double) parameter.getCapacity()));
-				lowRemainingSum.set(id, lowRemainingSum.get(id) + ((double) parameter.getCapacity()));
-				lowOccupancyCount.set(id, lowOccupancyCount.get(id) + 1.0);
-				lowRemainingAverage.set(id, lowRemainingSum.get(id) / lowOccupancyCount.get(id));
-				lowOccupancy.set(id, lowOccupancy.get(id) + (capacity - ((double) parameter.getCapacity())));
+			if (Objects.equals(data.getType(), "low")) {
+				lowRemaining -= ((double) data.getSize());
+				lowOccupancy.set(id, lowOccupancy.get(id) + (double) data.getSize());
 				low = true;
 			}
 		}
+
+		if (high == true) {
+			highRemainingValue.add(highRemaining);
+			highRemainingSum.set(id, highRemainingSum.get(id) + highRemaining);
+			highOccupancyCount.set(id, highOccupancyCount.get(id) + 1.0);
+			highRemainingAverage.set(id, highRemainingSum.get(id) / highOccupancyCount.get(id));
+		}
+		if (low == true) {
+			lowRemainingValue.add(lowRemaining);
+			lowRemainingSum.set(id, lowRemainingSum.get(id) + lowRemaining);
+			lowOccupancyCount.set(id, lowOccupancyCount.get(id) + 1.0);
+			lowRemainingAverage.set(id, lowRemainingSum.get(id) / lowOccupancyCount.get(id));
+		}
+
 	}
 
 	public boolean check(Storage storage, Parameter parameter, Data data) {
