@@ -1,8 +1,10 @@
 package research;
 
 import peersim.core.*;
+
+import java.util.ArrayList;
+
 import peersim.config.*;
-import java.util.*;
 
 public class CuckooSearch implements Control {
 	private static final String PAR_MAXGENERATION = "generation";
@@ -29,20 +31,19 @@ public class CuckooSearch implements Control {
 		for (int generation = 0; generation < maxGeneration; generation++) {
 			// System.out.println("Generation: " + generation);
 			ns.alternate();
+			// ArrayList<Nest> nest = ns.getNestSet();
+			// System.out.println("NOWNEST:");
+			// for (int k = 0; k < 10; k++) {
+			// System.out.printf("\t%d: ", k);
+			// System.out.println("Node: " + nest.get(k).getNode().getIndex() + " value " +
+			// nest.get(k).getValue()
+			// + " (" + nest.get(k).egg[0] + ", " + nest.get(k).egg[1] + ")");
+			// }
 		}
-
-		// ArrayList<Nest> nest = ns.getNestSet();
-		// System.out.println("NOWNEST:");
-		// for (int k = 0; k < 10; k++) {
-		// System.out.printf("\t%d: ", k);
-		// System.out.println("Node: " + nest.get(k).getNode().getIndex() + " value " +
-		// nest.get(k).getValue() + " ("
-		// + nest.get(k).egg[0] + ", " + nest.get(k).egg[1] + ")");
-		// }
 
 		Node bestNode = null;
 		int nestNum = 0;
-		while (nestNum < ns.SET_SIZE) {
+		while (nestNum < ns.getNestSize()) {
 			bestNode = ns.getBestNode(nestNum);
 			StorageCuckoo storage = SharedResource.getSCuckoo(bestNode);
 			NPCuckoo parameter = SharedResource.getNPCuckoo(bestNode);

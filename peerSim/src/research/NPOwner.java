@@ -1,43 +1,38 @@
 package research;
 
-import peersim.core.*;
-import peersim.config.*;
-import java.util.*;
+public class NPOwner implements Parameter {
+	private double battery = 0.0;
+	private int capacity = 0;
 
-public class NPOwner implements Parameter{
-	private double battery=0.0;
-	private int capacity=0;
-	
-	public NPOwner(String prefix){
+	public NPOwner(String prefix) {
 	}
 
-	public Object clone(){
+	public Object clone() {
 		NPOwner parameter = null;
-		try{
+		try {
 			parameter = (NPOwner) super.clone();
-		}catch(CloneNotSupportedException e){
+		} catch (CloneNotSupportedException e) {
 		}
 		return parameter;
 	}
 
-	public void setBattery(double battery){
+	public void setBattery(double battery) {
 		this.battery = battery;
 	}
 
-	public void setCapacity(int capacity){
+	public void setCapacity(int capacity) {
 		this.capacity = capacity;
 	}
 
-	public double getBattery(){
+	public double getBattery() {
 		return battery;
 	}
 
-	public int getCapacity(){
+	public int getCapacity() {
 		return capacity;
 	}
 
-
-	public String toString(){
+	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("NPOwner: Battery = " + getBattery() + " Capacity = ");
 		return buffer.append(getCapacity()).toString();

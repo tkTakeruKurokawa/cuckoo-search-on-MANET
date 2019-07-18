@@ -1,92 +1,82 @@
 package research;
 
 import java.util.*;
+
 import peersim.config.*;
 import peersim.core.*;
 
 public class Data implements Control {
-	private static final int DEFAULT_INITIAL_CYCLES = 500;
-	private static final String PAR_CYCLES = "cycles";
-	private static int maxCycle;
-	private static final int DEFAULT_INITIAL_MAXVARIETY = 50;
 	private static final String PAR_MAXVARIETY = "maxVariety";
 	private static int maxVariety;
-	private static final int DEFAULT_INITIAL_MAXSIZE = 10;
-	private static final String PAR_MAXSIZE = "maxSize";
+	private static final String PAR_MAXSIZE = "size";
 	private static int maxSize;
+	private static final String PAR_HIGHDEMAND = "highDemand";
+	private static int maxHighDemand;
+	private static final String PAR_LOWDEMAND = "lowDemand";
+	private static int maxLowDemand;
 
 	private static ArrayList<Data> dataList = new ArrayList<Data>();
 	private static Random random = new Random();
 
+	private static int highDemand = 0;
+	private static int lowDemand = 0;
 	private static int variety = 0;
-	private static int count = -1;
+	private static int globalCycle = 0;
+	private int localCycle = 0;
 	private int index;
 	private int size;
-	private int cycle;
-	private int peakCycle;
 	private double lambda;
-	public boolean lowDemand;
+	private String type;
 
 	public Data() {
 	}
 
 	public Data(String s) {
-		maxSize = Configuration.getInt(s + "." + PAR_MAXSIZE, DEFAULT_INITIAL_MAXSIZE);
-		maxVariety = Configuration.getInt(s + "." + PAR_MAXVARIETY, DEFAULT_INITIAL_MAXVARIETY);
-		maxCycle = Configuration.getInt(s + "." + PAR_CYCLES, DEFAULT_INITIAL_CYCLES);
+		maxSize = Configuration.getInt(s + "." + PAR_MAXSIZE);
+		maxVariety = Configuration.getInt(s + "." + PAR_MAXVARIETY);
+		maxHighDemand = Configuration.getInt(s + "." + PAR_HIGHDEMAND);
+		maxLowDemand = Configuration.getInt(s + "." + PAR_LOWDEMAND);
 	}
 
-	public Data(int index, boolean lowDemand) {
+	public Data(int index, String string) {
 		this.index = index;
-		this.lowDemand = lowDemand;
 		this.size = maxSize;
-		cycle = 0;
 
 		// 低需要
-		if (lowDemand) {
-			// int maxReplications = random.nextInt(Network.size()/100);
-			peakCycle = 50;
-			// lambda = random.nextDouble()/((double) maxCycle);
-			double tmp;
-			while (true) {
-				tmp = random.nextDouble();
-				if (tmp > 0.5d)
-					break;
-			}
-			// System.out.println(tmp);
-			lambda = tmp / 500.0;
+		if (Objects.equals(string, "low")) {
+			type = "low";
+			lambda = ((double) random.nextInt(4) + 1) / 100.0;
 		}
 
-		// 通常
+		// 高需要
 		else {
-			int sign = 1;
-			// boolean flag = random.nextBoolean();
-			// if(flag)
-			// sign = 1;
-			// else
-			// sign = -1;
-
-			peakCycle = 10 + (sign * random.nextInt(60));
-			// lambda = random.nextDouble()/((double) maxCycle);
-			// lambda = random.nextDouble()/500.0;
-			lambda = 1.0 / 500.0;
+			type = "high";
+			lambda = ((double) random.nextInt(10) + 1) / 10.0;
+			// lambda = lambda * 1.5;
 		}
 	}
 
 	public static void makeData() {
-		// int probability = random.nextInt(2);
-		// if(probability == 0) dataList.add(new Data(variety, false));
-		// else dataList.add(new Data(variety, true));
+		int probability = random.nextInt(2);
+		if (probability == 0) {
+			if (lowDemand >= maxLowDemand) {
+				dataList.add(new Data(variety, "high"));
+				highDemand++;
+			} else {
+				dataList.add(new Data(variety, "low"));
+				lowDemand++;
+			}
+		} else {
+			if (highDemand >= maxHighDemand) {
+				dataList.add(new Data(variety, "low"));
+				lowDemand++;
+			} else {
+				dataList.add(new Data(variety, "high"));
+				highDemand++;
+			}
+		}
 
-		// int probability = random.nextInt(5);
-		// if(probability == 0) dataList.add(new Data(variety, true));
-		// else dataList.add(new Data(variety, false));
-		dataList.add(new Data(variety, false));
 		variety++;
-	}
-
-	public void nextCycle() {
-		cycle++;
 	}
 
 	public static int getNowVariety() {
@@ -95,6 +85,10 @@ public class Data implements Control {
 
 	public static int getMaxVariety() {
 		return maxVariety;
+	}
+
+	public void nextCycle() {
+		localCycle++;
 	}
 
 	public int getSize() {
@@ -109,12 +103,12 @@ public class Data implements Control {
 		return lambda;
 	}
 
-	public int getPeakCycle() {
-		return peakCycle;
+	public String getType() {
+		return type;
 	}
 
 	public int getNowCycle() {
-		return cycle;
+		return localCycle;
 	}
 
 	public static Data getData(int id) {
@@ -127,12 +121,13 @@ public class Data implements Control {
 			Data.getData(dataID).nextCycle();
 		}
 
-		if (count % 5 == 0) {
-			if (getNowVariety() < getMaxVariety())
+		if (globalCycle % 5 == 0) {
+			if (getNowVariety() < getMaxVariety()) {
 				makeData();
+			}
 		}
 
-		count++;
+		globalCycle++;
 
 		return false;
 	}

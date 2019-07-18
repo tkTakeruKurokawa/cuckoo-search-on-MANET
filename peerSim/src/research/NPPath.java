@@ -1,43 +1,38 @@
 package research;
 
-import peersim.core.*;
-import peersim.config.*;
-import java.util.*;
+public class NPPath implements Parameter {
+	private double battery = 0.0;
+	private int capacity = 0;
 
-public class NPPath implements Parameter{
-	private double battery=0.0;
-	private int capacity=0;
-	
-	public NPPath(String prefix){
+	public NPPath(String prefix) {
 	}
 
-	public Object clone(){
+	public Object clone() {
 		NPPath parameter = null;
-		try{
+		try {
 			parameter = (NPPath) super.clone();
-		}catch(CloneNotSupportedException e){
+		} catch (CloneNotSupportedException e) {
 		}
 		return parameter;
 	}
 
-	public void setBattery(double battery){
+	public void setBattery(double battery) {
 		this.battery = battery;
 	}
 
-	public void setCapacity(int capacity){
+	public void setCapacity(int capacity) {
 		this.capacity = capacity;
 	}
 
-	public double getBattery(){
+	public double getBattery() {
 		return battery;
 	}
 
-	public int getCapacity(){
+	public int getCapacity() {
 		return capacity;
 	}
 
-
-	public String toString(){
+	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("NPPath: Battery = " + getBattery() + " Capacity = ");
 		return buffer.append(getCapacity()).toString();

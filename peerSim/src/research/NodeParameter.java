@@ -1,14 +1,11 @@
 package research;
 
-import peersim.core.*;
 import peersim.config.*;
 import java.util.*;
 
 public class NodeParameter implements Parameter {
-	private static final double DEFAULT_INITIAL_BASE = 50.0;
 	private static final String PAR_BASE = "baseBattery";
 	private static double base;
-	private static final int DEFAULT_INITIAL_MAXCAPACITY = 100;
 	private static final String PAR_MAXCAPACITY = "maxCapacity";
 	private static int maxCapacity;
 
@@ -18,8 +15,8 @@ public class NodeParameter implements Parameter {
 	private int capacity;
 
 	public NodeParameter(String prefix) {
-		base = Configuration.getDouble(prefix + "." + PAR_BASE, DEFAULT_INITIAL_BASE);
-		maxCapacity = Configuration.getInt(prefix + "." + PAR_MAXCAPACITY, DEFAULT_INITIAL_MAXCAPACITY);
+		base = Configuration.getDouble(prefix + "." + PAR_BASE);
+		maxCapacity = Configuration.getInt(prefix + "." + PAR_MAXCAPACITY);
 	}
 
 	public Object clone() {

@@ -3,7 +3,6 @@ package research;
 import peersim.config.*;
 import peersim.core.*;
 
-import java.io.PrintWriter;
 import java.util.*;
 
 public class Flooding implements Control {
@@ -22,7 +21,6 @@ public class Flooding implements Control {
 	private static Data target;
 	private static int id;
 	private static boolean hit;
-	private static int hop;
 
 	public Flooding(String prefix) {
 		ttl = Configuration.getInt(prefix + "." + PAR_TTL);

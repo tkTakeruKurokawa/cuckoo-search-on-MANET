@@ -1,21 +1,19 @@
 package research;
 
-import peersim.config.*;
 import peersim.core.*;
 import java.util.*;
 
-public class InitializeNetwork implements Control{
+public class InitializeNetwork implements Control {
 	private static Random random = new Random();
 
-
-	public InitializeNetwork(String prefix){
+	public InitializeNetwork(String prefix) {
 	}
 
-	public boolean execute(){
+	public boolean execute() {
 
-		for(int nodeID=0; nodeID<Network.size(); nodeID++){
+		for (int nodeID = 0; nodeID < Network.size(); nodeID++) {
 			Node node = Network.get(nodeID);
-			
+
 			NodeParameter parameter = SharedResource.getParameter(node);
 			parameter.setParameter();
 
@@ -30,6 +28,7 @@ public class InitializeNetwork implements Control{
 			NPRelate npr = SharedResource.getNPRelate(node);
 			npr.setBattery(parameter.getBattery());
 			npr.setCapacity(parameter.getCapacity());
+			npr.setContribution(random.nextDouble());
 
 			NPCuckoo npc = SharedResource.getNPCuckoo(node);
 			npc.setBattery(parameter.getBattery());

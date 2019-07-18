@@ -14,23 +14,28 @@ public class NestSet implements Control {
 	private Random random = new Random();
 	private ArrayList<Integer> rand;
 	private ArrayList<Nest> nest;
-	private ArrayList<Integer> nodeList;
+	private int nestSize;
 
 	public NestSet() {
 		nest = new ArrayList<Nest>();
 		rand = new ArrayList<Integer>();
-		nodeList = new ArrayList<Integer>();
 
-		for (int i = 0; i < Network.size(); i++)
+		for (int i = 0; i < Network.size(); i++) {
 			rand.add(i);
-
-		for (int i = 0; i < SET_SIZE; i++) {
-			Node node = Network.get(rand.get(i));
-			nest.add(new Nest(node));
-			nodeList.add(node.getIndex());
 		}
 
-		sort(0, SET_SIZE - 1);
+		if (Network.size() < SET_SIZE) {
+			nestSize = Network.size();
+		} else {
+			nestSize = SET_SIZE;
+		}
+		for (int i = 0; i < nestSize; i++) {
+			Collections.shuffle(rand);
+			Node node = Network.get(rand.get(i));
+			nest.add(new Nest(node));
+		}
+
+		sort(0, nestSize - 1);
 	}
 
 	public NestSet(String prefix) {
@@ -41,60 +46,69 @@ public class NestSet implements Control {
 	public void alternate() {
 		Collections.shuffle(rand);
 
-		int r1, r2, addID;
-		while (true) {
-			r1 = random.nextInt(SET_SIZE);
-			r2 = (r1 + (random.nextInt(SET_SIZE - 1) + 1)) % SET_SIZE;
+		int r1, r2;
+		int bound = 0;
+		while (bound < 50) {
+			r1 = random.nextInt(nestSize);
+			r2 = (r1 + (random.nextInt(nestSize - 1) + 1)) % nestSize;
 
 			// System.out.println("r1: " + r1 + " r2: " + r2);
-			// System.out.println("Target Node: " + nest.get(r2).getNode().getIndex() + "
-			// value " + nest.get(r2).getValue() + " (" + nest.get(r2).egg[0] + ", " +
-			// nest.get(r2).egg[1] + ")");
+			// System.out.println("Target Node: " + nest.get(r2).getNode().getIndex() +
+			// "value " + nest.get(r2).getValue()
+			// + " (" + nest.get(r2).egg[0] + ", " + nest.get(r2).egg[1] + ")");
 			boolean success = nest.get(r2).replace(nest.get(r1));
 			if (success == true) {
-				addID = nest.get(r2).getAddID();
 				break;
 			}
 			// System.out.println("Re levyWalk");
+			bound++;
 		}
-
-		nodeList.set(r2, addID);
 		// r2の巣を、r1の巣をベースにlevyWalkし、値を更新したものと置き換え
 		// 巣の要素が更新される可能性があるのは、巣r2
 		// System.out.println("After UPDATE");
 		// System.out.println("Target Node: " + nest.get(r2).getNode().getIndex() + "
 		// value " + nest.get(r2).getValue() + " (" + nest.get(r2).egg[0] + ", " +
 		// nest.get(r2).egg[1] + ")");
+		sort(0, nestSize - 1);
 
 		int i = 0;
 		int id = 0;
-		int j = (int) Math.floor((double) SET_SIZE * ABA_RATE);
+		int abandanNum = (int) Math.floor((double) nestSize * ABA_RATE);
 		// System.out.println("ABANDAN:");
-		while (i < j) {
-			int nodeID = rand.get(id);
-			if (nodeList.contains(nodeID)) {
-				id++;
-				continue;
+		while ((i < abandanNum) && (Network.size() > nestSize)) {
+			boolean contain = false;
+			int newNodeID = rand.get(id);
+
+			// 巣に交換予定のノードが入っているかチェック
+			for (int nestID = 0; nestID < nestSize; nestID++) {
+				if (Objects.equals(nest.get(nestID).getNode().getIndex(), newNodeID)) {
+					contain = true;
+				}
 			}
 
-			// System.out.printf("\t%d: ",i);
+			if (contain) {
+				id++;
+				continue;
+			} else {
+				// 巣に入っていないかつ，交換予定のノードの評価が交換されるノードより良ければ交換
+				// System.out.println("Avandan nestID: " + i);
+				nest.get(i).abandon(newNodeID);
+				id = 0;
+			}
+			// System.out.printf("\t%d: ", i);
 			// System.out.println("Node: " + nest.get(i).getNode().getIndex() + " value " +
-			// nest.get(i).getValue() + " (" + nest.get(i).egg[0] + ", " +
-			// nest.get(i).egg[1] + ")");
-			nest.get(i).abandon(nodeID);
+			// nest.get(i).getValue() + " ("
+			// + nest.get(i).egg[0] + ", " + nest.get(i).egg[1] + ")");
 			// nest.get(i).abandon();
-			nodeList.set(i, nodeID);
-			id++;
 			i++;
 		}
-		sort(0, SET_SIZE - 1);
+		sort(0, nestSize - 1);
 	}
 
 	public void sort(int lb, int ub) {
 		int i, j, k;
-		double pivot, iValue, jValue;
+		double pivot;
 		Nest tmpNest;
-		int tmpInt;
 
 		if (lb < ub) {
 			k = (lb + ub) / 2;
@@ -111,13 +125,10 @@ public class NestSet implements Control {
 				}
 				if (i <= j) {
 					tmpNest = nest.get(i);
-					tmpInt = nodeList.get(i);
 
 					nest.set(i, nest.get(j));
-					nodeList.set(i, nodeList.get(j));
 
 					nest.set(j, tmpNest);
-					nodeList.set(j, tmpInt);
 					i++;
 					j--;
 				}
@@ -137,6 +148,10 @@ public class NestSet implements Control {
 
 	public Node getBestNode(int num) {
 		return nest.get(nest.size() - 1 - num).getNode();
+	}
+
+	public int getNestSize() {
+		return nestSize;
 	}
 
 	public boolean execute() {

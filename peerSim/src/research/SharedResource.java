@@ -36,23 +36,23 @@ public class SharedResource implements Control {
 	private static int rand;
 	private static Data data;
 	private static ArrayList<Integer> dataCounter;
-	private static ArrayList<Integer> ownerCounter;
-	private static ArrayList<Integer> pathCounter;
-	private static ArrayList<Integer> relateCounter;
-	private static ArrayList<Integer> cuckooCounter;
-	private static ArrayList<Boolean> upLoaded;
-	private static ArrayList<Double> relateOccu;
-	private static ArrayList<Double> cuckooOccu;
-	private static ArrayList<Integer> replicaCounterR;
-	private static ArrayList<Integer> replicaCounterC;
-	private static ArrayList<Data> cyclesRequestList;
-	private static ArrayList<Integer> total;
+	private static ArrayList<Integer> ownerHighCounter;
+	private static ArrayList<Integer> ownerLowCounter;
+	private static ArrayList<Integer> pathHighCounter;
+	private static ArrayList<Integer> pathLowCounter;
+	private static ArrayList<Integer> relateHighCounter;
+	private static ArrayList<Integer> relateLowCounter;
+	private static ArrayList<Integer> cuckooHighCounter;
+	private static ArrayList<Integer> cuckooLowCounter;
+	private static ArrayList<Boolean> dataRequest;
+	private static ArrayList<Integer> highTotal;
+	private static ArrayList<Integer> lowTotal;
 
 	public SharedResource(String prefix) {
 		pid_lnk = Configuration.getPid(prefix + "." + PAR_PROT0);
 		pid_prm = Configuration.getPid(prefix + "." + PAR_PROT1);
 		pid_crd = Configuration.getPid(prefix + "." + PAR_PROT2);
-		pid_str = Configuration.getPid(prefix + "." + PAR_PROT3);
+		// pid_str = Configuration.getPid(prefix + "." + PAR_PROT3);
 		pid_rp = Configuration.getPid(prefix + "." + PAR_PROT4);
 		pid_owner = Configuration.getPid(prefix + "." + PAR_PROT5);
 		pid_path = Configuration.getPid(prefix + "." + PAR_PROT6);
@@ -68,59 +68,74 @@ public class SharedResource implements Control {
 		dataCounter = dc;
 	}
 
-	public static void setOwnerCounter(ArrayList<Integer> dc) {
-		ownerCounter = dc;
+	public static void setOwnerHighCounter(ArrayList<Integer> dc) {
+		ownerHighCounter = dc;
 	}
 
-	public static void setPathCounter(ArrayList<Integer> dc) {
-		pathCounter = dc;
+	public static void setOwnerLowCounter(ArrayList<Integer> dc) {
+		ownerLowCounter = dc;
 	}
 
-	public static void setRelateCounter(ArrayList<Integer> dc) {
-		relateCounter = dc;
+	public static void setPathHighCounter(ArrayList<Integer> dc) {
+		pathHighCounter = dc;
 	}
 
-	public static void setCuckooCounter(ArrayList<Integer> dc) {
-		cuckooCounter = dc;
+	public static void setPathLowCounter(ArrayList<Integer> dc) {
+		pathLowCounter = dc;
 	}
 
-	public static void setUpLoaded(ArrayList<Boolean> ul) {
-		upLoaded = ul;
+	public static void setRelateHighCounter(ArrayList<Integer> dc) {
+		relateHighCounter = dc;
 	}
 
-	public static void setRelateOccu(ArrayList<Double> ro) {
-		relateOccu = ro;
+	public static void setRelateLowCounter(ArrayList<Integer> dc) {
+		relateLowCounter = dc;
 	}
 
-	public static void setCuckooOccu(ArrayList<Double> co) {
-		cuckooOccu = co;
+	public static void setCuckooHighCounter(ArrayList<Integer> dc) {
+		cuckooHighCounter = dc;
 	}
 
-	public static void setReplicaCounterR(ArrayList<Integer> rc) {
-		replicaCounterR = rc;
+	public static void setCuckooLowCounter(ArrayList<Integer> dc) {
+		cuckooLowCounter = dc;
 	}
 
-	public static void setReplicaCounterC(ArrayList<Integer> rc) {
-		replicaCounterC = rc;
+	public static void setDataRequest(ArrayList<Boolean> dr) {
+		dataRequest = dr;
 	}
 
-	public static void setCyclesRequestList(ArrayList<Data> crl) {
-		cyclesRequestList = crl;
-	}
-
-	public static void setTotal(String dest, int value) {
+	public static void setHighTotal(String dest, int value) {
 		switch (dest) {
 		case "owner":
-			total.set(0, value);
+			highTotal.set(0, value);
 			break;
 		case "path":
-			total.set(1, value);
+			highTotal.set(1, value);
 			break;
 		case "relate":
-			total.set(2, value);
+			highTotal.set(2, value);
 			break;
 		case "cuckoo":
-			total.set(3, value);
+			highTotal.set(3, value);
+			break;
+		default:
+			break;
+		}
+	}
+
+	public static void setLowTotal(String dest, int value) {
+		switch (dest) {
+		case "owner":
+			lowTotal.set(0, value);
+			break;
+		case "path":
+			lowTotal.set(1, value);
+			break;
+		case "relate":
+			lowTotal.set(2, value);
+			break;
+		case "cuckoo":
+			lowTotal.set(3, value);
 			break;
 		default:
 			break;
@@ -187,57 +202,70 @@ public class SharedResource implements Control {
 		return dataCounter;
 	}
 
-	public static ArrayList<Integer> getOwnerCounter() {
-		return ownerCounter;
+	public static ArrayList<Integer> getOwnerHighCounter() {
+		return ownerHighCounter;
 	}
 
-	public static ArrayList<Integer> getPathCounter() {
-		return pathCounter;
+	public static ArrayList<Integer> getOwnerLowCounter() {
+		return ownerLowCounter;
 	}
 
-	public static ArrayList<Integer> getRelateCounter() {
-		return relateCounter;
+	public static ArrayList<Integer> getPathHighCounter() {
+		return pathHighCounter;
 	}
 
-	public static ArrayList<Integer> getCuckooCounter() {
-		return cuckooCounter;
+	public static ArrayList<Integer> getPathLowCounter() {
+		return pathLowCounter;
 	}
 
-	public static ArrayList<Boolean> getUpLoaded() {
-		return upLoaded;
+	public static ArrayList<Integer> getRelateHighCounter() {
+		return relateHighCounter;
 	}
 
-	public static ArrayList<Double> getRelateOccu() {
-		return relateOccu;
+	public static ArrayList<Integer> getRelateLowCounter() {
+		return relateLowCounter;
 	}
 
-	public static ArrayList<Double> getCuckooOccu() {
-		return cuckooOccu;
+	public static ArrayList<Integer> getCuckooHighCounter() {
+		return cuckooHighCounter;
 	}
 
-	public static ArrayList<Integer> getReplicaCounterR() {
-		return replicaCounterR;
+	public static ArrayList<Integer> getCuckooLowCounter() {
+		return cuckooLowCounter;
 	}
 
-	public static ArrayList<Integer> getReplicaCounterC() {
-		return replicaCounterC;
+	public static ArrayList<Boolean> getDataRequest() {
+		return dataRequest;
 	}
 
-	public static ArrayList<Data> getCyclesRequestList() {
-		return cyclesRequestList;
-	}
-
-	public static int getTotal(String dest) {
+	public static int getHighTotal(String dest) {
 		int value = 0;
 		switch (dest) {
 		case "owner":
-			return total.get(0);
+			return highTotal.get(0);
 		case "path":
-			return total.get(1);
+			return highTotal.get(1);
 		case "relate":
-			return total.get(2);
+			return highTotal.get(2);
 		case "cuckoo":
-			return total.get(3);
+			return highTotal.get(3);
+		default:
+			break;
+		}
+		return value;
+	}
+
+	public static int getLowTotal(String dest) {
+		int value = 0;
+		switch (dest) {
+		case "owner":
+			return lowTotal.get(0);
+		case "path":
+			return lowTotal.get(1);
+		case "relate":
+			return lowTotal.get(2);
+		case "cuckoo":
+			return lowTotal.get(3);
 		default:
 			break;
 		}
@@ -255,38 +283,35 @@ public class SharedResource implements Control {
 	public boolean execute() {
 		data = new Data();
 		dataCounter = new ArrayList<Integer>();
-		ownerCounter = new ArrayList<Integer>();
-		pathCounter = new ArrayList<Integer>();
-		relateCounter = new ArrayList<Integer>();
-		cuckooCounter = new ArrayList<Integer>();
-		upLoaded = new ArrayList<Boolean>();
-		relateOccu = new ArrayList<Double>();
-		cuckooOccu = new ArrayList<Double>();
-		replicaCounterR = new ArrayList<Integer>();
-		replicaCounterC = new ArrayList<Integer>();
-		cyclesRequestList = new ArrayList<Data>();
-		total = new ArrayList<Integer>();
+		ownerHighCounter = new ArrayList<Integer>();
+		ownerLowCounter = new ArrayList<Integer>();
+		pathHighCounter = new ArrayList<Integer>();
+		pathLowCounter = new ArrayList<Integer>();
+		relateHighCounter = new ArrayList<Integer>();
+		relateLowCounter = new ArrayList<Integer>();
+		cuckooHighCounter = new ArrayList<Integer>();
+		cuckooLowCounter = new ArrayList<Integer>();
+		highTotal = new ArrayList<Integer>();
+		lowTotal = new ArrayList<Integer>();
+		dataRequest = new ArrayList<Boolean>();
 		random = new Random();
-
-		for (int i = 0; i < Network.size(); i++) {
-			relateOccu.add(0.0);
-			cuckooOccu.add(0.0);
-		}
 
 		for (int dataID = 0; dataID < Data.getMaxVariety(); dataID++) {
 			dataCounter.add(dataID, 0);
-			ownerCounter.add(dataID, 0);
-			pathCounter.add(dataID, 0);
-			relateCounter.add(dataID, 0);
-			cuckooCounter.add(dataID, 0);
-			replicaCounterR.add(dataID, 0);
-			replicaCounterC.add(dataID, 0);
-			cyclesRequestList.add(dataID, null);
-			upLoaded.add(dataID, false);
+			ownerHighCounter.add(dataID, 0);
+			ownerLowCounter.add(dataID, 0);
+			pathHighCounter.add(dataID, 0);
+			pathLowCounter.add(dataID, 0);
+			relateHighCounter.add(dataID, 0);
+			relateLowCounter.add(dataID, 0);
+			cuckooHighCounter.add(dataID, 0);
+			cuckooLowCounter.add(dataID, 0);
+			dataRequest.add(dataID, false);
 		}
 
 		for (int i = 0; i < 4; i++) {
-			total.add(0);
+			highTotal.add(0);
+			lowTotal.add(0);
 		}
 
 		return false;

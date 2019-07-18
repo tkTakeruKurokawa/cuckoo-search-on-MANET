@@ -4,236 +4,103 @@ import peersim.config.*;
 import peersim.core.*;
 import java.util.*;
 
-import java.io.*;
 import java.lang.Math;
 
 public class GetReplications implements Control {
-	private static final String PAR_ALPHA = "alpha";
-	private static double alpha;
 	private static final String PAR_CAPACITY = "capacity";
 	private static double capacity;
 
 	private Random random = new Random();
-	private ArrayList<Integer> nowRelate = new ArrayList<Integer>();
-	private ArrayList<Integer> preRelate = new ArrayList<Integer>();
-	private ArrayList<Integer> relateReplica = new ArrayList<Integer>();
-	private ArrayList<Integer> nowCuckoo = new ArrayList<Integer>();
-	private ArrayList<Integer> preCuckoo = new ArrayList<Integer>();
-	private ArrayList<Integer> cuckooReplica = new ArrayList<Integer>();
-	private ArrayList<Boolean> decreaseReplicaR = new ArrayList<Boolean>();
-	private ArrayList<Boolean> decreaseReplicaC = new ArrayList<Boolean>();
-	private ArrayList<Integer> startReplicaR = new ArrayList<Integer>();
-	private ArrayList<Integer> startReplicaC = new ArrayList<Integer>();
-	private ArrayList<Double> total = new ArrayList<Double>();
+	private OutPut output = new OutPut();
 	private ArrayList<Double> hit = new ArrayList<Double>();
 	private ArrayList<Integer> miss = new ArrayList<Integer>();
 	private ArrayList<Integer> calcNum = new ArrayList<Integer>();
-	private ArrayList<Data> cyclesRequestList;
+	private ArrayList<Double> highRemainingValue = new ArrayList<Double>();
+	private ArrayList<Double> highRemainingSum = new ArrayList<Double>();
+	private ArrayList<Double> highRemainingAverage = new ArrayList<Double>();
+	private ArrayList<Double> highRemainingDistribution = new ArrayList<Double>();
+	private ArrayList<Double> highOccupancyCount = new ArrayList<Double>();
+	private ArrayList<Double> lowRemainingValue = new ArrayList<Double>();
+	private ArrayList<Double> lowRemainingSum = new ArrayList<Double>();
+	private ArrayList<Double> lowRemainingAverage = new ArrayList<Double>();
+	private ArrayList<Double> lowRemainingDistribution = new ArrayList<Double>();
+	private ArrayList<Double> lowOccupancyCount = new ArrayList<Double>();
 
-	private Statistic statR = new Statistic();
-	private Statistic statC = new Statistic();
-
-	private PrintWriter counterO;
-	private PrintWriter counterP;
-	private PrintWriter counterR;
-	private PrintWriter counterC;
-	private PrintWriter occuO;
-	private PrintWriter occuP;
-	private PrintWriter occuR;
-	private PrintWriter occuC;
-	private PrintWriter compR;
-	private PrintWriter compC;
-	private PrintWriter hitO;
-	private PrintWriter hitP;
-	private PrintWriter hitR;
-	private PrintWriter hitC;
-	private PrintWriter rawO;
-	private PrintWriter rawP;
-	private PrintWriter rawR;
-	private PrintWriter rawC;
-	private PrintWriter startReplication;
+	private ArrayList<Double> highOccupancy = new ArrayList<Double>();
+	private ArrayList<Double> lowOccupancy = new ArrayList<Double>();
 
 	private int cycle = 0;
-	private boolean done = false;
 
 	public GetReplications(String prefix) {
-		alpha = Configuration.getDouble(prefix + "." + PAR_ALPHA);
 		capacity = Configuration.getDouble(prefix + "." + PAR_CAPACITY);
 
-		for (int i = 0; i < Data.getMaxVariety(); i++) {
-			nowRelate.add(i, 0);
-			nowCuckoo.add(i, 0);
-			preRelate.add(i, 0);
-			preCuckoo.add(i, 0);
-			relateReplica.add(i, -1);
-			cuckooReplica.add(i, -1);
-			decreaseReplicaR.add(i, false);
-			decreaseReplicaC.add(i, false);
-			startReplicaR.add(i, -1);
-			startReplicaC.add(i, -1);
-		}
-
-		try {
-			File dir = new File("result");
-			if (!dir.exists()) {
-				dir.mkdir();
-			}
-
-			String way = new File(".").getAbsoluteFile().getParent();
-
-			String owner = way + "/result/counter_owner.tsv";
-			File ownerR = new File(owner);
-			owner = way + "/result/occupancy_owner.tsv";
-			File ownerO = new File(owner);
-			owner = way + "/result/hitRate_owner.tsv";
-			File ownerH = new File(owner);
-			owner = way + "/result/rawCounter_owner.tsv";
-			File ownerRaw = new File(owner);
-
-			String path = way + "/result/counter_path.tsv";
-			File pathR = new File(path);
-			path = way + "/result/occupancy_path.tsv";
-			File pathO = new File(path);
-			path = way + "/result/hitRate_path.tsv";
-			File pathH = new File(path);
-			path = way + "/result/rawCounter_path.tsv";
-			File pathRaw = new File(path);
-
-			String relate = way + "/result/counter_relate.tsv";
-			File relateR = new File(relate);
-			relate = way + "/result/occupancy_relate.tsv";
-			File relateO = new File(relate);
-			relate = way + "/result/hitRate_relate.tsv";
-			File relateH = new File(relate);
-			relate = way + "/result/compare_relate.tsv";
-			File relateC = new File(relate);
-			relate = way + "/result/rawCounter_relate.tsv";
-			File relateRaw = new File(relate);
-
-			String cuckoo = way + "/result/counter_cuckoo.tsv";
-			File cuckooR = new File(cuckoo);
-			cuckoo = way + "/result/occupancy_cuckoo.tsv";
-			File cuckooO = new File(cuckoo);
-			cuckoo = way + "/result/hitRate_cuckoo.tsv";
-			File cuckooH = new File(cuckoo);
-			cuckoo = way + "/result/compare_cuckoo.tsv";
-			File cuckooC = new File(cuckoo);
-			cuckoo = way + "/result/rawCounter_cuckoo.tsv";
-			File cuckooRaw = new File(cuckoo);
-
-			String start = way + "/result/startReplication.tsv";
-			File startRep = new File(start);
-
-			counterO = new PrintWriter(new BufferedWriter(new FileWriter(ownerR, true)));
-			counterP = new PrintWriter(new BufferedWriter(new FileWriter(pathR, true)));
-			counterR = new PrintWriter(new BufferedWriter(new FileWriter(relateR, true)));
-			counterC = new PrintWriter(new BufferedWriter(new FileWriter(cuckooR, true)));
-
-			occuO = new PrintWriter(new BufferedWriter(new FileWriter(ownerO, true)));
-			occuP = new PrintWriter(new BufferedWriter(new FileWriter(pathO, true)));
-			occuR = new PrintWriter(new BufferedWriter(new FileWriter(relateO, true)));
-			occuC = new PrintWriter(new BufferedWriter(new FileWriter(cuckooO, true)));
-
-			compR = new PrintWriter(new BufferedWriter(new FileWriter(relateC, true)));
-			compC = new PrintWriter(new BufferedWriter(new FileWriter(cuckooC, true)));
-
-			hitO = new PrintWriter(new BufferedWriter(new FileWriter(ownerH, true)));
-			hitP = new PrintWriter(new BufferedWriter(new FileWriter(pathH, true)));
-			hitR = new PrintWriter(new BufferedWriter(new FileWriter(relateH, true)));
-			hitC = new PrintWriter(new BufferedWriter(new FileWriter(cuckooH, true)));
-
-			rawO = new PrintWriter(new BufferedWriter(new FileWriter(ownerRaw, true)));
-			rawP = new PrintWriter(new BufferedWriter(new FileWriter(pathRaw, true)));
-			rawR = new PrintWriter(new BufferedWriter(new FileWriter(relateRaw, true)));
-			rawC = new PrintWriter(new BufferedWriter(new FileWriter(cuckooRaw, true)));
-
-			startReplication = new PrintWriter(new BufferedWriter(new FileWriter(startRep, true)));
-
-		} catch (IOException e) {
-			System.out.println(e);
-		}
 		for (int i = 0; i < 4; i++) {
-			total.add(i, 0.0);
 			hit.add(i, 0.0);
 			miss.add(i, 0);
 			calcNum.add(i, 0);
+			highRemainingSum.add(i, 0.0);
+			highRemainingAverage.add(i, 0.0);
+			highRemainingDistribution.add(i, 0.0);
+			highOccupancyCount.add(i, 0.0);
+			lowRemainingSum.add(i, 0.0);
+			lowRemainingAverage.add(i, 0.0);
+			lowRemainingDistribution.add(i, 0.0);
+			lowOccupancyCount.add(i, 0.0);
+
+			highOccupancy.add(i, 0.0);
+			lowOccupancy.add(i, 0.0);
 		}
-
-		rawO = setRawComments(rawO);
-		counterO = setAvailavilityComments(counterO);
-		rawP = setRawComments(rawP);
-		counterP = setAvailavilityComments(counterP);
-		rawR = setRawComments(rawR);
-		counterR = setAvailavilityComments(counterR);
-		rawC = setRawComments(rawC);
-		counterC = setAvailavilityComments(counterC);
-	}
-
-	public void closeFiles() {
-		compR = statR.output(compR);
-		compC = statC.output(compC);
-
-		counterO.println();
-		counterP.println();
-		counterR.println();
-		counterC.println();
-		occuO.println();
-		occuP.println();
-		occuR.println();
-		occuC.println();
-		compR.println();
-		compC.println();
-		startReplication.println();
-
-		counterO.close();
-		counterP.close();
-		counterR.close();
-		counterC.close();
-		occuO.close();
-		occuP.close();
-		occuR.close();
-		occuC.close();
-		hitO.close();
-		hitP.close();
-		hitR.close();
-		hitC.close();
-		rawO.close();
-		rawP.close();
-		rawR.close();
-		rawC.close();
-		compR.close();
-		compC.close();
-		startReplication.close();
 	}
 
 	public void calcHitRate() {
-		hitO.println("Number of Hit\tAverage Hops\tNumber of Miss");
-		hitO.println(calcNum.get(0) + "\t" + hit.get(0) / ((double) calcNum.get(0)) + "\t" + miss.get(0));
-		hitP.println("Number of Hit\tAverage Hops\tNumber of Miss");
-		hitP.println(calcNum.get(1) + "\t" + hit.get(1) / ((double) calcNum.get(1)) + "\t" + miss.get(1));
-		hitR.println("Number of Hit\tAverage Hops\tNumber of Miss");
-		hitR.println(calcNum.get(2) + "\t" + hit.get(2) / ((double) calcNum.get(2)) + "\t" + miss.get(2));
-		hitC.println("Number of Hit\tAverage Hops\tNumber of Miss");
-		hitC.println(calcNum.get(3) + "\t" + hit.get(3) / ((double) calcNum.get(3)) + "\t" + miss.get(3));
+		for (int i = 0; i < 4; i++) {
+			output.writeHitRate(i, calcNum.get(i), hit.get(i) / ((double) calcNum.get(i)), miss.get(i));
+		}
 	}
 
-	public boolean exists(Data data, int id) {
+	public boolean existsHigh(Data data, int id) {
 		int num = 0;
 		switch (id) {
 		case 0:
-			ArrayList<Integer> dcOwner = SharedResource.getOwnerCounter();
+			ArrayList<Integer> dcOwner = SharedResource.getOwnerHighCounter();
 			num = dcOwner.get(data.getID());
 			break;
 		case 1:
-			ArrayList<Integer> dcPath = SharedResource.getPathCounter();
+			ArrayList<Integer> dcPath = SharedResource.getPathHighCounter();
 			num = dcPath.get(data.getID());
 			break;
 		case 2:
-			ArrayList<Integer> dcRelate = SharedResource.getRelateCounter();
+			ArrayList<Integer> dcRelate = SharedResource.getRelateHighCounter();
 			num = dcRelate.get(data.getID());
 			break;
 		case 3:
-			ArrayList<Integer> dcCuckoo = SharedResource.getCuckooCounter();
+			ArrayList<Integer> dcCuckoo = SharedResource.getCuckooHighCounter();
+			num = dcCuckoo.get(data.getID());
+			break;
+		}
+		if (num > 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean existsLow(Data data, int id) {
+		int num = 0;
+		switch (id) {
+		case 0:
+			ArrayList<Integer> dcOwner = SharedResource.getOwnerLowCounter();
+			num = dcOwner.get(data.getID());
+			break;
+		case 1:
+			ArrayList<Integer> dcPath = SharedResource.getPathLowCounter();
+			num = dcPath.get(data.getID());
+			break;
+		case 2:
+			ArrayList<Integer> dcRelate = SharedResource.getRelateLowCounter();
+			num = dcRelate.get(data.getID());
+			break;
+		case 3:
+			ArrayList<Integer> dcCuckoo = SharedResource.getCuckooLowCounter();
 			num = dcCuckoo.get(data.getID());
 			break;
 		}
@@ -247,7 +114,7 @@ public class GetReplications implements Control {
 		// System.out.println("ID: " + id + "Node: " + node.getIndex() + " Data: " +
 		// data.getID());
 
-		if (!exists(data, id)) {
+		if (!existsHigh(data, id) && !existsLow(data, id)) {
 			miss.set(id, miss.get(id) + 1);
 			return;
 		}
@@ -263,71 +130,36 @@ public class GetReplications implements Control {
 	}
 
 	public void hitRate() {
-		ArrayList<Boolean> upLoaded = SharedResource.getUpLoaded();
-		int count = 0;
-		for (int i = 0; i < Data.getNowVariety(); i++) {
-			if (Objects.equals(upLoaded.get(i), true)) {
-				count++;
-			}
-		}
-
-		if (count != 0) {
-			int nodeID = random.nextInt(Network.size());
-			int dataID = random.nextInt(count);
-			for (int i = 0; i < 4; i++) {
-				hitOrMiss(Network.get(nodeID), Data.getData(dataID), i);
-			}
+		int nodeID = random.nextInt(Network.size());
+		int dataID = random.nextInt(Data.getNowVariety());
+		for (int i = 0; i < 4; i++) {
+			hitOrMiss(Network.get(nodeID), Data.getData(dataID), i);
 		}
 	}
 
-	public void calcOccupancy(Parameter parameter, int id) {
+	public void calcOccupancy(int id, Parameter parameter, Storage storage) {
 		// double occupancy = ((double)parameter.getCapacity()) / capacity;
-		// total.set(id, total.get(id)+occupancy);
-		int occupancy = (int) capacity - parameter.getCapacity();
-		total.set(id, total.get(id) + occupancy);
-	}
-
-	public void setOccupancy() {
-		if (cycle == 0) {
-			occuO.printf("cycle\toccupancy\n");
-			occuP.printf("cycle\toccupancy\n");
-			occuR.printf("cycle\toccupancy\n");
-			occuC.printf("cycle\toccupancy\n");
+		// highRemainingSum.set(id, highRemainingSum.get(id)+occupancy);
+		boolean high = false;
+		boolean low = false;
+		for (Data data : storage.getData()) {
+			if (Objects.equals(data.getType(), "high") && high == false) {
+				highRemainingValue.add(((double) parameter.getCapacity()));
+				highRemainingSum.set(id, highRemainingSum.get(id) + ((double) parameter.getCapacity()));
+				highOccupancyCount.set(id, highOccupancyCount.get(id) + 1.0);
+				highRemainingAverage.set(id, highRemainingSum.get(id) / highOccupancyCount.get(id));
+				highOccupancy.set(id, highOccupancy.get(id) + (capacity - ((double) parameter.getCapacity())));
+				high = true;
+			}
+			if (Objects.equals(data.getType(), "low") && low == false) {
+				lowRemainingValue.add(((double) parameter.getCapacity()));
+				lowRemainingSum.set(id, lowRemainingSum.get(id) + ((double) parameter.getCapacity()));
+				lowOccupancyCount.set(id, lowOccupancyCount.get(id) + 1.0);
+				lowRemainingAverage.set(id, lowRemainingSum.get(id) / lowOccupancyCount.get(id));
+				lowOccupancy.set(id, lowOccupancy.get(id) + (capacity - ((double) parameter.getCapacity())));
+				low = true;
+			}
 		}
-
-		// for(int i=0; i<4; i++){
-		// total.set(i, 0.0d);
-		// }
-		for (int i = 0; i < Network.size(); i++) {
-			calcOccupancy(SharedResource.getNPOwner(Network.get(i)), 0);
-			calcOccupancy(SharedResource.getNPPath(Network.get(i)), 1);
-			calcOccupancy(SharedResource.getNPRelate(Network.get(i)), 2);
-			calcOccupancy(SharedResource.getNPCuckoo(Network.get(i)), 3);
-		}
-		// occuO.println(cycle + "\t" + (total.get(0)/(double)Network.size()));
-		// occuP.println(cycle + "\t" + (total.get(1)/(double)Network.size()));
-		// occuR.println(cycle + "\t" + (total.get(2)/(double)Network.size()));
-		// occuC.println(cycle + "\t" + (total.get(3)/(double)Network.size()));
-		occuO.println(cycle + "\t" + total.get(0));
-		occuP.println(cycle + "\t" + total.get(1));
-		occuR.println(cycle + "\t" + total.get(2));
-		occuC.println(cycle + "\t" + total.get(3));
-	}
-
-	public PrintWriter setRawComments(PrintWriter pw) {
-
-		pw.println("Cycle\tNow Replications\tTotal Replications");
-		pw.println();
-
-		return pw;
-	}
-
-	public PrintWriter setAvailavilityComments(PrintWriter pw) {
-
-		pw.printf("Cycle\tData Availavility");
-		pw.println();
-
-		return pw;
 	}
 
 	public boolean check(Storage storage, Parameter parameter, Data data) {
@@ -342,305 +174,224 @@ public class GetReplications implements Control {
 		return false;
 	}
 
-	public void relatedResearch(int dataID, int dataNum) {
-		Data data = Data.getData(dataID);
-		int diff = relateReplica.get(dataID) - dataNum;
-		if (dataID % 5 == 0 && dataID % 10 != 0) {
-			// System.out.println("Data "+ dataID);
-			// System.out.println("\trelateReplica " + relateReplica.get(dataID) + " dataNum
-			// " + dataNum);
-		}
-
-		int addNum = 0;
-		Node node;
-		while (addNum < diff) {
-			do {
-				node = Network.get(random.nextInt(Network.size()));
-				node = RelatedResearch.getBestNode(node, data);
-			} while (Objects.equals(node, null));
-
-			StorageRelate storage = SharedResource.getSRelate(node);
-			NPRelate parameter = SharedResource.getNPRelate(node);
-			boolean success = check(storage, parameter, data);
-
-			if (!success) {
-				continue;
-			}
-
-			if (done) {
-				statR.set(parameter);
-			}
-			storage.setReplica(node, data);
-
-			addNum++;
-		}
-	}
-
-	public void cuckooSearch(int dataID, int dataNum) {
-		Data data = Data.getData(dataID);
-		int diff = cuckooReplica.get(dataID) - dataNum;
-		if (dataID % 5 == 0 && dataID % 10 != 0) {
-			// System.out.println("Data "+ dataID);
-			// System.out.println("cuckooReplica " + cuckooReplica.get(dataID) + " dataNum "
-			// + dataNum);
-		}
-		int addNum = 0;
-		Node node;
-		// System.out.println("Add Num: " + diff);
-		while (addNum < diff) {
-			node = CuckooSearch.search(data);
-			if (Objects.equals(node, null)) {
-				continue;
-			}
-			// System.out.println("CS Node: " + node);
-
-			Parameter parameter = SharedResource.getNPCuckoo(node);
-			statC.set(parameter);
-			done = true;
-
-			StorageCuckoo storage = SharedResource.getSCuckoo(node);
-			storage.setReplica(node, data);
-			addNum++;
-		}
-	}
-
 	public void owner() {
-		ArrayList<Integer> dataCounter = SharedResource.getOwnerCounter();
+		ArrayList<Integer> highCounter = SharedResource.getOwnerHighCounter();
+		ArrayList<Integer> lowCounter = SharedResource.getOwnerLowCounter();
 
-		counterO.printf("%d\t", cycle);
-		int totalNum = 0;
-		double availability = 0.0;
+		int highSum = 0;
+		int lowSum = 0;
+		double highAvailability = 0.0;
+		double lowAvailability = 0.0;
 		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
-			Integer dataNum = dataCounter.get(dataID);
-			// System.out.println("Data: " + dataID + "\tNum: " + dataNum);
-			if (dataNum == null) {
-				dataNum = 0;
+			if (Objects.equals(Data.getData(dataID).getType(), "high") && highCounter.get(dataID) != null) {
+				highSum += highCounter.get(dataID);
 			}
-
-			totalNum += dataNum;
+			if (Objects.equals(Data.getData(dataID).getType(), "low") && lowCounter.get(dataID) != null) {
+				lowSum += lowCounter.get(dataID);
+			}
+			// System.out.println("Data: " + dataID + "\tNum: " + dataNum);
 		}
 
-		int all = SharedResource.getTotal("owner");
-		availability = ((double) totalNum) / ((double) all);
+		int highAll = SharedResource.getHighTotal("owner");
+		int lowAll = SharedResource.getLowTotal("owner");
 
-		rawO.println(cycle + "\t" + totalNum + "\t" + all);
-		counterO.println(availability);
+		highAvailability = ((double) highSum) / ((double) highAll);
+		lowAvailability = ((double) lowSum) / ((double) lowAll);
+
+		output.writeHighCount("owner", cycle, highAvailability, highSum, highAll);
+		output.writeLowCount("owner", cycle, lowAvailability, lowSum, lowAll);
 	}
 
 	public void path() {
-		ArrayList<Integer> dataCounter = SharedResource.getPathCounter();
+		ArrayList<Integer> highCounter = SharedResource.getPathHighCounter();
+		ArrayList<Integer> lowCounter = SharedResource.getPathLowCounter();
 
-		counterP.printf("%d\t", cycle);
-		int totalNum = 0;
-		double availability = 0.0;
+		int highSum = 0;
+		int lowSum = 0;
+		double highAvailability = 0.0;
+		double lowAvailability = 0.0;
 		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
-			Integer dataNum = dataCounter.get(dataID);
-
-			if (dataNum == null) {
-				dataNum = 0;
+			if (Objects.equals(Data.getData(dataID).getType(), "high") && highCounter.get(dataID) != null) {
+				highSum += highCounter.get(dataID);
 			}
-
-			totalNum += dataNum;
+			if (Objects.equals(Data.getData(dataID).getType(), "low") && lowCounter.get(dataID) != null) {
+				lowSum += lowCounter.get(dataID);
+			}
+			// System.out.println("Data: " + dataID + "\tNum: " + dataNum);
 		}
 
-		int all = SharedResource.getTotal("path");
-		availability = ((double) totalNum) / ((double) all);
-		// System.out.println();
-		// System.out.println("Availability: " + availability);
-		// System.out.println("Now Replicas: " + totalNum);
-		// System.out.println("total Replicas: " + all);
+		int highAll = SharedResource.getHighTotal("path");
+		int lowAll = SharedResource.getLowTotal("path");
 
-		rawP.println(cycle + "\t" + totalNum + "\t" + all);
-		counterP.println(availability);
+		highAvailability = ((double) highSum) / ((double) highAll);
+		lowAvailability = ((double) lowSum) / ((double) lowAll);
+
+		output.writeHighCount("path", cycle, highAvailability, highSum, highAll);
+		output.writeLowCount("path", cycle, lowAvailability, lowSum, lowAll);
 	}
 
 	public void relate() {
-		ArrayList<Integer> dataCounter = SharedResource.getRelateCounter();
-		ArrayList<Integer> replicaCounter = SharedResource.getReplicaCounterR();
+		ArrayList<Integer> highCounter = SharedResource.getRelateHighCounter();
+		ArrayList<Integer> lowCounter = SharedResource.getRelateLowCounter();
 
-		ArrayList<Double> relateOccu = SharedResource.getRelateOccu();
-		double sum = 0.0;
-		for (int i = 0; i < Network.size(); i++) {
-			Parameter parameter = SharedResource.getNPRelate(Network.get(i));
-			double occupancy = ((double) parameter.getCapacity()) / capacity;
-
-			sum += occupancy;
-			relateOccu.set(i, relateOccu.get(i) + occupancy);
-		}
-		SharedResource.setRelateOccu(relateOccu);
-
-		int total = 0;
-		for (int i = 0; i < Data.getNowVariety(); i++) {
-			total += dataCounter.get(i);
-		}
-
-		counterR.printf("%d\t", cycle);
-		int totalNum = 0;
-		double availability = 0.0;
+		int highSum = 0;
+		int lowSum = 0;
+		double highAvailability = 0.0;
+		double lowAvailability = 0.0;
 		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
-			Integer dataNum = dataCounter.get(dataID);
-
-			nowRelate.set(dataID, dataNum);
-			if (preRelate.get(dataID) > nowRelate.get(dataID)) {
-				decreaseReplicaR.set(dataID, true);
+			if (Objects.equals(Data.getData(dataID).getType(), "high") && highCounter.get(dataID) != null) {
+				highSum += highCounter.get(dataID);
 			}
-			if (decreaseReplicaR.get(dataID) && cyclesRequestList.contains(Data.getData(dataID))) {
-				startReplicaR.set(dataID, -1);
-				decreaseReplicaR.set(dataID, false);
+			if (Objects.equals(Data.getData(dataID).getType(), "low") && lowCounter.get(dataID) != null) {
+				lowSum += lowCounter.get(dataID);
 			}
-
-			if (dataNum < total * 0.05) {
-				if (decreaseReplicaR.get(dataID)) {
-					if (startReplicaR.get(dataID) < 0) {
-						int num = 5;
-						relateReplica.set(dataID, num);
-						startReplicaR.set(dataID, cycle);
-					}
-				}
-			}
-
-			if (0 <= startReplicaR.get(dataID)) {
-				relatedResearch(dataID, replicaCounter.get(dataID));
-				dataCounter = SharedResource.getRelateCounter();
-			}
-
-			preRelate.set(dataID, nowRelate.get(dataID));
-
-			totalNum += (int) dataCounter.get(dataID);
+			// System.out.println("Data: " + dataID + "\tNum: " + dataNum);
 		}
 
-		int all = SharedResource.getTotal("relate");
-		availability = ((double) totalNum) / ((double) all);
+		int highAll = SharedResource.getHighTotal("relate");
+		int lowAll = SharedResource.getLowTotal("relate");
 
-		rawR.println(cycle + "\t" + totalNum + "\t" + all);
-		counterR.println(availability);
+		highAvailability = ((double) highSum) / ((double) highAll);
+		lowAvailability = ((double) lowSum) / ((double) lowAll);
+
+		output.writeHighCount("relate", cycle, highAvailability, highSum, highAll);
+		output.writeLowCount("relate", cycle, lowAvailability, lowSum, lowAll);
 	}
 
 	public void cuckoo() {
-		ArrayList<Integer> dataCounter = SharedResource.getCuckooCounter();
-		ArrayList<Integer> replicaCounter = SharedResource.getReplicaCounterC();
+		ArrayList<Integer> highCounter = SharedResource.getCuckooHighCounter();
+		ArrayList<Integer> lowCounter = SharedResource.getCuckooLowCounter();
 
-		double sum = 0.0;
-		ArrayList<Double> cuckooOccu = SharedResource.getCuckooOccu();
-		for (int i = 0; i < Network.size(); i++) {
-			Parameter parameter = SharedResource.getNPCuckoo(Network.get(i));
-			double occupancy = ((double) parameter.getCapacity()) / capacity;
-
-			sum += occupancy;
-			cuckooOccu.set(i, cuckooOccu.get(i) + occupancy);
-
-			Node node = Network.get(i);
-		}
-		SharedResource.setCuckooOccu(cuckooOccu);
-
-		int total = 0;
-		for (int i = 0; i < Data.getNowVariety(); i++) {
-			total += dataCounter.get(i);
-		}
-		// System.out.println(total*0.05);
-
-		counterC.printf("%d\t", cycle);
-		int totalNum = 0;
-		double availability = 0.0;
+		int highSum = 0;
+		int lowSum = 0;
+		double highAvailability = 0.0;
+		double lowAvailability = 0.0;
 		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
-			Integer dataNum = dataCounter.get(dataID);
-
-			nowCuckoo.set(dataID, dataNum);
-			// 現在のデータの数が前回のデータの数より少なくなった場合
-			if (preCuckoo.get(dataID) > nowCuckoo.get(dataID)) {
-				decreaseReplicaC.set(dataID, true);
+			if (Objects.equals(Data.getData(dataID).getType(), "high") && highCounter.get(dataID) != null) {
+				highSum += highCounter.get(dataID);
 			}
-			// 減少中であるのもかかわらず、現在のデータ数が前回のデータ数を上回った場合
-			// ただし、複製配置で増えた分は除く
-			if (cyclesRequestList.get(dataID) != null) {
-				// System.out.println("This cycle request Data " +
-				// cyclesRequestList.get(dataID).getID());
-
+			if (Objects.equals(Data.getData(dataID).getType(), "low") && lowCounter.get(dataID) != null) {
+				lowSum += lowCounter.get(dataID);
 			}
-			if (decreaseReplicaC.get(dataID) && cyclesRequestList.contains(Data.getData(dataID))) {
-				startReplicaC.set(dataID, -1);
-				decreaseReplicaC.set(dataID, false);
-			}
-
-			if (dataNum < total * 0.05) {
-				if (decreaseReplicaC.get(dataID)) {
-					if (startReplicaC.get(dataID) < 0) {
-						int num = 5;
-						cuckooReplica.set(dataID, num);
-						startReplicaC.set(dataID, cycle);
-					}
-				}
-			}
-
-			// System.out.println("Data " + dataID + " replica : " +
-			// replicaCounter.get(dataID));
-
-			if (0 <= startReplicaC.get(dataID) && (cycle - startReplicaC.get(dataID)) < 100) {
-				// System.out.println("befor Num " + dataCounter.get(dataID));
-				cuckooSearch(dataID, replicaCounter.get(dataID));
-				dataCounter = SharedResource.getCuckooCounter();
-				// System.out.println("after Num " + dataCounter.get(dataID));
-				// System.out.println();
-			}
-
-			preCuckoo.set(dataID, nowCuckoo.get(dataID));
-
-			if (dataNum == null)
-				dataNum = 0;
-
-			totalNum += (int) dataCounter.get(dataID);
+			// System.out.println("Data: " + dataID + "\tNum: " + dataNum);
 		}
 
-		int all = SharedResource.getTotal("cuckoo");
-		availability = ((double) totalNum) / ((double) all);
+		int highAll = SharedResource.getHighTotal("cuckoo");
+		int lowAll = SharedResource.getLowTotal("cuckoo");
 
-		rawC.println(cycle + "\t" + totalNum + "\t" + all);
-		counterC.println(availability);
+		highAvailability = ((double) highSum) / ((double) highAll);
+		lowAvailability = ((double) lowSum) / ((double) lowAll);
+
+		output.writeHighCount("cuckoo", cycle, highAvailability, highSum, highAll);
+		output.writeLowCount("cuckoo", cycle, lowAvailability, lowSum, lowAll);
 	}
 
 	public boolean execute() {
-		cyclesRequestList = SharedResource.getCyclesRequestList();
 
 		owner();
 		path();
 		cuckoo();
 		relate();
 
-		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
-			cyclesRequestList.set(dataID, null);
+		highRemainingValue = new ArrayList<Double>();
+		lowRemainingValue = new ArrayList<Double>();
+		for (int i = 0; i < 4; i++) {
+			highRemainingSum.set(i, 0.0);
+			highRemainingAverage.set(i, 0.0);
+			highRemainingDistribution.set(i, 0.0);
+			highOccupancyCount.set(i, 0.0);
+			lowRemainingSum.set(i, 0.0);
+			lowRemainingAverage.set(i, 0.0);
+			lowRemainingDistribution.set(i, 0.0);
+			lowOccupancyCount.set(i, 0.0);
 		}
-		SharedResource.setCyclesRequestList(cyclesRequestList);
 
-		setOccupancy();
+		int allLinks = 0;
+		for (int nodeID = 0; nodeID < Network.size(); nodeID++) {
+			// 平均リンク数の測定用
+			Node node = Network.get(nodeID);
+			Link linkable = SharedResource.getLink(node);
+			allLinks += linkable.degree();
+
+			calcOccupancy(0, SharedResource.getNPOwner(Network.get(nodeID)),
+					SharedResource.getSOwner(Network.get(nodeID)));
+			calcOccupancy(1, SharedResource.getNPPath(Network.get(nodeID)),
+					SharedResource.getSPath(Network.get(nodeID)));
+			calcOccupancy(2, SharedResource.getNPRelate(Network.get(nodeID)),
+					SharedResource.getSRelate(Network.get(nodeID)));
+			calcOccupancy(3, SharedResource.getNPCuckoo(Network.get(nodeID)),
+					SharedResource.getSCuckoo(Network.get(nodeID)));
+		}
+		output.writeAverageLinks(cycle, ((double) allLinks) / Network.size());
+
+		for (int i = 0; i < 4; i++) {
+			int highCount = highOccupancyCount.get(i).intValue();
+			for (int j = 0; j < highCount; j++) {
+				highRemainingDistribution.set(i, highRemainingDistribution.get(i)
+						+ Math.pow(highRemainingValue.get(j) - highRemainingAverage.get(i), 2));
+			}
+			highRemainingValue.subList(0, highCount).clear();
+		}
+
+		for (int i = 0; i < 4; i++) {
+			int lowCount = lowOccupancyCount.get(i).intValue();
+			for (int j = 0; j < lowCount; j++) {
+				lowRemainingDistribution.set(i, lowRemainingDistribution.get(i)
+						+ Math.pow(lowRemainingValue.get(j) - lowRemainingAverage.get(i), 2));
+			}
+			lowRemainingValue.subList(0, lowCount).clear();
+		}
+
+		for (int i = 0; i < 4; i++) {
+			if (highOccupancyCount.get(i) < 1.0 && highRemainingSum.get(i) < 1.0) {
+				output.writeHighRemaining(i, cycle, capacity, 0.0);
+			} else {
+				output.writeHighRemaining(i, cycle, highRemainingAverage.get(i),
+						Math.sqrt(highRemainingDistribution.get(i) / highOccupancyCount.get(i)));
+			}
+			if (lowOccupancyCount.get(i) < 1.0 && lowRemainingSum.get(i) < 1.0) {
+				output.writeLowRemaining(i, cycle, capacity, 0.0);
+			} else {
+				output.writeLowRemaining(i, cycle, lowRemainingAverage.get(i),
+						Math.sqrt(lowRemainingDistribution.get(i) / lowOccupancyCount.get(i)));
+			}
+			output.writeHighOccupancy(i, cycle, highOccupancy.get(i));
+			output.writeLowOccupancy(i, cycle, lowOccupancy.get(i));
+		}
+
 		hitRate();
 
-		done = false;
 		cycle++;
 
 		if (cycle == 500) {
-
-			for (int i = 0; i < Data.getMaxVariety(); i++) {
-				startReplication.println("Data " + i + " start Replication cycle");
-				startReplication.println("Relate: " + startReplicaR.get(i) + " Cuckoo: " + startReplicaC.get(i));
-			}
 			calcHitRate();
-			closeFiles();
-			System.out.println("Final Nodes: " + Network.size());
-			System.out.println("Owner occupancy: " + total.get(0));
-			System.out.println("Path occupancy: " + total.get(1));
-			System.out.println("Relate occupancy: " + total.get(2));
-			System.out.println("Cuckoo occupancy: " + total.get(3));
+			output.closeFiles();
 
-			// System.out.println("Cuckoo_Owner= " + (1.0 - (total.get(0) / total.get(3))));
-			// System.out.println("Relate_Owner = " + (1.0 - (total.get(0) /
-			// total.get(2))));
-			// System.out.println("Relate_Cuckoo = " + (1.0 - (total.get(3) /
-			// total.get(2))));
+			// System.out.println("Final Nodes: " + Network.size());
+			// System.out.println("High Owner occupancy: " + highOccupancy.get(0));
+			// System.out.println("High Path occupancy: " + highOccupancy.get(1));
+			// System.out.println("High Relate occupancy: " + highOccupancy.get(2));
+			// System.out.println("High Cuckoo occupancy: " + highOccupancy.get(3));
+
+			// System.out.println("Low Owner occupancy: " + lowOccupancy.get(0));
+			// System.out.println("Low Path occupancy: " + lowOccupancy.get(1));
+			// System.out.println("Low Relate occupancy: " + lowOccupancy.get(2));
+			// System.out.println("Low Cuckoo occupancy: " + lowOccupancy.get(3));
+
+			// System.out.println("Cuckoo_Owner= " + (1.0 - (highRemainingSum.get(0) /
+			// highRemainingSum.get(3))));
+			// System.out.println("Relate_Owner = " + (1.0 - (highRemainingSum.get(0) /
+			// highRemainingSum.get(2))));
+			// System.out.println("Relate_Cuckoo = " + (1.0 - (highRemainingSum.get(3) /
+			// highRemainingSum.get(2))));
 
 			// System.out.println("Storage Occupancy");
-			// System.out.println("\tCuckoo-Owner= " + (total.get(3) - total.get(0)));
-			// System.out.println("\tRelate-Owner= " + (total.get(2) - total.get(0)));
-			// System.out.println("\tRelate-Cuckoo= " + (total.get(2) - total.get(3)));
+			// System.out.println("\tCuckoo-Owner= " + (highRemainingSum.get(3) -
+			// highRemainingSum.get(0)));
+			// System.out.println("\tRelate-Owner= " + (highRemainingSum.get(2) -
+			// highRemainingSum.get(0)));
+			// System.out.println("\tRelate-Cuckoo= " + (highRemainingSum.get(2) -
+			// highRemainingSum.get(3)));
 		}
 
 		return false;
