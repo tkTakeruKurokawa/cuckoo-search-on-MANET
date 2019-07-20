@@ -1,11 +1,9 @@
 package research;
 
 import peersim.core.*;
-import peersim.config.*;
-import java.util.*;
 
-public interface Parameter extends Protocol{
-	
+public interface Parameter extends Protocol {
+
 	public Object clone();
 
 	public void setBattery(double battery);
@@ -18,4 +16,3 @@ public interface Parameter extends Protocol{
 
 	public String toString();
 }
-

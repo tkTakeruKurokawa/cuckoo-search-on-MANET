@@ -26,7 +26,6 @@ public class Nest implements Control {
 	private double[] newEgg;
 	private double value;
 	private double distance;
-	private int addID;
 
 	public Nest(Node node) {
 		this.node = node;
@@ -151,6 +150,7 @@ public class Nest implements Control {
 			// ", " + srcCrd.getY() + ")");
 
 			Link linkable = SharedResource.getLink(base);
+			// System.out.println(linkable.degree());
 			for (int i = 0; i < linkable.degree(); i++) {
 				Node n = linkable.getNeighbor(i);
 
@@ -180,8 +180,9 @@ public class Nest implements Control {
 		Node candidate;
 
 		candidate = levyWalk(src);
-		if (Objects.equals(candidate, null))
+		if (Objects.equals(candidate, null)) {
 			return false;
+		}
 
 		NPCuckoo parameter = SharedResource.getNPCuckoo(candidate);
 		newEgg[0] = parameter.getBattery();
@@ -200,11 +201,8 @@ public class Nest implements Control {
 			egg = newEgg;
 			newEgg = tmp;
 			value = newValue;
-			NestSet ns = new NestSet();
-			ns.sort(0, ns.SET_SIZE - 1);
 		}
 
-		addID = this.node.getIndex();
 		return true;
 	}
 
@@ -227,26 +225,26 @@ public class Nest implements Control {
 	public void abandon(int nodeID) {
 		Node newNode = Network.get(nodeID);
 		NPCuckoo parameter = SharedResource.getNPCuckoo(newNode);
+		newEgg[0] = parameter.getBattery();
+		newEgg[1] = parameter.getCapacity();
 
-		this.node = newNode;
-		egg[0] = parameter.getBattery();
-		egg[1] = parameter.getCapacity();
-		value = evaluate(egg);
+		if (evaluate(newEgg) > evaluate(egg)) {
+			this.node = newNode;
+			egg[0] = newEgg[0];
+			egg[1] = newEgg[1];
+			value = evaluate(newEgg);
+		}
 	}
 
 	public double evaluate(double[] egg) {
 		double battery = egg[0] / 100.0;
 		double capacity = egg[1] / this.capacity;
 
-		double value = 2.0 * battery + 1.0 * capacity;
+		double value = 1.0 * battery + 1.0 * capacity;
 		value = Math.log(value);
 		if (egg[1] < 1.0)
 			value = Double.NEGATIVE_INFINITY;
 		return value;
-	}
-
-	public int getAddID() {
-		return addID;
 	}
 
 	public Node getNode() {

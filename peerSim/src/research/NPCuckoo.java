@@ -1,43 +1,38 @@
 package research;
 
-import peersim.core.*;
-import peersim.config.*;
-import java.util.*;
+public class NPCuckoo implements Parameter {
+	private double battery = 0.0;
+	private int capacity = 0;
 
-public class NPCuckoo implements Parameter{
-	private double battery=0.0;
-	private int capacity=0;
-	
-	public NPCuckoo(String prefix){
+	public NPCuckoo(String prefix) {
 	}
 
-	public Object clone(){
+	public Object clone() {
 		NPCuckoo parameter = null;
-		try{
+		try {
 			parameter = (NPCuckoo) super.clone();
-		}catch(CloneNotSupportedException e){
+		} catch (CloneNotSupportedException e) {
 		}
 		return parameter;
 	}
 
-	public void setBattery(double battery){
+	public void setBattery(double battery) {
 		this.battery = battery;
 	}
 
-	public void setCapacity(int capacity){
+	public void setCapacity(int capacity) {
 		this.capacity = capacity;
 	}
 
-	public double getBattery(){
+	public double getBattery() {
 		return battery;
 	}
 
-	public int getCapacity(){
+	public int getCapacity() {
 		return capacity;
 	}
 
-
-	public String toString(){
+	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("NPCuckoo: Battery = " + getBattery() + " Capacity = ");
 		return buffer.append(getCapacity()).toString();

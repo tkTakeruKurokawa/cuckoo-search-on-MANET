@@ -7,20 +7,46 @@ import java.lang.Math;
 import java.util.*;
 
 public class ModifyNetwork implements Control {
-	private static final String PAR_CAPACITY = "capacity";
-	private static int capacity;
+	private static final String PAR_LEAVE_CAPACITY = "leave_capacity";
+	private static int leaveCapacity;
+	private static final String PAR_JOIN_CAPACITY = "join_capacity";
+	private static int joinCapacity;
+	private static final String PAR_LEAVE_LAMBDA = "leave_lambda";
+	private static int leaveLambdaMax;
+	private static final String PAR_JOIN_LAMBDA = "join_lambda";
+	private static int joinLambdaMax;
 
 	private static Queue<Node> queue = new ArrayDeque<Node>();
 	private static ArrayList<Integer> rnd = new ArrayList<Integer>();
 	private static ArrayList<Integer> hit = new ArrayList<Integer>();
+	private static ArrayList<Double> joinLambda = new ArrayList<Double>();
+	private static ArrayList<Double> leaveLambda = new ArrayList<Double>();
+	private static ArrayList<Double> joinCycle = new ArrayList<Double>();
+	private static ArrayList<Double> leaveCycle = new ArrayList<Double>();
 	private static Random random = new Random();
 	private static BigDecimal threshold = BigDecimal.valueOf(0.0d);
 
+	private static int joinSum = 0;
+	private static int leaveSum = 0;
+	private static int count = 0;
+
 	public ModifyNetwork(String prefix) {
-		capacity = Configuration.getInt(prefix + "." + PAR_CAPACITY);
+		leaveCapacity = Configuration.getInt(prefix + "." + PAR_LEAVE_CAPACITY);
+		joinCapacity = Configuration.getInt(prefix + "." + PAR_JOIN_CAPACITY);
+		leaveLambdaMax = Configuration.getInt(prefix + "." + PAR_LEAVE_LAMBDA);
+		joinLambdaMax = Configuration.getInt(prefix + "." + PAR_JOIN_LAMBDA);
 
 		for (int i = 0; i < 100; i++) {
 			rnd.add(i);
+		}
+
+		for (int i = 0; i < joinCapacity; i++) {
+			joinLambda.add(1.0 / (random.nextDouble() * ((double) joinLambdaMax)));
+			joinCycle.add(0.0);
+		}
+		for (int i = 0; i < leaveCapacity; i++) {
+			leaveLambda.add(1.0 / (random.nextDouble() * ((double) leaveLambdaMax)));
+			leaveCycle.add(0.0);
 		}
 	}
 
@@ -33,14 +59,6 @@ public class ModifyNetwork implements Control {
 		Node newNode = (Node) Network.prototype.clone();
 		Network.add(newNode);
 		// System.out.println("add Node ID: " + newNode.getIndex());
-
-		ArrayList<Double> relateOccu = SharedResource.getRelateOccu();
-		relateOccu.add(newNode.getIndex(), 0.0);
-		SharedResource.setRelateOccu(relateOccu);
-
-		ArrayList<Double> cuckooOccu = SharedResource.getCuckooOccu();
-		cuckooOccu.add(newNode.getIndex(), 0.0);
-		SharedResource.setCuckooOccu(cuckooOccu);
 
 		NodeCoordinate newCrd = SharedResource.getCoordinate(newNode);
 		newCrd.setCoordinate();
@@ -59,6 +77,7 @@ public class ModifyNetwork implements Control {
 		NPRelate npr = SharedResource.getNPRelate(newNode);
 		npr.setBattery(parameter.getBattery());
 		npr.setCapacity(parameter.getCapacity());
+		npr.setContribution(random.nextDouble());
 
 		NPCuckoo npc = SharedResource.getNPCuckoo(newNode);
 		npc.setBattery(parameter.getBattery());
@@ -127,19 +146,6 @@ public class ModifyNetwork implements Control {
 		// Storage storage = SharedResource.getStorage(node);
 		// storage.clear();
 
-		int nodeID = node.getIndex();
-		ArrayList<Double> relateOccu = SharedResource.getRelateOccu();
-		Double value = relateOccu.get(Network.size() - 1);
-		relateOccu.set(nodeID, value);
-		relateOccu.remove(Network.size() - 1);
-		SharedResource.setRelateOccu(relateOccu);
-
-		ArrayList<Double> cuckooOccu = SharedResource.getCuckooOccu();
-		value = cuckooOccu.get(Network.size() - 1);
-		cuckooOccu.set(nodeID, value);
-		cuckooOccu.remove(Network.size() - 1);
-		SharedResource.setCuckooOccu(cuckooOccu);
-
 		StorageOwner sOwner = SharedResource.getSOwner(node);
 		sOwner.clear();
 
@@ -176,37 +182,72 @@ public class ModifyNetwork implements Control {
 		return false;
 	}
 
-	private static boolean poisson() {
-		double lambda = 1.0 / 50.0;
+	public static double factorial(int src) {
+		if (src == 0) {
+			return 0;
+		}
+		double value = 1;
+		for (int i = 1; i <= src; i++) {
+			value *= i;
+		}
 
-		double p = Math.exp(-1 * lambda) * (Math.pow(lambda, 1.0)) / 1.0;
+		// System.out.println(value);
+		return ((double) value);
+	}
+
+	private static boolean poisson(String type, int index, double lambda, double num) {
+		double p = Math.exp(-1 * lambda * num) * (Math.pow(lambda * num, 1.0)) / factorial(1);
+		if (Objects.equals(type, "join") && lambda * num > 1.0 && p <= 0.009) {
+			joinLambda.set(index, 1.0 / (random.nextDouble() * ((double) joinLambdaMax)));
+			joinCycle.set(index, 0.0);
+		}
+		if (Objects.equals(type, "leave") && lambda * num > 1.0 && p <= 0.009) {
+			leaveLambda.set(index, 1.0 / (random.nextDouble() * ((double) leaveLambdaMax)));
+			leaveCycle.set(index, 0.0);
+		}
 		return probability(p);
 	}
 
-	public static int joinCandidate() {
+	public static void joinCandidate() {
 		int num = 0;
-		for (int i = 0; i < capacity; i++) {
-			if (poisson())
+		for (int i = 0; i < joinLambda.size(); i++) {
+			if (poisson("join", i, joinLambda.get(i), joinCycle.get(i))) {
+				joinLambda.set(i, 1.0 / (random.nextDouble() * ((double) joinLambdaMax)));
+				joinCycle.set(i, 0.0);
+				addNode();
 				num++;
+				joinSum++;
+			}
 		}
 
-		return num;
+		System.out.println("join: " + num);
+		System.out.println("join Sum:" + joinSum);
+		System.out.println("Average join: " + (joinSum / ((double) count)));
 	}
 
-	public static int leaveCandidate() {
+	public static void leaveCandidate() {
 		int num = 0;
-		for (int i = 0; i < capacity; i++) {
-			if (poisson())
+		for (int i = 0; i < leaveCapacity; i++) {
+			if (poisson("leave", i, leaveLambda.get(i), leaveCycle.get(i))) {
+				leaveLambda.set(i, 1.0 / (random.nextDouble() * ((double) leaveLambdaMax)));
+				leaveCycle.set(i, 0.0);
+				int nodeID = random.nextInt(Network.size());
+				removeLink(Network.get(nodeID));
+				removeNode(Network.get(nodeID));
 				num++;
+				leaveSum++;
+			}
 		}
 
-		return num;
+		System.out.println("leave: " + num);
+		System.out.println("leave Sum:" + leaveSum);
+		System.out.println("Average leave: " + (leaveSum / ((double) count)));
 	}
 
 	public static BigDecimal reduceBattery(double battery) {
 		BigDecimal a = BigDecimal.valueOf(battery);
 		// BigDecimal b = BigDecimal.valueOf(0.15d);
-		BigDecimal b = BigDecimal.valueOf(random.nextDouble() * 0.2);
+		BigDecimal b = BigDecimal.valueOf(random.nextDouble() * 0.3);
 		BigDecimal result;
 		// if(random.nextBoolean())
 		result = a.subtract(b);
@@ -216,10 +257,6 @@ public class ModifyNetwork implements Control {
 	}
 
 	public boolean execute() {
-
-		int addNum = joinCandidate();
-		for (int i = 0; i < addNum; i++)
-			addNode();
 
 		for (int nodeID = 0; nodeID < Network.size(); nodeID++) {
 			Node node = Network.get(nodeID);
@@ -242,16 +279,27 @@ public class ModifyNetwork implements Control {
 			if (newValue.compareTo(threshold) <= 0) {
 				removeLink(node);
 				removeNode(node);
+				joinLambda.add(1.0 / (random.nextDouble() * ((double) joinLambdaMax)));
+				joinCycle.add(0.0);
+				// if (joinLambdaMax > 2) {
+				// joinLambdaMax--;
+				// }
 			}
 		}
 
-		int removeNum = leaveCandidate();
-		for (int i = 0; i < removeNum; i++) {
-			int nodeID = random.nextInt(Network.size());
-			removeLink(Network.get(nodeID));
-			removeNode(Network.get(nodeID));
+		leaveCandidate();
+		joinCandidate();
+
+		for (int i = 0; i < joinCapacity; i++) {
+			joinCycle.set(i, joinCycle.get(i) + 1);
+		}
+		for (int i = 0; i < leaveCapacity; i++) {
+			leaveCycle.set(i, leaveCycle.get(i) + 1);
 		}
 
+		System.out.println("Now Nodes: " + Network.size());
+
+		count++;
 		return false;
 	}
 }

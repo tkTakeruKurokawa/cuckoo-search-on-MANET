@@ -1,6 +1,5 @@
 package research;
 
-import peersim.cdsim.*;
 import peersim.core.*;
 import peersim.config.*;
 import java.util.*;
@@ -10,12 +9,11 @@ public class StoragePath implements Storage {
 	private static int pid_prm;
 
 	private ArrayList<Data> dataList = new ArrayList<Data>();
-	private HashMap<Data, Integer> dataTTL = new HashMap<Data, Integer>();
-	private static Deque<Data> removeList = new ArrayDeque<Data>();
+	private static ArrayList<Integer> highDataCounter;
+	private static ArrayList<Integer> lowDataCounter;
 
-	private static ArrayList<Integer> dataCounter;
-	private static int totalReplica = 0;
-	private int ttl;
+	private static int highTotal = 0;
+	private static int lowTotal = 0;
 
 	public StoragePath(String prefix) {
 		pid_prm = Configuration.getPid(prefix + "." + PAR_PROT);
@@ -28,12 +26,36 @@ public class StoragePath implements Storage {
 		} catch (CloneNotSupportedException e) {
 		}
 		storage.dataList = new ArrayList<Data>(this.dataList.size());
-		storage.dataTTL = new HashMap<Data, Integer>(this.dataTTL.size());
 		return storage;
 	}
 
+	public boolean setLowDemandData(Node node, Data data) {
+		NPPath parameter = (NPPath) node.getProtocol(pid_prm);
+		int capacity = parameter.getCapacity();
+		int occupancy = data.getSize();
+		int newCapacity = capacity - occupancy;
+
+		if (!dataList.contains(data) && (newCapacity >= 0)) {
+			OutPut.writeCompare("path", parameter);
+
+			dataList.add(data);
+
+			lowDataCounter = SharedResource.getPathLowCounter();
+			lowDataCounter.set(data.getID(), lowDataCounter.get(data.getID()) + 1);
+			SharedResource.setPathLowCounter(lowDataCounter);
+
+			parameter.setCapacity(newCapacity);
+
+			lowTotal++;
+			SharedResource.setLowTotal("path", lowTotal);
+			return true;
+		}
+
+		return false;
+	}
+
 	// nodeのstorageにdataを追加
-	public boolean setData(Node node, Data data) {
+	public boolean setHighDemandData(Node node, Data data) {
 		NPPath parameter = (NPPath) node.getProtocol(pid_prm);
 		int capacity = parameter.getCapacity();
 		int occupancy = data.getSize();
@@ -41,25 +63,17 @@ public class StoragePath implements Storage {
 
 		if (!dataList.contains(data) && (newCapacity >= 0)) {
 			dataList.add(data);
-			// dataTTL.put(data, data.getPeakCycle());
-			if (data.getNowCycle() > data.getPeakCycle())
-				ttl = SharedResource.getTTL(data.getNowCycle());
-			else
-				ttl = SharedResource.getTTL(data.getPeakCycle());
-			dataTTL.put(data, ttl);
 
-			dataCounter = SharedResource.getPathCounter();
-			dataCounter.set(data.getID(), dataCounter.get(data.getID()) + 1);
-			SharedResource.setPathCounter(dataCounter);
+			highDataCounter = SharedResource.getPathHighCounter();
+			highDataCounter.set(data.getID(), highDataCounter.get(data.getID()) + 1);
+			SharedResource.setPathHighCounter(highDataCounter);
 
 			parameter.setCapacity(newCapacity);
-			// System.out.println("Node " + node.getIndex() + " capacity: " + newCapacity);
 
-			totalReplica++;
-			SharedResource.setTotal("path", totalReplica);
+			highTotal++;
+			SharedResource.setHighTotal("path", highTotal);
 			return true;
 		}
-		// System.out.println("***** fail to setData. Re Roll *****");
 		return false;
 	}
 
@@ -75,56 +89,22 @@ public class StoragePath implements Storage {
 		return dataList;
 	}
 
-	public int getTotal() {
-		return totalReplica;
-	}
-
 	public void clear() {
-		dataCounter = SharedResource.getPathCounter();
+		highDataCounter = SharedResource.getPathHighCounter();
+		lowDataCounter = SharedResource.getPathLowCounter();
 
 		for (Data data : dataList) {
-			dataCounter.set(data.getID(), dataCounter.get(data.getID()) - 1);
+			if (Objects.equals(data.getType(), "high")) {
+				highDataCounter.set(data.getID(), highDataCounter.get(data.getID()) - 1);
+			} else {
+				lowDataCounter.set(data.getID(), lowDataCounter.get(data.getID()) - 1);
+			}
 		}
 
 		dataList = new ArrayList<Data>();
-		SharedResource.setPathCounter(dataCounter);
-	}
 
-	public void removeData(Node node) {
-		while (removeList.size() > 0) {
-			Data data = removeList.removeFirst();
-
-			dataCounter = SharedResource.getPathCounter();
-
-			NPPath parameter = (NPPath) node.getProtocol(pid_prm);
-			int capacity = parameter.getCapacity();
-			int occupancy = data.getSize();
-			int newCapacity = capacity + occupancy;
-
-			dataCounter.set(data.getID(), dataCounter.get(data.getID()) - 1);
-			dataTTL.remove(data);
-			dataList.remove(data);
-
-			SharedResource.setPathCounter(dataCounter);
-			parameter.setCapacity(newCapacity);
-		}
-	}
-
-	public void reduceTTL(Node node) {
-		// System.out.println("Node ID: " + node.getIndex());
-		for (int i = 0; i < dataList.size(); i++) {
-			Data data = dataList.get(i);
-			ttl = dataTTL.get(data);
-			// System.out.println(" Data :" + data.getID() + " TTL :" + ttl);
-			if (ttl > 0) {
-				dataTTL.put(data, ttl - 1);
-			}
-			if (ttl == 0) {
-				removeList.addFirst(data);
-			}
-		}
-
-		removeData(node);
+		SharedResource.setPathHighCounter(highDataCounter);
+		SharedResource.setPathLowCounter(lowDataCounter);
 	}
 
 	public String toString() {

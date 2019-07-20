@@ -3,7 +3,10 @@
 #Configファイル内変数の設定
 K 3
 cycleNum 500
-Capacity 100.0
+capacity 100.0
+dataSize 10.0
+highDemandNum 10
+lowDemandNum 40
 
 ############## Network ###############
 
@@ -26,7 +29,7 @@ protocol.crd.d 1000.0
 #ノードの情報(バッテリー残量、ストレージ残量)
 protocol.prm NodeParameter
 protocol.prm.baseBattery 50.0
-protocol.prm.maxCapacity Capacity
+protocol.prm.maxCapacity capacity
 
 #各手法用パラメータ。値はサイクル毎にNodeParameterからコピー
 protocol.npo NPOwner
@@ -35,8 +38,8 @@ protocol.npr NPRelate
 protocol.npc NPCuckoo
 
 #ノードが持っているデータ
-protocol.str Storages
-protocol.str.protocol prm
+#protocol.str Storages
+#protocol.str.protocol prm
 
 #Owner Replication用のストレージ
 protocol.owner StorageOwner
@@ -57,7 +60,7 @@ protocol.cuckoo.protocol npc
 #各ノードが各データを要求する確率
 protocol.rp RequestProbability
 
-order.protocol lnk crd prm npo npp npr npc str owner path relate cuckoo rp
+order.protocol lnk crd prm npo npp npr npc owner path relate cuckoo rp
 
 ############## Initialize ###############
 
@@ -66,7 +69,7 @@ init.sr SharedResource
 init.sr.protocol0 lnk
 init.sr.protocol1 prm
 init.sr.protocol2 crd
-init.sr.protocol3 str
+#init.sr.protocol3 str
 init.sr.protocol4 rp
 init.sr.protocol5 owner
 init.sr.protocol6 path
@@ -82,7 +85,10 @@ init.iniNet InitializeNetwork
 
 #ノードが持つデータ
 init.data Data
-init.data.cycles cycleNum
+init.data.maxVariety 50
+init.data.size dataSize
+init.data.highDemand highDemandNum
+init.data.lowDemand lowDemandNum
 
 #ランダムジオメトリックグラフを構成
 init.rgg RandomGeometricGraph
@@ -111,45 +117,36 @@ init.ns.abandonRate 0.2
 init.nest Nest
 init.nest.protocol0 prm
 init.nest.delta 45.0
-init.nest.capacity Capacity
+init.nest.capacity capacity
 
 #関連研究での複製配置先の決定に用いるFlooading
 init.rr RelatedResearch
-init.rr.ttl 200
-init.rr.capacity Capacity
-
-#init.stat printStatus
+init.rr.ttl 100
+init.rr.capacity capacity
 
 order.init sr iniNet data rgg wrgg fld cs ns nest rr
 #order.init iniNet sr data rgg wrgg fld stat
 
-
 ############## Control ###############
 
-#control.tst Test
-#control.tst.protocol prm
+#各ノードの高需要データに対するダウンロード要求
+control.ihdd IncreaseHighDemandData
 
-#ノード・リンクの追加・削除。バッテリーの減少
-control.mn ModifyNetwork
-control.mn.capacity 10
-
-#ノード・リンクの追加・削除をコントロール
-#control.stat printStatus
-
-#各ノードの各データに対するダウンロード要求
-control.ir IncreaseReplications
+#各ノードの低需要データに対するダウンロード要求
+control.ildd IncreaseLowDemandData
 
 #各ノードで保有されているデータの総数を表示
 control.gr GetReplications
-control.gr.alpha 0.6
-control.gr.capacity Capacity
+control.gr.capacity capacity
 
-#各ノードの保有データのTTLを減少
-control.dr DecreaseReplications
+#ノード・リンクの追加・削除。バッテリーの減少
+control.mn ModifyNetwork
+control.mn.leave_capacity 500
+control.mn.join_capacity 500
+control.mn.leave_lambda 200
+control.mn.join_lambda 200
 
 #データの需要のサイクルを進める
-control.data Data
-control.data.cycle cycleNum 
+control.dm DataManagement
 
-order.control mn ir gr dr data
-#order.control mn tst data
+order.control ihdd ildd gr mn dm

@@ -1,15 +1,15 @@
 package research;
 
-import peersim.cdsim.*;
 import peersim.core.*;
-import peersim.config.*;
 import java.util.*;
 
 public interface Storage extends Protocol {
 
 	public Object clone();
 
-	public boolean setData(Node node, Data data);
+	public boolean setHighDemandData(Node node, Data data);
+
+	public boolean setLowDemandData(Node node, Data data);
 
 	public boolean isEmpty();
 
@@ -17,13 +17,7 @@ public interface Storage extends Protocol {
 
 	public ArrayList<Data> getData();
 
-	public int getTotal();
-
 	public void clear();
-
-	public void removeData(Node node);
-
-	public void reduceTTL(Node node);
 
 	public String toString();
 }

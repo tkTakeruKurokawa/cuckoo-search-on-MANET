@@ -1,2 +1,12 @@
+Total:
 Number of Hit	Average Hops	Number of Miss
-183	1.9781420765027322	313
+401	10.678304239401497	99
+
+High:
+Number of Hit	Average Hops	Number of Miss
+150	5.58	11
+
+Low:
+Number of Hit	Average Hops	Number of Miss
+251	13.725099601593625	88
+
