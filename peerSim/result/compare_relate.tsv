@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Allocation Num:	8566
 Max Battery:	99.97976525683765
 Min Battery:	22.21479104032151
@@ -5,3 +6,12 @@ Max Capacity:	100
 Min Capacity:	10
 Average Battery:	89.57691544892856
 Average Capacity:	66.09969647443381
+=======
+Allocation Num:	8352
+Max Battery:	99.95228179203207
+Min Battery:	14.340734661770941
+Max Capacity:	100
+Min Capacity:	10
+Average Battery:	89.56839630474349
+Average Capacity:	66.06681034482759
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99

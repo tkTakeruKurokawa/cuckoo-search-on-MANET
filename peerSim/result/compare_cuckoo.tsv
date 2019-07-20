@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Allocation Num:	3568
 Max Battery:	99.98676370320513
 Min Battery:	22.21479104032151
@@ -5,3 +6,12 @@ Max Capacity:	100
 Min Capacity:	60
 Average Battery:	90.0419586695577
 Average Capacity:	96.8189461883408
+=======
+Allocation Num:	3428
+Max Battery:	99.95228179203207
+Min Battery:	14.340734661770941
+Max Capacity:	100
+Min Capacity:	50
+Average Battery:	90.07688316244055
+Average Capacity:	96.78238039673279
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Allocation Num:	1643
 Max Battery:	99.46838732955077
 Min Battery:	18.693088023108846
@@ -5,3 +6,12 @@ Max Capacity:	100
 Min Capacity:	20
 Average Battery:	65.94314486960111
 Average Capacity:	91.02860620815581
+=======
+Allocation Num:	1739
+Max Battery:	99.61585080579192
+Min Battery:	14.340734661770941
+Max Capacity:	100
+Min Capacity:	30
+Average Battery:	65.69724155055755
+Average Capacity:	91.32834962622196
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99

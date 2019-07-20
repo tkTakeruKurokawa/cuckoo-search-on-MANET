@@ -12,6 +12,7 @@ public class GetReplications implements Control {
 
 	private Random random = new Random();
 	private OutPut output = new OutPut();
+<<<<<<< HEAD
 
 	private ArrayList<Double> hop = new ArrayList<Double>();
 	private ArrayList<Double> hopHigh = new ArrayList<Double>();
@@ -23,15 +24,25 @@ public class GetReplications implements Control {
 	private ArrayList<Integer> hitHigh = new ArrayList<Integer>();
 	private ArrayList<Integer> hitLow = new ArrayList<Integer>();
 
+=======
+	private ArrayList<Double> hit = new ArrayList<Double>();
+	private ArrayList<Integer> miss = new ArrayList<Integer>();
+	private ArrayList<Integer> calcNum = new ArrayList<Integer>();
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 	private ArrayList<Double> highRemainingValue = new ArrayList<Double>();
 	private ArrayList<Double> highRemainingSum = new ArrayList<Double>();
 	private ArrayList<Double> highRemainingAverage = new ArrayList<Double>();
 	private ArrayList<Double> highRemainingDistribution = new ArrayList<Double>();
+<<<<<<< HEAD
 	private ArrayList<Double> highRemainingCount = new ArrayList<Double>();
+=======
+	private ArrayList<Double> highOccupancyCount = new ArrayList<Double>();
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 	private ArrayList<Double> lowRemainingValue = new ArrayList<Double>();
 	private ArrayList<Double> lowRemainingSum = new ArrayList<Double>();
 	private ArrayList<Double> lowRemainingAverage = new ArrayList<Double>();
 	private ArrayList<Double> lowRemainingDistribution = new ArrayList<Double>();
+<<<<<<< HEAD
 	private ArrayList<Double> lowRemainingCount = new ArrayList<Double>();
 
 	private ArrayList<Double> highOccupancy = new ArrayList<Double>();
@@ -42,6 +53,12 @@ public class GetReplications implements Control {
 	private SectionAverage pathSA = new SectionAverage("path");
 	private SectionAverage relateSA = new SectionAverage("relate");
 	private SectionAverage cuckooSA = new SectionAverage("cuckoo");
+=======
+	private ArrayList<Double> lowOccupancyCount = new ArrayList<Double>();
+
+	private ArrayList<Double> highOccupancy = new ArrayList<Double>();
+	private ArrayList<Double> lowOccupancy = new ArrayList<Double>();
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 
 	private int cycle = 0;
 
@@ -49,6 +66,7 @@ public class GetReplications implements Control {
 		capacity = Configuration.getDouble(prefix + "." + PAR_CAPACITY);
 
 		for (int i = 0; i < 4; i++) {
+<<<<<<< HEAD
 			hop.add(i, 0.0);
 			hopHigh.add(i, 0.0);
 			hopLow.add(i, 0.0);
@@ -66,22 +84,42 @@ public class GetReplications implements Control {
 			lowRemainingAverage.add(i, 0.0);
 			lowRemainingDistribution.add(i, 0.0);
 			lowRemainingCount.add(i, 0.0);
+=======
+			hit.add(i, 0.0);
+			miss.add(i, 0);
+			calcNum.add(i, 0);
+			highRemainingSum.add(i, 0.0);
+			highRemainingAverage.add(i, 0.0);
+			highRemainingDistribution.add(i, 0.0);
+			highOccupancyCount.add(i, 0.0);
+			lowRemainingSum.add(i, 0.0);
+			lowRemainingAverage.add(i, 0.0);
+			lowRemainingDistribution.add(i, 0.0);
+			lowOccupancyCount.add(i, 0.0);
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 
 			highOccupancy.add(i, 0.0);
 			lowOccupancy.add(i, 0.0);
 		}
+<<<<<<< HEAD
 
 		sa.add(ownerSA);
 		sa.add(pathSA);
 		sa.add(relateSA);
 		sa.add(cuckooSA);
+=======
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 	}
 
 	public void calcHitRate() {
 		for (int i = 0; i < 4; i++) {
+<<<<<<< HEAD
 			output.writeTotalHitRate(i, hit.get(i), hop.get(i) / ((double) hit.get(i)), miss.get(i));
 			output.writeHighHitRate(i, hitHigh.get(i), hopHigh.get(i) / ((double) hitHigh.get(i)), missHigh.get(i));
 			output.writeLowHitRate(i, hitLow.get(i), hopLow.get(i) / ((double) hitLow.get(i)), missLow.get(i));
+=======
+			output.writeHitRate(i, calcNum.get(i), hit.get(i) / ((double) calcNum.get(i)), miss.get(i));
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 		}
 	}
 
@@ -183,6 +221,7 @@ public class GetReplications implements Control {
 		int dataID = random.nextInt(Data.getNowVariety());
 		for (int i = 0; i < 4; i++) {
 			hitOrMiss(Network.get(nodeID), Data.getData(dataID), i);
+<<<<<<< HEAD
 		}
 	}
 
@@ -215,6 +254,42 @@ public class GetReplications implements Control {
 			lowRemainingSum.set(id, lowRemainingSum.get(id) + ((double) parameter.getCapacity()));
 			lowRemainingCount.set(id, lowRemainingCount.get(id) + 1.0);
 			lowRemainingAverage.set(id, lowRemainingSum.get(id) / lowRemainingCount.get(id));
+=======
+		}
+	}
+
+	public void calcOccupancy(int id, Parameter parameter, Storage storage) {
+		// double occupancy = ((double)parameter.getCapacity()) / capacity;
+		// highRemainingSum.set(id, highRemainingSum.get(id)+occupancy);
+		boolean high = false;
+		boolean low = false;
+		double highRemaining = capacity;
+		double lowRemaining = capacity;
+		for (Data data : storage.getData()) {
+			if (Objects.equals(data.getType(), "high")) {
+				highRemaining -= ((double) data.getSize());
+				highOccupancy.set(id, highOccupancy.get(id) + (double) data.getSize());
+				high = true;
+			}
+			if (Objects.equals(data.getType(), "low")) {
+				lowRemaining -= ((double) data.getSize());
+				lowOccupancy.set(id, lowOccupancy.get(id) + (double) data.getSize());
+				low = true;
+			}
+		}
+
+		if (high == true) {
+			highRemainingValue.add(highRemaining);
+			highRemainingSum.set(id, highRemainingSum.get(id) + highRemaining);
+			highOccupancyCount.set(id, highOccupancyCount.get(id) + 1.0);
+			highRemainingAverage.set(id, highRemainingSum.get(id) / highOccupancyCount.get(id));
+		}
+		if (low == true) {
+			lowRemainingValue.add(lowRemaining);
+			lowRemainingSum.set(id, lowRemainingSum.get(id) + lowRemaining);
+			lowOccupancyCount.set(id, lowOccupancyCount.get(id) + 1.0);
+			lowRemainingAverage.set(id, lowRemainingSum.get(id) / lowOccupancyCount.get(id));
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 		}
 
 	}
@@ -246,6 +321,10 @@ public class GetReplications implements Control {
 			if (Objects.equals(Data.getData(dataID).getType(), "low") && lowCounter.get(dataID) != null) {
 				lowSum += lowCounter.get(dataID);
 			}
+<<<<<<< HEAD
+=======
+			// System.out.println("Data: " + dataID + "\tNum: " + dataNum);
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 		}
 
 		int highAll = SharedResource.getHighTotal("owner");
@@ -256,9 +335,12 @@ public class GetReplications implements Control {
 
 		output.writeHighCount("owner", cycle, highAvailability, highSum, highAll);
 		output.writeLowCount("owner", cycle, lowAvailability, lowSum, lowAll);
+<<<<<<< HEAD
 
 		ownerSA.setHighAvailability(cycle + 1, highAvailability);
 		ownerSA.setLowAvailability(cycle + 1, lowAvailability);
+=======
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 	}
 
 	public void path() {
@@ -272,14 +354,23 @@ public class GetReplications implements Control {
 		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
 			if (Objects.equals(Data.getData(dataID).getType(), "high") && highCounter.get(dataID) != null) {
 				highSum += highCounter.get(dataID);
+<<<<<<< HEAD
 			}
 			if (Objects.equals(Data.getData(dataID).getType(), "low") && lowCounter.get(dataID) != null) {
 				lowSum += lowCounter.get(dataID);
 			}
+=======
+			}
+			if (Objects.equals(Data.getData(dataID).getType(), "low") && lowCounter.get(dataID) != null) {
+				lowSum += lowCounter.get(dataID);
+			}
+			// System.out.println("Data: " + dataID + "\tNum: " + dataNum);
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 		}
 
 		int highAll = SharedResource.getHighTotal("path");
 		int lowAll = SharedResource.getLowTotal("path");
+<<<<<<< HEAD
 
 		highAvailability = ((double) highSum) / ((double) highAll);
 		lowAvailability = ((double) lowSum) / ((double) lowAll);
@@ -289,6 +380,14 @@ public class GetReplications implements Control {
 
 		pathSA.setHighAvailability(cycle + 1, highAvailability);
 		pathSA.setLowAvailability(cycle + 1, lowAvailability);
+=======
+
+		highAvailability = ((double) highSum) / ((double) highAll);
+		lowAvailability = ((double) lowSum) / ((double) lowAll);
+
+		output.writeHighCount("path", cycle, highAvailability, highSum, highAll);
+		output.writeLowCount("path", cycle, lowAvailability, lowSum, lowAll);
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 	}
 
 	public void relate() {
@@ -302,14 +401,23 @@ public class GetReplications implements Control {
 		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
 			if (Objects.equals(Data.getData(dataID).getType(), "high") && highCounter.get(dataID) != null) {
 				highSum += highCounter.get(dataID);
+<<<<<<< HEAD
 			}
 			if (Objects.equals(Data.getData(dataID).getType(), "low") && lowCounter.get(dataID) != null) {
 				lowSum += lowCounter.get(dataID);
 			}
+=======
+			}
+			if (Objects.equals(Data.getData(dataID).getType(), "low") && lowCounter.get(dataID) != null) {
+				lowSum += lowCounter.get(dataID);
+			}
+			// System.out.println("Data: " + dataID + "\tNum: " + dataNum);
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 		}
 
 		int highAll = SharedResource.getHighTotal("relate");
 		int lowAll = SharedResource.getLowTotal("relate");
+<<<<<<< HEAD
 
 		highAvailability = ((double) highSum) / ((double) highAll);
 		lowAvailability = ((double) lowSum) / ((double) lowAll);
@@ -319,6 +427,14 @@ public class GetReplications implements Control {
 
 		relateSA.setHighAvailability(cycle + 1, highAvailability);
 		relateSA.setLowAvailability(cycle + 1, lowAvailability);
+=======
+
+		highAvailability = ((double) highSum) / ((double) highAll);
+		lowAvailability = ((double) lowSum) / ((double) lowAll);
+
+		output.writeHighCount("relate", cycle, highAvailability, highSum, highAll);
+		output.writeLowCount("relate", cycle, lowAvailability, lowSum, lowAll);
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 	}
 
 	public void cuckoo() {
@@ -336,6 +452,7 @@ public class GetReplications implements Control {
 			if (Objects.equals(Data.getData(dataID).getType(), "low") && lowCounter.get(dataID) != null) {
 				lowSum += lowCounter.get(dataID);
 			}
+<<<<<<< HEAD
 		}
 
 		int highAll = SharedResource.getHighTotal("cuckoo");
@@ -351,6 +468,21 @@ public class GetReplications implements Control {
 		cuckooSA.setLowAvailability(cycle + 1, lowAvailability);
 	}
 
+=======
+			// System.out.println("Data: " + dataID + "\tNum: " + dataNum);
+		}
+
+		int highAll = SharedResource.getHighTotal("cuckoo");
+		int lowAll = SharedResource.getLowTotal("cuckoo");
+
+		highAvailability = ((double) highSum) / ((double) highAll);
+		lowAvailability = ((double) lowSum) / ((double) lowAll);
+
+		output.writeHighCount("cuckoo", cycle, highAvailability, highSum, highAll);
+		output.writeLowCount("cuckoo", cycle, lowAvailability, lowSum, lowAll);
+	}
+
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 	public boolean execute() {
 
 		owner();
@@ -364,11 +496,19 @@ public class GetReplications implements Control {
 			highRemainingSum.set(i, 0.0);
 			highRemainingAverage.set(i, 0.0);
 			highRemainingDistribution.set(i, 0.0);
+<<<<<<< HEAD
 			highRemainingCount.set(i, 0.0);
 			lowRemainingSum.set(i, 0.0);
 			lowRemainingAverage.set(i, 0.0);
 			lowRemainingDistribution.set(i, 0.0);
 			lowRemainingCount.set(i, 0.0);
+=======
+			highOccupancyCount.set(i, 0.0);
+			lowRemainingSum.set(i, 0.0);
+			lowRemainingAverage.set(i, 0.0);
+			lowRemainingDistribution.set(i, 0.0);
+			lowOccupancyCount.set(i, 0.0);
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 		}
 
 		int allLinks = 0;
@@ -390,7 +530,11 @@ public class GetReplications implements Control {
 		output.writeAverageLinks(cycle, ((double) allLinks) / Network.size());
 
 		for (int i = 0; i < 4; i++) {
+<<<<<<< HEAD
 			int highCount = highRemainingCount.get(i).intValue();
+=======
+			int highCount = highOccupancyCount.get(i).intValue();
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 			for (int j = 0; j < highCount; j++) {
 				highRemainingDistribution.set(i, highRemainingDistribution.get(i)
 						+ Math.pow(highRemainingValue.get(j) - highRemainingAverage.get(i), 2));
@@ -399,7 +543,11 @@ public class GetReplications implements Control {
 		}
 
 		for (int i = 0; i < 4; i++) {
+<<<<<<< HEAD
 			int lowCount = lowRemainingCount.get(i).intValue();
+=======
+			int lowCount = lowOccupancyCount.get(i).intValue();
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 			for (int j = 0; j < lowCount; j++) {
 				lowRemainingDistribution.set(i, lowRemainingDistribution.get(i)
 						+ Math.pow(lowRemainingValue.get(j) - lowRemainingAverage.get(i), 2));
@@ -408,6 +556,7 @@ public class GetReplications implements Control {
 		}
 
 		for (int i = 0; i < 4; i++) {
+<<<<<<< HEAD
 			if (highRemainingCount.get(i) < 1.0 && highRemainingSum.get(i) < 1.0) {
 				output.writeHighRemaining(i, cycle, capacity, 0.0);
 			} else {
@@ -419,11 +568,25 @@ public class GetReplications implements Control {
 			} else {
 				output.writeLowRemaining(i, cycle, lowRemainingAverage.get(i),
 						Math.sqrt(lowRemainingDistribution.get(i) / lowRemainingCount.get(i)));
+=======
+			if (highOccupancyCount.get(i) < 1.0 && highRemainingSum.get(i) < 1.0) {
+				output.writeHighRemaining(i, cycle, capacity, 0.0);
+			} else {
+				output.writeHighRemaining(i, cycle, highRemainingAverage.get(i),
+						Math.sqrt(highRemainingDistribution.get(i) / highOccupancyCount.get(i)));
+			}
+			if (lowOccupancyCount.get(i) < 1.0 && lowRemainingSum.get(i) < 1.0) {
+				output.writeLowRemaining(i, cycle, capacity, 0.0);
+			} else {
+				output.writeLowRemaining(i, cycle, lowRemainingAverage.get(i),
+						Math.sqrt(lowRemainingDistribution.get(i) / lowOccupancyCount.get(i)));
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 			}
 			output.writeHighOccupancy(i, cycle, highOccupancy.get(i));
 			output.writeLowOccupancy(i, cycle, lowOccupancy.get(i));
 		}
 
+<<<<<<< HEAD
 		for (int id = 0; id < 4; id++) {
 			sa.get(id).setHighRemaining(cycle + 1, highRemainingAverage.get(id));
 			sa.get(id).setLowRemaining(cycle + 1, lowRemainingAverage.get(id));
@@ -431,16 +594,21 @@ public class GetReplications implements Control {
 			sa.get(id).setLowOccupancy(cycle + 1, lowOccupancy.get(id));
 		}
 
+=======
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 		hitRate();
 
 		cycle++;
 
 		if (cycle == 500) {
 			calcHitRate();
+<<<<<<< HEAD
 			for (int id = 0; id < 4; id++) {
 				sa.get(id).writeFile();
 			}
 
+=======
+>>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 			output.closeFiles();
 
 			// System.out.println("Final Nodes: " + Network.size());
