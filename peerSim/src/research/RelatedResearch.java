@@ -38,8 +38,8 @@ public class RelatedResearch implements Control {
 		if (!storage.contains(target) && newCapacity >= 0) {
 			double b = battery / 100.0;
 			double c = contribution;
-			double value = 2.0 * b + 1.0 * c;
-			value = Math.log(value);
+			double value = 1.0 * b + 1.0 * c;
+			// value = Math.log(value);
 			if (value > bestValue) {
 				bestNode = node;
 				bestValue = value;

@@ -4,7 +4,7 @@ set yrange [0:13000000]
 set ylabel 'Cumulative Occupancy'
 plot "highOccupancy_owner.tsv" every ::2 using 1:2 with lines title "Owner" lw 1 lc rgb "blue"
 
-set output 'highOccupancy_owner.eps'
+set output 'eps/highOccupancy_owner.eps'
 set terminal postscript eps color
 replot
 
@@ -15,7 +15,7 @@ set yrange [0:13000000]
 set ylabel 'Cumulative Occupancy'
 plot "highOccupancy_path.tsv" every ::2 using 1:2 with lines title "Path" lw 1 lc rgb "magenta"
 
-set output 'highOccupancy_path.eps'
+set output 'eps/highOccupancy_path.eps'
 set terminal postscript eps color
 replot
 
@@ -26,7 +26,7 @@ set yrange [0:13000000]
 set ylabel 'Cumulative Occupancy'
 plot "highOccupancy_relate.tsv" every ::2 using 1:2 with lines title "Kageyama" lw 1 lc rgb "dark-green"
 	
-set output 'highOccupancy_relate.eps'
+set output 'eps/highOccupancy_relate.eps'
 set terminal postscript eps color
 replot
 
@@ -37,7 +37,7 @@ set yrange [0:13000000]
 set ylabel 'Cumulative Occupancy'
 plot "highOccupancy_cuckoo.tsv" every ::2 using 1:2 with lines title "Cuckoo" lw 1 lc rgb "red"
 
-set output 'highOccupancy_cuckoo.eps'
+set output 'eps/highOccupancy_cuckoo.eps'
 set terminal postscript eps color
 replot
 
@@ -51,7 +51,7 @@ plot "highOccupancy_owner.tsv" every ::2 using 1:2 with lines title "Owner" lc r
 	"highOccupancy_relate.tsv" every ::2 using 1:2 with lines title "Kageyama" lc rgb "dark-green",\
 	"highOccupancy_cuckoo.tsv" every ::2 using 1:2 with lines title "Cuckoo" lc rgb "red",\
 
-set output 'highOccupancy_comp.eps'
+set output 'eps/highOccupancy_comp.eps'
 set terminal postscript eps color
 replot
 
@@ -64,6 +64,6 @@ plot "highOccupancy_owner.tsv" every ::2 using 1:2 with lines title "Owner" lc r
 	"highOccupancy_relate.tsv" every ::2 using 1:2 with lines title "Kageyama" lc rgb "dark-green",\
 	"highOccupancy_cuckoo.tsv" every ::2 using 1:2 with lines title "Cuckoo" lc rgb "red",\
 
-set output 'highOccupancy_comp_expansion.eps'
+set output 'eps/highOccupancy_comp_expansion.eps'
 set terminal postscript eps color
 replot

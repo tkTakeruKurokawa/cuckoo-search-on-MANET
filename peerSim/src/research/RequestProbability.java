@@ -75,7 +75,7 @@ public class RequestProbability implements Protocol {
 		double lambda = Data.getData(dataID).getLambda();
 		int cycle = Data.getData(dataID).getNowCycle();
 
-		double p = Math.exp(-1 * lambda) * (Math.pow(lambda, 1.0)) / factorial(cycle);
+		double p = Math.exp(-1 * lambda) * (Math.pow(lambda, ((double) cycle))) / factorial(cycle);
 		return probability(p);
 	}
 

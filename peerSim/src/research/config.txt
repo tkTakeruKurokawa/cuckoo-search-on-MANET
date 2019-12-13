@@ -5,8 +5,8 @@ K 3
 cycleNum 500
 capacity 100.0
 dataSize 10.0
-highDemandNum 10
-lowDemandNum 40
+highDemandNum 25
+lowDemandNum 25
 
 ############## Network ###############
 
@@ -141,10 +141,10 @@ control.gr.capacity capacity
 
 #ノード・リンクの追加・削除。バッテリーの減少
 control.mn ModifyNetwork
-control.mn.leave_capacity 500
-control.mn.join_capacity 500
-control.mn.leave_lambda 200
-control.mn.join_lambda 200
+control.mn.leave_capacity 1000
+control.mn.join_capacity 1000
+control.mn.leave_lambda 300
+control.mn.join_lambda 300
 
 #データの需要のサイクルを進める
 control.dm DataManagement

@@ -33,6 +33,7 @@ public class InitializeNetwork implements Control {
 			NPCuckoo npc = SharedResource.getNPCuckoo(node);
 			npc.setBattery(parameter.getBattery());
 			npc.setCapacity(parameter.getCapacity());
+			npc.setUpTime(1);
 
 			NodeCoordinate coordinate = SharedResource.getCoordinate(node);
 			coordinate.setCoordinate();

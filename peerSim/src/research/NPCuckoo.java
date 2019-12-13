@@ -3,6 +3,7 @@ package research;
 public class NPCuckoo implements Parameter {
 	private double battery = 0.0;
 	private int capacity = 0;
+	private int upTime = 0;
 
 	public NPCuckoo(String prefix) {
 	}
@@ -24,12 +25,20 @@ public class NPCuckoo implements Parameter {
 		this.capacity = capacity;
 	}
 
+	public void setUpTime(int upTime) {
+		this.upTime = upTime;
+	}
+
 	public double getBattery() {
 		return battery;
 	}
 
 	public int getCapacity() {
 		return capacity;
+	}
+
+	public int getUpTime() {
+		return upTime;
 	}
 
 	public String toString() {

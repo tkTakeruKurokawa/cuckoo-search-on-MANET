@@ -6,7 +6,7 @@ set key left top
 
 plot "occupancy_owner.tsv" every ::2 with lines lc rgb "blue" title "Owner"
 
-set output 'occupancy_owner.eps'
+set output 'eps/occupancy_owner.eps'
 set terminal postscript eps color
 replot
 
@@ -19,7 +19,7 @@ set key left top
 
 plot "occupancy_path.tsv" every ::2 with lines lc rgb "magenta" title "Path"
 
-set output 'occupancy_path.eps'
+set output 'eps/occupancy_path.eps'
 set terminal postscript eps color
 replot
 
@@ -32,7 +32,7 @@ set key left top
 
 plot "occupancy_relate.tsv" every ::2 with lines lc rgb "dark-green" title "Kageyama"
 
-set output 'occupancy_relate.eps'
+set output 'eps/occupancy_relate.eps'
 set terminal postscript eps color
 replot
 
@@ -45,7 +45,7 @@ set key left top
 
 plot "occupancy_cuckoo.tsv" every ::2 with lines lc rgb "red" title "Cuckoo"
 
-set output 'occupancy_cuckoo.eps'
+set output 'eps/occupancy_cuckoo.eps'
 set terminal postscript eps color
 replot
 
@@ -61,7 +61,7 @@ plot "occupancy_owner.tsv" every ::2 with lines lw 2 lc rgb "blue" title "Owner"
 "occupancy_relate.tsv" every ::2 with lines lw 2 lc rgb "dark-green" title "Kageyama",\
 "occupancy_cuckoo.tsv" every ::2 with lines lw 2 lc rgb "red" title "Cuckoo"
 
-set output 'occupancy_comp.eps'
+set output 'eps/occupancy_comp.eps'
 set terminal postscript eps color
 replot
 
@@ -76,6 +76,6 @@ plot "occupancy_owner.tsv" every ::2 with lines lw 2 lc rgb "blue" title "Owner"
 "occupancy_relate.tsv" every ::2 with lines lw 2 lc rgb "dark-green" title "Kageyama",\
 "occupancy_cuckoo.tsv" every ::2 with lines lw 2 lc rgb "red" title "Cuckoo"
 
-set output 'occupancy_comp_expansion.eps'
+set output 'eps/occupancy_comp_expansion.eps'
 set terminal postscript eps color
 replot

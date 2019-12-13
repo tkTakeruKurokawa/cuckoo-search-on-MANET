@@ -82,6 +82,7 @@ public class ModifyNetwork implements Control {
 		NPCuckoo npc = SharedResource.getNPCuckoo(newNode);
 		npc.setBattery(parameter.getBattery());
 		npc.setCapacity(parameter.getCapacity());
+		npc.setUpTime(1);
 
 		Link newLink = SharedResource.getLink(newNode);
 		// System.out.println("num of Nodes to add: " + num);
@@ -275,6 +276,7 @@ public class ModifyNetwork implements Control {
 
 			NPCuckoo npc = SharedResource.getNPCuckoo(node);
 			npc.setBattery(parameter.getBattery());
+			npc.setUpTime(npc.getUpTime() + 1);
 
 			if (newValue.compareTo(threshold) <= 0) {
 				removeLink(node);

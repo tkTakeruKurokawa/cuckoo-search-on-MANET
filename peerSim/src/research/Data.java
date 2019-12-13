@@ -45,7 +45,7 @@ public class Data implements Control {
 		// 低需要
 		if (Objects.equals(string, "low")) {
 			type = "low";
-			lambda = ((double) random.nextInt(4) + 1) / 100.0;
+			lambda = ((double) random.nextInt(10) + 1) / 500.0;
 		}
 
 		// 高需要

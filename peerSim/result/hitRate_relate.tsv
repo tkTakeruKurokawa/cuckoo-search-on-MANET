@@ -1,16 +1,12 @@
 Total:
 Number of Hit	Average Hops	Number of Miss
-<<<<<<< HEAD
-480	5.466666666666667	20
+391	9.173913043478262	109
 
 High:
 Number of Hit	Average Hops	Number of Miss
-150	5.58	11
+212	8.797169811320755	86
 
 Low:
 Number of Hit	Average Hops	Number of Miss
-330	5.415151515151515	9
+179	9.620111731843576	23
 
-=======
-476	5.514705882352941	24
->>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99

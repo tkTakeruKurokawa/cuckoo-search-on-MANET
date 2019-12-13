@@ -329,7 +329,6 @@ public class OutPut {
 		}
 	}
 
-<<<<<<< HEAD
 	public void writeTotalHitRate(int type, int numberOfHit, double averageHops, int numberOfMiss) {
 		switch (type) {
 		case 0:
@@ -417,25 +416,6 @@ public class OutPut {
 			cuckooHit.println("Number of Hit\tAverage Hops\tNumber of Miss");
 			cuckooHit.println(numberOfHit + "\t" + averageHops + "\t" + numberOfMiss);
 			cuckooHit.println();
-=======
-	public void writeHitRate(int type, int numberOfHit, double averageHops, int numberOfMiss) {
-		switch (type) {
-		case 0:
-			ownerHit.println("Number of Hit\tAverage Hops\tNumber of Miss");
-			ownerHit.println(numberOfHit + "\t" + averageHops + "\t" + numberOfMiss);
-			break;
-		case 1:
-			pathHit.println("Number of Hit\tAverage Hops\tNumber of Miss");
-			pathHit.println(numberOfHit + "\t" + averageHops + "\t" + numberOfMiss);
-			break;
-		case 2:
-			relateHit.println("Number of Hit\tAverage Hops\tNumber of Miss");
-			relateHit.println(numberOfHit + "\t" + averageHops + "\t" + numberOfMiss);
-			break;
-		case 3:
-			cuckooHit.println("Number of Hit\tAverage Hops\tNumber of Miss");
-			cuckooHit.println(numberOfHit + "\t" + averageHops + "\t" + numberOfMiss);
->>>>>>> 626e2fe6e0bf327585beaccb0c29f3f00fffbb99
 			break;
 		default:
 			break;

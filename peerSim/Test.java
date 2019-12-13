@@ -105,43 +105,46 @@ class Test {
 
         ArrayList<Double> number = new ArrayList<Double>();
 
-        for (int i = 0; i < 2000; i++) {
-            number.add(i, 1.0);
-        }
-        // double temp = random.nextDouble() % 0.5 + 0.5;
-        // double lambda = ((double) random.nextInt(10)) + 1.0;
-        double lambda = 1.0 / (random.nextDouble() * 100.0);
-        // double lambda = ((double) random.nextInt(4) + 1) / 100.0;
-        // double lambda = 0.05;
-        // System.out.println(lambda);
+        // for (int i = 0; i < 2000; i++) {
+        // number.add(i, 1.0);
+        // }
+        // // double temp = random.nextDouble() % 0.5 + 0.5;
+        // // double lambda = ((double) random.nextInt(10)) + 1.0;
+        // double lambda = 1.0 / (random.nextDouble() * 100.0);
+        // // double lambda = ((double) random.nextInt(4) + 1) / 100.0;
+        // // double lambda = 0.05;
+        // // System.out.println(lambda);
 
-        double total = 0.0;
-        int count = 0;
-        double num = 0.0;
+        // double total = 0.0;
+        // int count = 0;
+        // double num = 0.0;
 
-        for (int i = 0; i < 500; i++) {
-            count = 0;
-            for (int j = 0; j < 300; j++) {
-                double p = Math.exp(-1 * lambda * number.get(j)) * (Math.pow(lambda * number.get(j), 1.0))
-                        / factorial(1);
-                // System.out.println(i + ": " + p);
+        // for (int i = 0; i < 500; i++) {
+        // count = 0;
+        // for (int j = 0; j < 300; j++) {
+        // double p = Math.exp(-1 * lambda * number.get(j)) * (Math.pow(lambda *
+        // number.get(j), 1.0))
+        // / factorial(1);
+        // // System.out.println(i + ": " + p);
 
-                if (probability(p)) {
-                    number.set(j, 1.0);
-                    count++;
-                } else {
-                    number.set(j, number.get(j) + 1.0);
-                }
-                // }
+        // if (probability(p)) {
+        // number.set(j, 1.0);
+        // count++;
+        // } else {
+        // number.set(j, number.get(j) + 1.0);
+        // }
+        // // }
 
-            }
-            System.out.println(count);
+        // }
+        // System.out.println(count);
 
-            total += count;
+        // total += count;
 
-            // placeNum();
-        }
-        System.out.println(total);
-        System.out.println("average: " + total / 500.0);
+        // // placeNum();
+        // }
+        // System.out.println(total);
+        // System.out.println("average: " + total / 500.0);
+
+        System.out.println( Math.log10(300.0));
     }
 }

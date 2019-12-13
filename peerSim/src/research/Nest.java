@@ -29,12 +29,13 @@ public class Nest implements Control {
 
 	public Nest(Node node) {
 		this.node = node;
-		egg = new double[2];
-		newEgg = new double[2];
+		egg = new double[3];
+		newEgg = new double[3];
 
 		NPCuckoo parameter = SharedResource.getNPCuckoo(node);
 		egg[0] = parameter.getBattery();
-		egg[1] = parameter.getCapacity();
+		egg[1] = ((double) parameter.getCapacity());
+		egg[2] = ((double) parameter.getUpTime());
 
 		value = evaluate(egg);
 	}
@@ -187,6 +188,7 @@ public class Nest implements Control {
 		NPCuckoo parameter = SharedResource.getNPCuckoo(candidate);
 		newEgg[0] = parameter.getBattery();
 		newEgg[1] = parameter.getCapacity();
+		newEgg[2] = parameter.getUpTime();
 
 		double newValue = evaluate(newEgg);
 		// System.out.println("This Node: " + src.getIndex() + " value " + value + " ("
@@ -219,6 +221,7 @@ public class Nest implements Control {
 		this.node = newNode;
 		egg[0] = parameter.getBattery();
 		egg[1] = parameter.getCapacity();
+		egg[2] = parameter.getUpTime();
 		value = evaluate(egg);
 	}
 
@@ -226,12 +229,14 @@ public class Nest implements Control {
 		Node newNode = Network.get(nodeID);
 		NPCuckoo parameter = SharedResource.getNPCuckoo(newNode);
 		newEgg[0] = parameter.getBattery();
-		newEgg[1] = parameter.getCapacity();
+		newEgg[1] = ((double) parameter.getCapacity());
+		newEgg[2] = ((double) parameter.getUpTime());
 
 		if (evaluate(newEgg) > evaluate(egg)) {
 			this.node = newNode;
 			egg[0] = newEgg[0];
 			egg[1] = newEgg[1];
+			egg[2] = newEgg[2];
 			value = evaluate(newEgg);
 		}
 	}
@@ -239,9 +244,12 @@ public class Nest implements Control {
 	public double evaluate(double[] egg) {
 		double battery = egg[0] / 100.0;
 		double capacity = egg[1] / this.capacity;
+		double upTime = egg[2] / 500.0;
+		// double upTime = egg[2];
 
-		double value = 1.0 * battery + 1.0 * capacity;
-		value = Math.log(value);
+		// double value = 1.0 * battery + 1.0 * capacity;
+		double value = 1.0 * battery + 1.0 * capacity + upTime;
+		// double value = 1.0 * battery + 1.0 * capacity + Math.log10(upTime);
 		if (egg[1] < 1.0)
 			value = Double.NEGATIVE_INFINITY;
 		return value;

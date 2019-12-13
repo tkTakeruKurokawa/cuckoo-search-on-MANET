@@ -280,12 +280,17 @@ public class IncreaseLowDemandData implements Control {
 
 			ArrayList<Boolean> dataRequest = SharedResource.getDataRequest();
 
+			if (Objects.equals(data.getType(), "low") && dataRequest.get(dataID) == true) {
+				replicaNum("relate", data);
+				replicaNum("cuckoo", data);
+			}
+
 			if (Objects.equals(data.getType(), "low") && dataRequest.get(dataID) == false) {
 				int num = replicaNum("relate", Data.getData(dataID));
 				relate(num);
 
 				num = replicaNum("cuckoo", Data.getData(dataID));
-				if (passedCycle.get(dataID) < 100) {
+				if (passedCycle.get(dataID) < 200) {
 					cuckoo(num);
 				}
 				System.out.println();
