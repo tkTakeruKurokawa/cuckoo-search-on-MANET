@@ -4,4 +4,4 @@
 
 	2.シミュレータ実行: bash runSimulator.bash
 
-	3.「result」ディレクトリに各生データが出力され，「result/eps」にGnuplotにより図が生成される
+	3.「result」ディレクトリに各生データが出力され，「result/eps」ディレクトリにGnuplotにより図が生成される
