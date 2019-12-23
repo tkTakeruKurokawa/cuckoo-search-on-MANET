@@ -48,15 +48,6 @@ public class RequestProbability implements Protocol {
 		}
 
 		return false;
-
-		// int num = (int) Math.round(p*100);
-		// if(num > 1)
-		// num = random.nextInt(num)+1;
-		// int candidate = random.nextInt(100);
-		// if(candidate <= num)
-		// return true;
-
-		// return false;
 	}
 
 	public static double factorial(int src) {

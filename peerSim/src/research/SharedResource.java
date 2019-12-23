@@ -5,31 +5,29 @@ import peersim.config.*;
 import java.util.*;
 
 public class SharedResource implements Control {
-	private static final String PAR_PROT0 = "protocol0";
+	private static final String PAR_LNK = "link";
 	private static int pid_lnk;
-	private static final String PAR_PROT1 = "protocol1";
-	private static int pid_prm;
-	private static final String PAR_PROT2 = "protocol2";
+	private static final String PAR_CRD = "cordinate";
 	private static int pid_crd;
-	private static final String PAR_PROT3 = "protocol3";
-	private static int pid_str;
-	private static final String PAR_PROT4 = "protocol4";
-	private static int pid_rp;
-	private static final String PAR_PROT5 = "protocol5";
-	private static int pid_owner;
-	private static final String PAR_PROT6 = "protocol6";
-	private static int pid_path;
-	private static final String PAR_PROT7 = "protocol7";
-	private static int pid_relate;
-	private static final String PAR_PROT8 = "protocol8";
-	private static int pid_cuckoo;
-	private static final String PAR_PROT9 = "protocol9";
+	private static final String PAR_NRC = "node_request_cycle";
+	private static int pid_nrc;
+	private static final String PAR_SO = "storage_owner";
+	private static int pid_so;
+	private static final String PAR_SP = "storage_path";
+	private static int pid_sp;
+	private static final String PAR_SR = "storage_relate";
+	private static int pid_sr;
+	private static final String PAR_SC = "storage_cuckoo";
+	private static int pid_sc;
+	private static final String PAR_BPRM = "base_parameter";
+	private static int pid_bprm;
+	private static final String PAR_NPO = "node_parameter_owner";
 	private static int pid_npo;
-	private static final String PAR_PROT10 = "protocol10";
+	private static final String PAR_NPP = "node_parameter_path";
 	private static int pid_npp;
-	private static final String PAR_PROT11 = "protocol11";
+	private static final String PAR_NPR = "node_parameter_relate";
 	private static int pid_npr;
-	private static final String PAR_PROT12 = "protocol12";
+	private static final String PAR_NPC = "node_parameter_cuckoo";
 	private static int pid_npc;
 
 	private static Random random;
@@ -49,19 +47,18 @@ public class SharedResource implements Control {
 	private static ArrayList<Integer> lowTotal;
 
 	public SharedResource(String prefix) {
-		pid_lnk = Configuration.getPid(prefix + "." + PAR_PROT0);
-		pid_prm = Configuration.getPid(prefix + "." + PAR_PROT1);
-		pid_crd = Configuration.getPid(prefix + "." + PAR_PROT2);
-		// pid_str = Configuration.getPid(prefix + "." + PAR_PROT3);
-		pid_rp = Configuration.getPid(prefix + "." + PAR_PROT4);
-		pid_owner = Configuration.getPid(prefix + "." + PAR_PROT5);
-		pid_path = Configuration.getPid(prefix + "." + PAR_PROT6);
-		pid_relate = Configuration.getPid(prefix + "." + PAR_PROT7);
-		pid_cuckoo = Configuration.getPid(prefix + "." + PAR_PROT8);
-		pid_npo = Configuration.getPid(prefix + "." + PAR_PROT9);
-		pid_npp = Configuration.getPid(prefix + "." + PAR_PROT10);
-		pid_npr = Configuration.getPid(prefix + "." + PAR_PROT11);
-		pid_npc = Configuration.getPid(prefix + "." + PAR_PROT12);
+		pid_lnk = Configuration.getPid(prefix + "." + PAR_LNK);
+		pid_crd = Configuration.getPid(prefix + "." + PAR_CRD);
+		pid_nrc = Configuration.getPid(prefix + "." + PAR_NRC);
+		pid_so = Configuration.getPid(prefix + "." + PAR_SO);
+		pid_sp = Configuration.getPid(prefix + "." + PAR_SP);
+		pid_sr = Configuration.getPid(prefix + "." + PAR_SR);
+		pid_sc = Configuration.getPid(prefix + "." + PAR_SC);
+		pid_bprm = Configuration.getPid(prefix + "." + PAR_BPRM);
+		pid_npo = Configuration.getPid(prefix + "." + PAR_NPO);
+		pid_npp = Configuration.getPid(prefix + "." + PAR_NPP);
+		pid_npr = Configuration.getPid(prefix + "." + PAR_NPR);
+		pid_npc = Configuration.getPid(prefix + "." + PAR_NPC);
 	}
 
 	public static void setDataCounter(ArrayList<Integer> dc) {
@@ -147,35 +144,31 @@ public class SharedResource implements Control {
 	}
 
 	public static NodeParameter getParameter(Node node) {
-		return (NodeParameter) node.getProtocol(pid_prm);
+		return (NodeParameter) node.getProtocol(pid_bprm);
 	}
 
 	public static NodeCoordinate getCoordinate(Node node) {
 		return (NodeCoordinate) node.getProtocol(pid_crd);
 	}
 
-	public static Storage getStorage(Node node) {
-		return (Storage) node.getProtocol(pid_str);
-	}
-
-	public static RequestProbability getRequestProbability(Node node) {
-		return (RequestProbability) node.getProtocol(pid_rp);
+	public static NodeRequestCycle getNodeRequestCycle(Node node) {
+		return (NodeRequestCycle) node.getProtocol(pid_nrc);
 	}
 
 	public static StorageOwner getSOwner(Node node) {
-		return (StorageOwner) node.getProtocol(pid_owner);
+		return (StorageOwner) node.getProtocol(pid_so);
 	}
 
 	public static StoragePath getSPath(Node node) {
-		return (StoragePath) node.getProtocol(pid_path);
+		return (StoragePath) node.getProtocol(pid_sp);
 	}
 
 	public static StorageRelate getSRelate(Node node) {
-		return (StorageRelate) node.getProtocol(pid_relate);
+		return (StorageRelate) node.getProtocol(pid_sr);
 	}
 
 	public static StorageCuckoo getSCuckoo(Node node) {
-		return (StorageCuckoo) node.getProtocol(pid_cuckoo);
+		return (StorageCuckoo) node.getProtocol(pid_sc);
 	}
 
 	public static NPOwner getNPOwner(Node node) {

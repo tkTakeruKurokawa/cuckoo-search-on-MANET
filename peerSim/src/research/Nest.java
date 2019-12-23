@@ -125,12 +125,9 @@ public class Nest implements Control {
 		double r, o;
 		int d;
 
-		while (true) {
+		do {
 			r = random.nextDouble();
-			if (r > 0.1d) {
-				break;
-			}
-		}
+		} while (r < 0.1d);
 
 		d = (int) Math.round(Math.pow(r, -2.0));
 		// d = (int) Math.round(s*2);

@@ -3,7 +3,6 @@ package research;
 import peersim.config.*;
 import peersim.core.*;
 import java.util.*;
-
 import java.lang.Math;
 
 public class GetReplications implements Control {

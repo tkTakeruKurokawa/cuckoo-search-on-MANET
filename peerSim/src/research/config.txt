@@ -27,19 +27,15 @@ protocol.crd NodeCoordinate
 protocol.crd.d 1000.0
 
 #ノードの情報(バッテリー残量、ストレージ残量)
-protocol.prm NodeParameter
-protocol.prm.baseBattery 50.0
-protocol.prm.maxCapacity capacity
+protocol.bprm NodeParameter
+protocol.bprm.baseBattery 50.0
+protocol.bprm.maxCapacity capacity
 
 #各手法用パラメータ。値はサイクル毎にNodeParameterからコピー
 protocol.npo NPOwner
 protocol.npp NPPath
 protocol.npr NPRelate
 protocol.npc NPCuckoo
-
-#ノードが持っているデータ
-#protocol.str Storages
-#protocol.str.protocol prm
 
 #Owner Replication用のストレージ
 protocol.owner StorageOwner
@@ -58,27 +54,26 @@ protocol.cuckoo StorageCuckoo
 protocol.cuckoo.protocol npc
 
 #各ノードが各データを要求する確率
-protocol.rp RequestProbability
+protocol.nrc NodeRequestCycle
 
-order.protocol lnk crd prm npo npp npr npc owner path relate cuckoo rp
+order.protocol lnk crd bprm npo npp npr npc owner path relate cuckoo nrc
 
 ############## Initialize ###############
 
 #Initialize, Controlで共有されるデータ
 init.sr SharedResource
-init.sr.protocol0 lnk
-init.sr.protocol1 prm
-init.sr.protocol2 crd
-#init.sr.protocol3 str
-init.sr.protocol4 rp
-init.sr.protocol5 owner
-init.sr.protocol6 path
-init.sr.protocol7 relate
-init.sr.protocol8 cuckoo
-init.sr.protocol9 npo
-init.sr.protocol10 npp
-init.sr.protocol11 npr
-init.sr.protocol12 npc
+init.sr.link lnk
+init.sr.cordinate crd
+init.sr.node_request_cycle nrc
+init.sr.storage_owner owner
+init.sr.storage_path path
+init.sr.storage_relate relate
+init.sr.storage_cuckoo cuckoo
+init.sr.base_parameter bprm
+init.sr.node_parameter_owner npo
+init.sr.node_parameter_path npp
+init.sr.node_parameter_relate npr
+init.sr.node_parameter_cuckoo npc
 
 #ノードのパラメータ、座標を初期化
 init.iniNet InitializeNetwork
@@ -87,8 +82,7 @@ init.iniNet InitializeNetwork
 init.data Data
 init.data.maxVariety 50
 init.data.size dataSize
-init.data.highDemand highDemandNum
-init.data.lowDemand lowDemandNum
+init.data.distribution normal #normal or power
 
 #ランダムジオメトリックグラフを構成
 init.rgg RandomGeometricGraph
@@ -129,15 +123,15 @@ order.init sr iniNet data rgg wrgg fld cs ns nest rr
 
 ############## Control ###############
 
-#各ノードの高需要データに対するダウンロード要求
-control.ihdd IncreaseHighDemandData
-
-#各ノードの低需要データに対するダウンロード要求
-control.ildd IncreaseLowDemandData
+#各ノードのデータ要求
+control.dr DataRequest
 
 #各ノードで保有されているデータの総数を表示
 control.gr GetReplications
 control.gr.capacity capacity
+
+#低需要データの複製
+control.lddr LowDemandDataReplication
 
 #ノード・リンクの追加・削除。バッテリーの減少
 control.mn ModifyNetwork
@@ -149,4 +143,4 @@ control.mn.join_lambda 300
 #データの需要のサイクルを進める
 control.dm DataManagement
 
-order.control ihdd ildd gr mn dm
+order.control dr lddr gr mn dm

@@ -1,0 +1,49 @@
+{
+    // IntelliSense を使用して利用可能な属性を学べます。
+    // 既存の属性の説明をホバーして表示します。
+    // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug (Launch) - Current File",
+            "request": "launch",
+            "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-Simulator<research_16425558>",
+            "request": "launch",
+            "mainClass": "peersim.Simulator",
+            "projectName": "research_16425558"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-CheckConfig<research_16425558>",
+            "request": "launch",
+            "mainClass": "peersim.config.CheckConfig",
+            "projectName": "research_16425558"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-ClassFinder<research_16425558>",
+            "request": "launch",
+            "mainClass": "peersim.config.ClassFinder",
+            "projectName": "research_16425558"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-RangeSimulator<research_16425558>",
+            "request": "launch",
+            "mainClass": "peersim.rangesim.RangeSimulator",
+            "projectName": "research_16425558"
+        },
+        {
+            "type": "java",
+            "name": "Debug (Launch)-MedianStats<research_16425558>",
+            "request": "launch",
+            "mainClass": "peersim.util.MedianStats",
+            "projectName": "research_16425558"
+        }
+    ]
+}
