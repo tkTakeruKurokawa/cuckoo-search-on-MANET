@@ -14,23 +14,23 @@ public class InitializeNetwork implements Control {
 		for (int nodeID = 0; nodeID < Network.size(); nodeID++) {
 			Node node = Network.get(nodeID);
 
-			NodeParameter parameter = SharedResource.getParameter(node);
+			BaseParameter parameter = SharedResource.getBaseParameter(node);
 			parameter.setParameter();
 
-			NPOwner npo = SharedResource.getNPOwner(node);
+			NPOwner npo = (NPOwner) SharedResource.getNodeParameter("owner", node);
 			npo.setBattery(parameter.getBattery());
 			npo.setCapacity(parameter.getCapacity());
 
-			NPPath npp = SharedResource.getNPPath(node);
+			NPPath npp = (NPPath) SharedResource.getNodeParameter("path", node);
 			npp.setBattery(parameter.getBattery());
 			npp.setCapacity(parameter.getCapacity());
 
-			NPRelate npr = SharedResource.getNPRelate(node);
+			NPRelate npr = (NPRelate) SharedResource.getNodeParameter("relate", node);
 			npr.setBattery(parameter.getBattery());
 			npr.setCapacity(parameter.getCapacity());
 			npr.setContribution(random.nextDouble());
 
-			NPCuckoo npc = SharedResource.getNPCuckoo(node);
+			NPCuckoo npc = (NPCuckoo) SharedResource.getNodeParameter("cuckoo", node);
 			npc.setBattery(parameter.getBattery());
 			npc.setCapacity(parameter.getCapacity());
 			npc.setUpTime(1);

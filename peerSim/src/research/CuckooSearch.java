@@ -45,8 +45,8 @@ public class CuckooSearch implements Control {
 		int nestNum = 0;
 		while (nestNum < ns.getNestSize()) {
 			bestNode = ns.getBestNode(nestNum);
-			StorageCuckoo storage = SharedResource.getSCuckoo(bestNode);
-			NPCuckoo parameter = SharedResource.getNPCuckoo(bestNode);
+			Storage storage = SharedResource.getNodeStorage("cuckoo", bestNode);
+			Parameter parameter = SharedResource.getNodeParameter("cuckoo", bestNode);
 			int capacity = parameter.getCapacity();
 			int occupancy = data.getSize();
 			int newCapacity = capacity - occupancy;

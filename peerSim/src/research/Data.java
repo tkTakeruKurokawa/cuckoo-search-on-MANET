@@ -24,15 +24,13 @@ public class Data implements Control {
 	private int localCycle = 0;
 	private int index;
 	private int size;
-	private double lambda;
-	private String type;
 
 	public Data() {
 	}
 
 	public Data(String s) {
-		maxSize = Configuration.getInt(s + "." + PAR_MAXSIZE);
 		maxVariety = Configuration.getInt(s + "." + PAR_MAXVARIETY);
+		maxSize = Configuration.getInt(s + "." + PAR_MAXSIZE);
 		distribution = Configuration.getString(s + "." + PAR_DISTRIBUTION);
 	}
 
@@ -99,14 +97,6 @@ public class Data implements Control {
 
 	public int getSize() {
 		return size;
-	}
-
-	public double getLambda() {
-		return lambda;
-	}
-
-	public String getType() {
-		return type;
 	}
 
 	public int getNowCycle() {

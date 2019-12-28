@@ -4,19 +4,13 @@ import java.io.*;
 import java.util.*;
 
 public class SectionAverage {
-    private ArrayList<Double> highAvailability = new ArrayList<Double>();
-    private ArrayList<Double> lowAvailability = new ArrayList<Double>();
-    private ArrayList<Double> highRemaining = new ArrayList<Double>();
-    private ArrayList<Double> lowRemaining = new ArrayList<Double>();
-    private ArrayList<Double> highOccupancy = new ArrayList<Double>();
-    private ArrayList<Double> lowOccupancy = new ArrayList<Double>();
+    private ArrayList<Double> availability = new ArrayList<Double>();
+    private ArrayList<Double> remaining = new ArrayList<Double>();
+    private ArrayList<Double> occupancy = new ArrayList<Double>();
 
-    private int ha_id_old = 0;
-    private int la_id_old = 0;
-    private int hr_id_old = 0;
-    private int lr_id_old = 0;
-    private int ho_id_old = 0;
-    private int lo_id_old = 0;
+    private int availability_id_old = 0;
+    private int r_id_old = 0;
+    private int o_id_old = 0;
 
     private PrintWriter sa;
 
@@ -36,156 +30,81 @@ public class SectionAverage {
             System.out.println(e);
         }
 
-        highAvailability.add(0.0);
-        lowAvailability.add(0.0);
-        highRemaining.add(0.0);
-        lowRemaining.add(0.0);
-        highOccupancy.add(0.0);
-        lowOccupancy.add(0.0);
+        availability.add(0.0);
+        remaining.add(0.0);
+        occupancy.add(0.0);
     }
 
-    public void setHighAvailability(int cycle, double average) {
+    public void setAvailability(int cycle, double average) {
         int id = cycle / 100;
-        if (id != ha_id_old) {
-            highAvailability.set(ha_id_old, highAvailability.get(ha_id_old) / 100.0);
-            highAvailability.add(average);
+        if (id != availability_id_old) {
+            availability.set(availability_id_old, availability.get(availability_id_old) / 100.0);
+            availability.add(average);
         } else {
-            highAvailability.set(id, highAvailability.get(id) + average);
+            availability.set(id, availability.get(id) + average);
         }
-        ha_id_old = id;
+        availability_id_old = id;
     }
 
-    public void setLowAvailability(int cycle, double average) {
+    public void setRemaining(int cycle, double average) {
         int id = cycle / 100;
-        if (id != la_id_old) {
-            lowAvailability.set(la_id_old, lowAvailability.get(la_id_old) / 100.0);
-            lowAvailability.add(average);
+        if (id != r_id_old) {
+            remaining.set(r_id_old, remaining.get(r_id_old) / 100.0);
+            remaining.add(average);
         } else {
-            lowAvailability.set(id, lowAvailability.get(id) + average);
+            remaining.set(id, remaining.get(id) + average);
         }
-        la_id_old = id;
+        r_id_old = id;
     }
 
-    public void setHighRemaining(int cycle, double average) {
+    public void setOccupancy(int cycle, double average) {
         int id = cycle / 100;
-        if (id != hr_id_old) {
-            highRemaining.set(hr_id_old, highRemaining.get(hr_id_old) / 100.0);
-            highRemaining.add(average);
+        if (id != o_id_old) {
+            occupancy.set(o_id_old, occupancy.get(o_id_old) / 100.0);
+            occupancy.add(average);
         } else {
-            highRemaining.set(id, highRemaining.get(id) + average);
+            occupancy.set(id, occupancy.get(id) + average);
         }
-        hr_id_old = id;
-    }
-
-    public void setLowRemaining(int cycle, double average) {
-        int id = cycle / 100;
-        if (id != lr_id_old) {
-            lowRemaining.set(lr_id_old, lowRemaining.get(lr_id_old) / 100.0);
-            lowRemaining.add(average);
-        } else {
-            lowRemaining.set(id, lowRemaining.get(id) + average);
-        }
-        lr_id_old = id;
-    }
-
-    public void setHighOccupancy(int cycle, double average) {
-        int id = cycle / 100;
-        if (id != ho_id_old) {
-            highOccupancy.set(ho_id_old, highOccupancy.get(ho_id_old) / 100.0);
-            highOccupancy.add(average);
-        } else {
-            highOccupancy.set(id, highOccupancy.get(id) + average);
-        }
-        ho_id_old = id;
-    }
-
-    public void setLowOccupancy(int cycle, double average) {
-        int id = cycle / 100;
-        if (id != lo_id_old) {
-            lowOccupancy.set(lo_id_old, lowOccupancy.get(lo_id_old) / 100.0);
-            lowOccupancy.add(average);
-        } else {
-            lowOccupancy.set(id, lowOccupancy.get(id) + average);
-        }
-        lo_id_old = id;
+        o_id_old = id;
     }
 
     public void writeFile() {
         double previous = 0.0;
-        sa.println("High Availability:");
+        sa.println("Availability:");
         sa.println("Average\tDifference");
-        for (int id = 0; id < highAvailability.size(); id++) {
+        for (int id = 0; id < availability.size(); id++) {
             if (id > 0) {
-                sa.println(highAvailability.get(id) + "\t" + (highAvailability.get(id) - previous));
+                sa.println(availability.get(id) + "\t" + (availability.get(id) - previous));
             } else {
-                sa.println(highAvailability.get(id));
+                sa.println(availability.get(id));
             }
-            previous = highAvailability.get(id);
+            previous = availability.get(id);
         }
         sa.println();
 
         previous = 0.0;
-        sa.println("Low Availability:");
+        sa.println("Remaining:");
         sa.println("Average\tDifference");
-        for (int id = 0; id < lowAvailability.size(); id++) {
+        for (int id = 0; id < remaining.size(); id++) {
             if (id > 0) {
-                sa.println(lowAvailability.get(id) + "\t" + (lowAvailability.get(id) - previous));
+                sa.println(remaining.get(id) + "\t" + (remaining.get(id) - previous));
             } else {
-                sa.println(lowAvailability.get(id));
+                sa.println(remaining.get(id));
             }
-            previous = lowAvailability.get(id);
+            previous = remaining.get(id);
         }
         sa.println();
 
         previous = 0.0;
-        sa.println("High Remaining:");
+        sa.println("Occupancy:");
         sa.println("Average\tDifference");
-        for (int id = 0; id < highRemaining.size(); id++) {
+        for (int id = 0; id < occupancy.size(); id++) {
             if (id > 0) {
-                sa.println(highRemaining.get(id) + "\t" + (highRemaining.get(id) - previous));
+                sa.println(occupancy.get(id) + "\t" + (occupancy.get(id) - previous));
             } else {
-                sa.println(highRemaining.get(id));
+                sa.println(occupancy.get(id));
             }
-            previous = highRemaining.get(id);
-        }
-        sa.println();
-
-        previous = 0.0;
-        sa.println("Low Remaining:");
-        sa.println("Average\tDifference");
-        for (int id = 0; id < lowRemaining.size(); id++) {
-            if (id > 0) {
-                sa.println(lowRemaining.get(id) + "\t" + (lowRemaining.get(id) - previous));
-            } else {
-                sa.println(lowRemaining.get(id));
-            }
-            previous = lowRemaining.get(id);
-        }
-        sa.println();
-
-        previous = 0.0;
-        sa.println("High Occupancy:");
-        sa.println("Average\tDifference");
-        for (int id = 0; id < highOccupancy.size(); id++) {
-            if (id > 0) {
-                sa.println(highOccupancy.get(id) + "\t" + (highOccupancy.get(id) - previous));
-            } else {
-                sa.println(highOccupancy.get(id));
-            }
-            previous = highOccupancy.get(id);
-        }
-        sa.println();
-
-        previous = 0.0;
-        sa.println("Low Occupancy:");
-        sa.println("Average\tDifference");
-        for (int id = 0; id < lowOccupancy.size(); id++) {
-            if (id > 0) {
-                sa.println(lowOccupancy.get(id) + "\t" + (lowOccupancy.get(id) - previous));
-            } else {
-                sa.println(lowOccupancy.get(id));
-            }
-            previous = lowOccupancy.get(id);
+            previous = occupancy.get(id);
         }
 
         sa.close();

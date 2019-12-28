@@ -90,22 +90,22 @@ public class Flooding implements Control {
 
 	private static boolean contains(Node node) {
 		if (Objects.equals(id, 0)) {
-			storage = SharedResource.getSOwner(node);
+			storage = SharedResource.getNodeStorage("owner", node);
 			return storage.contains(target);
 		}
 
 		if (Objects.equals(id, 1)) {
-			storage = SharedResource.getSPath(node);
+			storage = SharedResource.getNodeStorage("path", node);
 			return storage.contains(target);
 		}
 
 		if (Objects.equals(id, 2)) {
-			storage = SharedResource.getSRelate(node);
+			storage = SharedResource.getNodeStorage("relate", node);
 			return storage.contains(target);
 		}
 
 		if (Objects.equals(id, 3)) {
-			storage = SharedResource.getSCuckoo(node);
+			storage = SharedResource.getNodeStorage("cuckoo", node);
 			return storage.contains(target);
 		}
 

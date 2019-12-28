@@ -63,23 +63,23 @@ public class ModifyNetwork implements Control {
 		NodeCoordinate newCrd = SharedResource.getCoordinate(newNode);
 		newCrd.setCoordinate();
 
-		NodeParameter parameter = SharedResource.getParameter(newNode);
+		BaseParameter parameter = SharedResource.getBaseParameter(newNode);
 		parameter.setParameter();
 
-		NPOwner npo = SharedResource.getNPOwner(newNode);
+		NPOwner npo = (NPOwner) SharedResource.getNodeParameter("owner", newNode);
 		npo.setBattery(parameter.getBattery());
 		npo.setCapacity(parameter.getCapacity());
 
-		NPPath npp = SharedResource.getNPPath(newNode);
+		NPPath npp = (NPPath) SharedResource.getNodeParameter("path", newNode);
 		npp.setBattery(parameter.getBattery());
 		npp.setCapacity(parameter.getCapacity());
 
-		NPRelate npr = SharedResource.getNPRelate(newNode);
+		NPRelate npr = (NPRelate) SharedResource.getNodeParameter("relate", newNode);
 		npr.setBattery(parameter.getBattery());
 		npr.setCapacity(parameter.getCapacity());
 		npr.setContribution(random.nextDouble());
 
-		NPCuckoo npc = SharedResource.getNPCuckoo(newNode);
+		NPCuckoo npc = (NPCuckoo) SharedResource.getNodeParameter("cuckoo", newNode);
 		npc.setBattery(parameter.getBattery());
 		npc.setCapacity(parameter.getCapacity());
 		npc.setUpTime(1);
@@ -147,16 +147,16 @@ public class ModifyNetwork implements Control {
 		// Storage storage = SharedResource.getStorage(node);
 		// storage.clear();
 
-		StorageOwner sOwner = SharedResource.getSOwner(node);
+		Storage sOwner = SharedResource.getNodeStorage("owner", node);
 		sOwner.clear();
 
-		StoragePath sPath = SharedResource.getSPath(node);
+		Storage sPath = SharedResource.getNodeStorage("path", node);
 		sPath.clear();
 
-		StorageRelate sRelate = SharedResource.getSRelate(node);
+		Storage sRelate = SharedResource.getNodeStorage("relate", node);
 		sRelate.clear();
 
-		StorageCuckoo sCuckoo = SharedResource.getSCuckoo(node);
+		Storage sCuckoo = SharedResource.getNodeStorage("cuckoo", node);
 		sCuckoo.clear();
 
 		Network.remove(node.getIndex());
@@ -221,9 +221,9 @@ public class ModifyNetwork implements Control {
 			}
 		}
 
-		System.out.println("join: " + num);
-		System.out.println("join Sum:" + joinSum);
-		System.out.println("Average join: " + (joinSum / ((double) count)));
+		// System.out.println("join: " + num);
+		// System.out.println("join Sum:" + joinSum);
+		// System.out.println("Average join: " + (joinSum / ((double) count)));
 	}
 
 	public static void leaveCandidate() {
@@ -240,9 +240,9 @@ public class ModifyNetwork implements Control {
 			}
 		}
 
-		System.out.println("leave: " + num);
-		System.out.println("leave Sum:" + leaveSum);
-		System.out.println("Average leave: " + (leaveSum / ((double) count)));
+		// System.out.println("leave: " + num);
+		// System.out.println("leave Sum:" + leaveSum);
+		// System.out.println("Average leave: " + (leaveSum / ((double) count)));
 	}
 
 	public static BigDecimal reduceBattery(double battery) {
@@ -261,20 +261,20 @@ public class ModifyNetwork implements Control {
 
 		for (int nodeID = 0; nodeID < Network.size(); nodeID++) {
 			Node node = Network.get(nodeID);
-			NodeParameter parameter = SharedResource.getParameter(node);
+			BaseParameter parameter = SharedResource.getBaseParameter(node);
 			BigDecimal newValue = reduceBattery(parameter.getBattery());
 			parameter.setBattery(newValue.doubleValue());
 
-			NPOwner npo = SharedResource.getNPOwner(node);
+			NPOwner npo = (NPOwner) SharedResource.getNodeParameter("owner", node);
 			npo.setBattery(parameter.getBattery());
 
-			NPPath npp = SharedResource.getNPPath(node);
+			NPPath npp = (NPPath) SharedResource.getNodeParameter("path", node);
 			npp.setBattery(parameter.getBattery());
 
-			NPRelate npr = SharedResource.getNPRelate(node);
+			NPRelate npr = (NPRelate) SharedResource.getNodeParameter("relate", node);
 			npr.setBattery(parameter.getBattery());
 
-			NPCuckoo npc = SharedResource.getNPCuckoo(node);
+			NPCuckoo npc = (NPCuckoo) SharedResource.getNodeParameter("cuckoo", node);
 			npc.setBattery(parameter.getBattery());
 			npc.setUpTime(npc.getUpTime() + 1);
 

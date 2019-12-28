@@ -9,11 +9,9 @@ public class StorageCuckoo implements Storage {
 	private static int pid_prm;
 
 	private ArrayList<Data> dataList = new ArrayList<Data>();
-	private static ArrayList<Integer> highDataCounter;
-	private static ArrayList<Integer> lowDataCounter;
+	private static ArrayList<Integer> dataCounter;
 
-	private static int highTotal = 0;
-	private static int lowTotal = 0;
+	private static int dataTotal = 0;
 
 	public StorageCuckoo(String prefix) {
 		pid_prm = Configuration.getPid(prefix + "." + PAR_PROT);
@@ -29,7 +27,7 @@ public class StorageCuckoo implements Storage {
 		return storage;
 	}
 
-	public boolean setLowDemandData(Node node, Data data) {
+	public boolean setData(Node node, Data data) {
 		NPCuckoo parameter = (NPCuckoo) node.getProtocol(pid_prm);
 		int capacity = parameter.getCapacity();
 		int occupancy = data.getSize();
@@ -40,41 +38,18 @@ public class StorageCuckoo implements Storage {
 
 			dataList.add(data);
 
-			lowDataCounter = SharedResource.getCuckooLowCounter();
-			lowDataCounter.set(data.getID(), lowDataCounter.get(data.getID()) + 1);
-			SharedResource.setCuckooLowCounter(lowDataCounter);
+			dataCounter = SharedResource.getCounter("cuckoo");
+			dataCounter.set(data.getID(), dataCounter.get(data.getID()) + 1);
+			SharedResource.setCounter("cuckoo", dataCounter);
 
 			parameter.setCapacity(newCapacity);
 
-			lowTotal++;
-			SharedResource.setLowTotal("cuckoo", lowTotal);
+			dataTotal++;
+			SharedResource.setDataTotal("cuckoo", dataTotal);
 
 			return true;
 		}
 
-		return false;
-	}
-
-	// nodeのstorageにdataを追加
-	public boolean setHighDemandData(Node node, Data data) {
-		NPCuckoo parameter = (NPCuckoo) node.getProtocol(pid_prm);
-		int capacity = parameter.getCapacity();
-		int occupancy = data.getSize();
-		int newCapacity = capacity - occupancy;
-
-		if (!dataList.contains(data) && (newCapacity >= 0)) {
-			dataList.add(data);
-
-			highDataCounter = SharedResource.getCuckooHighCounter();
-			highDataCounter.set(data.getID(), highDataCounter.get(data.getID()) + 1);
-			SharedResource.setCuckooHighCounter(highDataCounter);
-
-			parameter.setCapacity(newCapacity);
-
-			highTotal++;
-			SharedResource.setHighTotal("cuckoo", highTotal);
-			return true;
-		}
 		return false;
 	}
 
@@ -91,21 +66,15 @@ public class StorageCuckoo implements Storage {
 	}
 
 	public void clear() {
-		highDataCounter = SharedResource.getCuckooHighCounter();
-		lowDataCounter = SharedResource.getCuckooLowCounter();
+		dataCounter = SharedResource.getCounter("cuckoo");
 
 		for (Data data : dataList) {
-			if (Objects.equals(data.getType(), "high")) {
-				highDataCounter.set(data.getID(), highDataCounter.get(data.getID()) - 1);
-			} else {
-				lowDataCounter.set(data.getID(), lowDataCounter.get(data.getID()) - 1);
-			}
+			dataCounter.set(data.getID(), dataCounter.get(data.getID()) - 1);
 		}
 
 		dataList = new ArrayList<Data>();
 
-		SharedResource.setCuckooHighCounter(highDataCounter);
-		SharedResource.setCuckooLowCounter(lowDataCounter);
+		SharedResource.setCounter("cuckoo", dataCounter);
 	}
 
 	public String toString() {

@@ -1,10 +1,14 @@
 package research;
 
 import peersim.core.*;
+import peersim.config.*;
 import java.lang.Math;
 import java.util.*;
 
 public class NodeRequestCycle implements Protocol {
+	private static final String PAR_MAXVARIETY = "maxVariety";
+	private static int maxVariety;
+
 	private ArrayList<Data> requestList = new ArrayList<Data>();
 	private ArrayList<Integer> dataList = new ArrayList<Integer>();
 	private static ArrayList<Integer> rnd = new ArrayList<Integer>();
@@ -12,11 +16,10 @@ public class NodeRequestCycle implements Protocol {
 	private static Random random = new Random();
 
 	public NodeRequestCycle(String prefix) {
+		maxVariety = Configuration.getInt(prefix + "." + PAR_MAXVARIETY);
+
 		for (int i = 0; i < 100; i++) {
 			rnd.add(i);
-		}
-		for (int i = 0; i < Data.getMaxVariety(); i++) {
-			dataList.add(i, -1);
 		}
 	}
 
@@ -28,6 +31,9 @@ public class NodeRequestCycle implements Protocol {
 		}
 		request.requestList = new ArrayList<Data>(this.requestList.size());
 		request.dataList = new ArrayList<Integer>(this.dataList.size());
+		for (int i = 0; i < maxVariety; i++) {
+			request.dataList.add(i, -1);
+		}
 		// request.rnd = new ArrayList<Integer>(this.rnd.size());
 		// request.hit = new ArrayList<Integer>(this.hit.size());
 		return request;
@@ -53,7 +59,7 @@ public class NodeRequestCycle implements Protocol {
 
 	public static double factorial(int src) {
 		if (src == 0) {
-			return 0;
+			return ((double) 1.0);
 		}
 		double value = 1;
 		for (int i = 1; i <= src; i++) {
@@ -66,7 +72,7 @@ public class NodeRequestCycle implements Protocol {
 	private int poisson() {
 		double lambda = 1.0;
 
-		for (int i = 1; i <= 5; i++) {
+		for (int i = 0; i <= 5; i++) {
 			double cycle = ((double) i);
 			double p = Math.exp(-1 * lambda) * (Math.pow(lambda, cycle)) / factorial(i);
 			boolean success = probability(p);
@@ -78,15 +84,14 @@ public class NodeRequestCycle implements Protocol {
 		return -1;
 	}
 
-	public ArrayList<Data> getRequestedDatas() {
+	public ArrayList<Data> getRequestedData() {
 		requestList = new ArrayList<Data>();
 
 		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
-			if (dataList.get(dataID) == 0) {
+			if (dataList.get(dataID).equals(0)) {
 				requestList.add(Data.getData(dataID));
-			} else {
-				dataList.set(dataID, dataList.get(dataID) - 1);
 			}
+			dataList.set(dataID, dataList.get(dataID) - 1);
 		}
 
 		return requestList;

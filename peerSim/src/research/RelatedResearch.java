@@ -27,8 +27,8 @@ public class RelatedResearch implements Control {
 	}
 
 	public static void objectiveFunction(Node node) {
-		StorageRelate storage = SharedResource.getSRelate(node);
-		NPRelate parameter = SharedResource.getNPRelate(node);
+		StorageRelate storage = (StorageRelate) SharedResource.getNodeStorage("relate", node);
+		NPRelate parameter = (NPRelate) SharedResource.getNodeParameter("relate", node);
 		double battery = parameter.getBattery();
 		int capacity = parameter.getCapacity();
 		int occupancy = target.getSize();

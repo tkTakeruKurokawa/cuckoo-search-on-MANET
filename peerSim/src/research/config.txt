@@ -7,6 +7,7 @@ capacity 100.0
 dataSize 10.0
 highDemandNum 25
 lowDemandNum 25
+maxVariety 50
 
 ############## Network ###############
 
@@ -27,11 +28,11 @@ protocol.crd NodeCoordinate
 protocol.crd.d 1000.0
 
 #ノードの情報(バッテリー残量、ストレージ残量)
-protocol.bprm NodeParameter
+protocol.bprm BaseParameter
 protocol.bprm.baseBattery 50.0
 protocol.bprm.maxCapacity capacity
 
-#各手法用パラメータ。値はサイクル毎にNodeParameterからコピー
+#各手法用パラメータ。値はサイクル毎にBaseParameterからコピー
 protocol.npo NPOwner
 protocol.npp NPPath
 protocol.npr NPRelate
@@ -55,6 +56,7 @@ protocol.cuckoo.protocol npc
 
 #各ノードが各データを要求する確率
 protocol.nrc NodeRequestCycle
+protocol.nrc.maxVariety maxVariety
 
 order.protocol lnk crd bprm npo npp npr npc owner path relate cuckoo nrc
 
@@ -80,7 +82,7 @@ init.iniNet InitializeNetwork
 
 #ノードが持つデータ
 init.data Data
-init.data.maxVariety 50
+init.data.maxVariety maxVariety
 init.data.size dataSize
 init.data.distribution normal #normal or power
 
@@ -126,12 +128,15 @@ order.init sr iniNet data rgg wrgg fld cs ns nest rr
 #各ノードのデータ要求
 control.dr DataRequest
 
+#低需要データの複製
+control.lddr LowDemandDataReplication
+control.lddr.alfa 0.5
+control.lddr.coefficient 1.5
+control.lddr.safe_num 5
+
 #各ノードで保有されているデータの総数を表示
 control.gr GetReplications
 control.gr.capacity capacity
-
-#低需要データの複製
-control.lddr LowDemandDataReplication
 
 #ノード・リンクの追加・削除。バッテリーの減少
 control.mn ModifyNetwork

@@ -32,7 +32,7 @@ public class Nest implements Control {
 		egg = new double[3];
 		newEgg = new double[3];
 
-		NPCuckoo parameter = SharedResource.getNPCuckoo(node);
+		NPCuckoo parameter = (NPCuckoo) SharedResource.getNodeParameter("cuckoo", node);
 		egg[0] = parameter.getBattery();
 		egg[1] = ((double) parameter.getCapacity());
 		egg[2] = ((double) parameter.getUpTime());
@@ -182,7 +182,7 @@ public class Nest implements Control {
 			return false;
 		}
 
-		NPCuckoo parameter = SharedResource.getNPCuckoo(candidate);
+		NPCuckoo parameter = (NPCuckoo) SharedResource.getNodeParameter("cuckoo", candidate);
 		newEgg[0] = parameter.getBattery();
 		newEgg[1] = parameter.getCapacity();
 		newEgg[2] = parameter.getUpTime();
@@ -213,7 +213,7 @@ public class Nest implements Control {
 			if (!Objects.equals(newNode, null))
 				break;
 		}
-		NPCuckoo parameter = SharedResource.getNPCuckoo(newNode);
+		NPCuckoo parameter = (NPCuckoo) SharedResource.getNodeParameter("cuckoo", newNode);
 
 		this.node = newNode;
 		egg[0] = parameter.getBattery();
@@ -224,7 +224,7 @@ public class Nest implements Control {
 
 	public void abandon(int nodeID) {
 		Node newNode = Network.get(nodeID);
-		NPCuckoo parameter = SharedResource.getNPCuckoo(newNode);
+		NPCuckoo parameter = (NPCuckoo) SharedResource.getNodeParameter("cuckoo", newNode);
 		newEgg[0] = parameter.getBattery();
 		newEgg[1] = ((double) parameter.getCapacity());
 		newEgg[2] = ((double) parameter.getUpTime());

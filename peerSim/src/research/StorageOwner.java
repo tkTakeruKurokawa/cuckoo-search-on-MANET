@@ -9,11 +9,9 @@ public class StorageOwner implements Storage {
 	private static int pid_prm;
 
 	private ArrayList<Data> dataList = new ArrayList<Data>();
-	private static ArrayList<Integer> highDataCounter;
-	private static ArrayList<Integer> lowDataCounter;
+	private static ArrayList<Integer> dataCounter;
 
-	private static int highTotal = 0;
-	private static int lowTotal = 0;
+	private static int dataTotal = 0;
 
 	public StorageOwner(String prefix) {
 		pid_prm = Configuration.getPid(prefix + "." + PAR_PROT);
@@ -29,7 +27,7 @@ public class StorageOwner implements Storage {
 		return storage;
 	}
 
-	public boolean setLowDemandData(Node node, Data data) {
+	public boolean setData(Node node, Data data) {
 		NPOwner parameter = (NPOwner) node.getProtocol(pid_prm);
 		int capacity = parameter.getCapacity();
 		int occupancy = data.getSize();
@@ -40,40 +38,18 @@ public class StorageOwner implements Storage {
 
 			dataList.add(data);
 
-			lowDataCounter = SharedResource.getOwnerLowCounter();
-			lowDataCounter.set(data.getID(), lowDataCounter.get(data.getID()) + 1);
-			SharedResource.setOwnerLowCounter(lowDataCounter);
+			dataCounter = SharedResource.getCounter("owner");
+			dataCounter.set(data.getID(), dataCounter.get(data.getID()) + 1);
+			SharedResource.setCounter("owner", dataCounter);
 
 			parameter.setCapacity(newCapacity);
 
-			lowTotal++;
-			SharedResource.setLowTotal("owner", lowTotal);
+			dataTotal++;
+			SharedResource.setDataTotal("owner", dataTotal);
+
 			return true;
 		}
 
-		return false;
-	}
-
-	// nodeのstorageにdataを追加
-	public boolean setHighDemandData(Node node, Data data) {
-		NPOwner parameter = (NPOwner) node.getProtocol(pid_prm);
-		int capacity = parameter.getCapacity();
-		int occupancy = data.getSize();
-		int newCapacity = capacity - occupancy;
-
-		if (!dataList.contains(data) && (newCapacity >= 0)) {
-			dataList.add(data);
-
-			highDataCounter = SharedResource.getOwnerHighCounter();
-			highDataCounter.set(data.getID(), highDataCounter.get(data.getID()) + 1);
-			SharedResource.setOwnerHighCounter(highDataCounter);
-
-			parameter.setCapacity(newCapacity);
-
-			highTotal++;
-			SharedResource.setHighTotal("owner", highTotal);
-			return true;
-		}
 		return false;
 	}
 
@@ -90,21 +66,15 @@ public class StorageOwner implements Storage {
 	}
 
 	public void clear() {
-		highDataCounter = SharedResource.getOwnerHighCounter();
-		lowDataCounter = SharedResource.getOwnerLowCounter();
+		dataCounter = SharedResource.getCounter("owner");
 
 		for (Data data : dataList) {
-			if (Objects.equals(data.getType(), "high")) {
-				highDataCounter.set(data.getID(), highDataCounter.get(data.getID()) - 1);
-			} else {
-				lowDataCounter.set(data.getID(), lowDataCounter.get(data.getID()) - 1);
-			}
+			dataCounter.set(data.getID(), dataCounter.get(data.getID()) - 1);
 		}
 
 		dataList = new ArrayList<Data>();
 
-		SharedResource.setOwnerHighCounter(highDataCounter);
-		SharedResource.setOwnerLowCounter(lowDataCounter);
+		SharedResource.setCounter("owner", dataCounter);
 	}
 
 	public String toString() {

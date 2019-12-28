@@ -1,9 +1,18 @@
 package research;
 
+import peersim.config.Configuration;
 import peersim.core.*;
 import java.util.*;
+import java.lang.Math;
 
 public class LowDemandDataReplication implements Control {
+	private static final String PAR_ALFA = "alfa";
+	private static double alfa;
+	private static final String PAR_COEFFICIENT = "coefficient";
+	private static double coefficient;
+	private static final String PAR_SAFE_NUM = "safe_num";
+	private static int safe;
+
 	private static Random random = new Random();
 	private static ArrayList<Integer> succFlood = new ArrayList<Integer>();
 	private static ArrayList<Integer> failFlood = new ArrayList<Integer>();
@@ -14,14 +23,15 @@ public class LowDemandDataReplication implements Control {
 	private static ArrayList<Integer> relateCount = new ArrayList<Integer>();
 	private static ArrayList<Integer> cuckooCount = new ArrayList<Integer>();
 	private static ArrayList<Integer> passedCycle = new ArrayList<Integer>();
-	private static ArrayList<Node> rand;
-
-	private static ArrayList<Data> requestList;
-	private static Data data;
-	private static int cycle = 0;
-	private static int uploadID = 0;
+	private static ArrayList<Double> fdNow = new ArrayList<Double>();
+	private static AbstractList<Integer> threshold = new ArrayList<Integer>();
+	private static ArrayList<Boolean> lowDemand = new ArrayList<Boolean>();
 
 	public LowDemandDataReplication(String prefix) {
+		alfa = Configuration.getDouble(prefix + "." + PAR_ALFA);
+		coefficient = Configuration.getDouble(prefix + "." + PAR_COEFFICIENT);
+		safe = Configuration.getInt(prefix + "." + PAR_SAFE_NUM);
+
 		for (int i = 0; i < 4; i++) {
 			succFlood.add(i, 0);
 			failFlood.add(i, 0);
@@ -34,93 +44,13 @@ public class LowDemandDataReplication implements Control {
 			relateCount.add(i, 0);
 			cuckooCount.add(i, 0);
 			passedCycle.add(i, 0);
+			fdNow.add(i, -2.0);
+			threshold.add(i, -1);
+			lowDemand.add(i, false);
 		}
 	}
 
-	private static boolean check(Parameter parameter, Storage storage) {
-		int capacity = parameter.getCapacity();
-		int occupancy = data.getSize();
-		int newCapacity = capacity - occupancy;
-
-		if (!storage.contains(data) && (newCapacity >= 0)) {
-			return true;
-		}
-
-		return false;
-	}
-
-	private static void checkUL(Node node, String way) {
-		int count = 0;
-		if (Objects.equals(way, "owner")) {
-			while (count < Network.size()) {
-				Parameter parOwner = SharedResource.getNPOwner(node);
-				Storage strOwner = SharedResource.getSOwner(node);
-				Parameter parRelate = SharedResource.getNPRelate(node);
-				Storage strRelate = SharedResource.getSRelate(node);
-				Parameter parCuckoo = SharedResource.getNPCuckoo(node);
-				Storage strCuckoo = SharedResource.getSCuckoo(node);
-
-				boolean sucOwner = check(parOwner, strOwner);
-				boolean sucRelate = check(parRelate, strRelate);
-				boolean sucCuckoo = check(parCuckoo, strCuckoo);
-
-				if (sucOwner == true) {
-					if (sucRelate == true) {
-						if (sucCuckoo == true) {
-							return;
-						}
-					}
-				}
-
-				node = rand.get(count);
-				count++;
-			}
-		}
-
-		if (Objects.equals(way, "path")) {
-			while (count < Network.size()) {
-				Parameter parameter = SharedResource.getNPPath(node);
-				Storage storage = SharedResource.getSPath(node);
-
-				boolean success = check(parameter, storage);
-				if (success) {
-					return;
-				}
-
-				node = rand.get(count);
-				count++;
-			}
-		}
-	}
-
-	public static int replicaNum(String type, Data data) {
-		int num;
-		int nowReplications;
-		int dataID = data.getID();
-
-		if (Objects.equals(type, "relate")) {
-			double beta = 1.0;
-			nowReplications = SharedResource.getRelateLowCounter().get(dataID);
-			relateCount.set(dataID, relateCount.get(dataID) + 1);
-			relateSum.set(dataID, relateSum.get(dataID) + nowReplications);
-
-			num = ((int) Math.round(beta * nowReplications
-					* (relateSum.get(dataID) / relateCount.get(dataID).doubleValue()) / nowReplications));
-
-		} else {
-			double beta = 1.0;
-			nowReplications = SharedResource.getCuckooLowCounter().get(dataID);
-			cuckooCount.set(dataID, cuckooCount.get(dataID) + 1);
-			cuckooSum.set(dataID, cuckooSum.get(dataID) + nowReplications);
-			num = ((int) Math.round(beta * nowReplications
-					* (cuckooSum.get(dataID) / cuckooCount.get(dataID).doubleValue()) / nowReplications));
-		}
-
-		System.out.println(data.getID() + ": " + type + " Num: " + num + " Now: " + nowReplications);
-		return num - nowReplications;
-	}
-
-	public static void relatedResearch(int max) {
+	public static void relatedResearch(Data data, int max) {
 		int addNum = 0;
 		Node node;
 		while (addNum < max) {
@@ -129,8 +59,8 @@ public class LowDemandDataReplication implements Control {
 
 			if (node != null) {
 				succFlood.set(2, succFlood.get(2) + 1);
-				Storage storage = SharedResource.getSRelate(node);
-				boolean success = storage.setLowDemandData(node, data);
+				Storage storage = SharedResource.getNodeStorage("relate", node);
+				boolean success = storage.setData(node, data);
 				if (success) {
 					succSet.set(2, succSet.get(2) + 1);
 				} else {
@@ -144,7 +74,7 @@ public class LowDemandDataReplication implements Control {
 		}
 	}
 
-	public static void cuckooSearch(int max) {
+	public static void cuckooSearch(Data data, int max) {
 		int addNum = 0;
 		Node node;
 		// System.out.println("Add Num: " + diff);
@@ -154,8 +84,8 @@ public class LowDemandDataReplication implements Control {
 
 			if (node != null) {
 				succFlood.set(3, succFlood.get(3) + 1);
-				Storage storage = SharedResource.getSCuckoo(node);
-				boolean success = storage.setLowDemandData(node, data);
+				Storage storage = SharedResource.getNodeStorage("cuckoo", node);
+				boolean success = storage.setData(node, data);
 				if (success) {
 					succSet.set(3, succSet.get(3) + 1);
 				} else {
@@ -169,165 +99,101 @@ public class LowDemandDataReplication implements Control {
 		}
 	}
 
-	public static void owner(Node node) {
-		Parameter parameter = SharedResource.getNPOwner(node);
-		Storage storage = SharedResource.getSOwner(node);
-
-		boolean hit = Flooding.search(node, data, 0);
-		if (hit) {
-			succFlood.set(0, succFlood.get(0) + 1);
-			if (check(parameter, storage)) {
-				storage.setLowDemandData(node, data);
-				succSet.set(0, succSet.get(0) + 1);
-			} else {
-				failSet.set(0, failSet.get(0) + 1);
-			}
-		} else {
-			failFlood.set(0, failFlood.get(0) + 1);
+	public static void defineThreshold(ArrayList<Integer> accesses) {
+		Double total = 0.0;
+		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
+			total += (double) accesses.get(dataID);
+			lowDemand.set(dataID, false);
 		}
-	}
 
-	public static void path(Node node) {
-		// Parameter parameter = SharedResource.getNPPath(node);
-		// Storage storage = SharedResource.getSPath(node);
-
-		// if (check(parameter, storage)) {
-		boolean hit = Flooding.search(node, data, 1);
-		if (hit) {
-			succFlood.set(1, succFlood.get(1) + 1);
-			for (Node n : Flooding.getPath()) {
-				Parameter parameter = SharedResource.getNPPath(n);
-				Storage storage = SharedResource.getSPath(n);
-				// System.out.println("Path: " + n.getID());
-				if (check(parameter, storage)) {
-					storage.setLowDemandData(n, data);
-					succSet.set(1, succSet.get(1) + 1);
-				} else {
-					failSet.set(1, failSet.get(1) + 1);
+		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
+			if (threshold.get(dataID).equals(-1)) {
+				if (((double) accesses.get(dataID)) <= (total * 0.05d)) {
+					threshold.set(dataID, accesses.get(dataID));
+					lowDemand.set(dataID, true);
 				}
 			}
-		} else {
-			failFlood.set(1, failFlood.get(1) + 1);
 		}
-		// }
 	}
 
-	public static void relate(int num) {
-		relatedResearch(num);
+	public static void exponentialSmoothing(ArrayList<Integer> accesses) {
+		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
+			Double md = (double) accesses.get(dataID);
+
+			if (fdNow.get(dataID) < -1.0d) {
+				fdNow.set(dataID, md);
+			} else {
+				double value = alfa * md + (1 - alfa) * fdNow.get(dataID);
+				if (((int) Math.round(value)) <= threshold.get(dataID)) {
+					threshold.set(dataID, accesses.get(dataID));
+					lowDemand.set(dataID, true);
+				}
+				fdNow.set(dataID, value);
+			}
+		}
 	}
 
-	public static void cuckoo(int num) {
-		cuckooSearch(num);
+	public static void calculateReplications(String type, ArrayList<Integer> accesses) {
+		ArrayList<Integer> dataCounter = SharedResource.getCounter(type);
+
+		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
+			if (lowDemand.get(dataID) == true) {
+				Double x = fdNow.get(dataID) / (double) accesses.get(dataID);
+				if (x.equals(0.0) || Double.isInfinite(x) || Double.isNaN(x)) {
+					x = 1.0;
+				}
+				int dataNum = dataCounter.get(dataID);
+				int safeNum = (int) Math.round(coefficient * (double) dataNum * x);
+
+				if (dataNum < safeNum) {
+					Data data = Data.getData(dataID);
+					if (type.equals("relate")) {
+						// relatedResearch(data, safeNum - dataNum);
+						relatedResearch(data, 1);
+					} else {
+						if (passedCycle.get(dataID) < 100) {
+							// cuckooSearch(data, safeNum - dataNum);
+							cuckooSearch(data, 1);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public void showLowDemandData() {
+		ArrayList<Integer> relatelist = SharedResource.getCounter("relate");
+		ArrayList<Integer> cuckoolist = SharedResource.getCounter("cuckoo");
+		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
+			System.out.println("-----------------------------------");
+			System.out.println("relate ID " + dataID + ": " + relatelist.get(dataID) + " " + threshold.get(dataID));
+
+			System.out.println("cuckoo ID " + dataID + ": " + cuckoolist.get(dataID) + " " + threshold.get(dataID) + " "
+					+ passedCycle.get(dataID));
+		}
+		System.out.println();
 	}
 
 	public boolean execute() {
-		Node node;
+		// 低需要の判定
+		ArrayList<Integer> accesses = SharedResource.getAccesses();
+		defineThreshold(accesses);
+		exponentialSmoothing(accesses);
+		calculateReplications("relate", accesses);
+		calculateReplications("cuckoo", accesses);
 
-		// データのアップロード
-		if ((cycle % 5 == 0) && uploadID < Data.getMaxVariety()) {
-			rand = new ArrayList<Node>();
-			for (int i = 0; i < Network.size(); i++) {
-				rand.add(Network.get(i));
-			}
-			Collections.shuffle(rand);
-
-			data = Data.getData(uploadID);
-			if (Objects.equals(data.getType(), "low")) {
-				int num = random.nextInt(6) + 5;
-				for (int i = 0; i < num; i++) {
-					node = Network.get(random.nextInt(Network.size()));
-
-					checkUL(node, "owner");
-					Storage ownerS = SharedResource.getSOwner(node);
-					ownerS.setLowDemandData(node, data);
-					Storage relateS = SharedResource.getSRelate(node);
-					relateS.setLowDemandData(node, data);
-					Storage cuckooS = SharedResource.getSCuckoo(node);
-					cuckooS.setLowDemandData(node, data);
-
-					checkUL(node, "path");
-					Storage pathS = SharedResource.getSPath(node);
-					pathS.setLowDemandData(node, data);
-				}
-			}
-			uploadID++;
-		}
-
-		// データ要求がある場合
-		for (int nodeID = 0; nodeID < Network.size(); nodeID++) {
-			node = Network.get(nodeID);
-			// データ要求
-			RequestProbability request = SharedResource.getRequestProbability(node);
-			requestList = request.dataRequests("low"); // データ要求するデータが入る
-
-			for (int dataID = 0; dataID < requestList.size(); dataID++) {
-				data = requestList.get(dataID);
-
-				owner(node);
-				path(node);
-				relate(1);
-				cuckoo(1);
-
-				passedCycle.set(dataID, 0);
-			}
-		}
-
-		// データ要求がない場合
+		// データ要求があった場合，複製配置終了までのカウンターをリセット
 		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
-			data = Data.getData(dataID);
-
-			ArrayList<Boolean> dataRequest = SharedResource.getDataRequest();
-
-			if (Objects.equals(data.getType(), "low") && dataRequest.get(dataID) == true) {
-				replicaNum("relate", data);
-				replicaNum("cuckoo", data);
-			}
-
-			if (Objects.equals(data.getType(), "low") && dataRequest.get(dataID) == false) {
-				int num = replicaNum("relate", Data.getData(dataID));
-				relate(num);
-
-				num = replicaNum("cuckoo", Data.getData(dataID));
-				if (passedCycle.get(dataID) < 200) {
-					cuckoo(num);
-				}
-				System.out.println();
-
+			// System.out.println("ID " + dataID + ": " + accesses.get(dataID));
+			if (!accesses.get(dataID).equals(0)) {
+				passedCycle.set(dataID, 0);
+				// データ要求が無く，既に低需要と判定されている場合，カウンターの値を増加
+			} else if (!threshold.get(dataID).equals(-1)) {
 				passedCycle.set(dataID, passedCycle.get(dataID) + 1);
 			}
-
-			dataRequest.set(dataID, false);
-			SharedResource.setDataRequest(dataRequest);
 		}
 
-		// System.out.println("Owner Num: Success Flooding:\t" + succFlood.get(0));
-		// System.out.println("Owner Num: Fail Flooding:\t" + failFlood.get(0));
-		// System.out.println("Owner Num: Fail setLowDemandData:\t" + failSet.get(0));
-		// System.out.println("Owner Num: Success setLowDemandData:\t" +
-		// succSet.get(0));
-		// System.out.println();
-
-		// System.out.println("Path Num: Success Flooding:\t" + succFlood.get(1));
-		// System.out.println("Path Num: Fail Flooding:\t" + failFlood.get(1));
-		// System.out.println("Path Num: Fail setLowDemandData:\t" + failSet.get(1));
-		// System.out.println("Path Num: Success setLowDemandData:\t" + succSet.get(1));
-		// System.out.println();
-
-		// System.out.println("Relate Num: Success Search:\t" + succFlood.get(2));
-		// System.out.println("Relate Num: Fail Search:\t" + failFlood.get(2));
-		// System.out.println("Relate Num: Fail setLowDemandData:\t" + failSet.get(2));
-		// System.out.println("Relate Num: Success setLowDemandData:\t" +
-		// succSet.get(2));
-		// System.out.println();
-
-		// System.out.println("Cuckoo Num: Success Search:\t" + succFlood.get(3));
-		// System.out.println("Cuckoo Num: Fail Search:\t" + failFlood.get(3));
-		// System.out.println("Cuckoo Num: Fail setLowDemandData:\t" + failSet.get(3));
-		// System.out.println("Cuckoo Num: Success setLowDemandData:\t" +
-		// succSet.get(3));
-		// System.out.println();
-
-		cycle++;
+		showLowDemandData();
 
 		return false;
 	}
