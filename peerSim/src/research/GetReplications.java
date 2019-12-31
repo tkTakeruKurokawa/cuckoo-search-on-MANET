@@ -53,6 +53,19 @@ public class GetReplications implements Control {
 		sa.add(cuckooSA);
 	}
 
+	public void networkCost() {
+		for (int i = 0; i < 4; i++) {
+			ArrayList<Integer> costList = SharedResource.getCost(i);
+			int total = 0;
+
+			for (Integer cost : costList) {
+				total += cost;
+			}
+
+			output.writeNetworkCost(i, cycle, costList.get(cycle), total);
+		}
+	}
+
 	public void calcHitRate() {
 		for (int i = 0; i < 4; i++) {
 			output.writeTotalHitRate(i, hit.get(i), hop.get(i) / ((double) hit.get(i)), miss.get(i));
@@ -265,6 +278,8 @@ public class GetReplications implements Control {
 			sa.get(id).setRemaining(cycle + 1, remainingAverage.get(id));
 			sa.get(id).setOccupancy(cycle + 1, occupancy.get(id));
 		}
+
+		networkCost();
 
 		hitRate();
 

@@ -4,7 +4,6 @@ import peersim.config.*;
 import peersim.core.*;
 
 import java.util.*;
-import java.lang.Math;
 
 public class RelatedResearch implements Control {
 	private static final String PAR_TTL = "ttl";
@@ -20,6 +19,7 @@ public class RelatedResearch implements Control {
 	private static Node bestNode;
 	private static double bestValue;
 	private static Data target;
+	private static int cost;
 
 	public RelatedResearch(String prefix) {
 		ttl = Configuration.getInt(prefix + "." + PAR_TTL);
@@ -57,6 +57,7 @@ public class RelatedResearch implements Control {
 		while (queue.peek() != null) {
 			node = queue.poll(); // キューからノードを取り出す
 			int nowTTL = nodeTTL.get(node); // 取り出したノードに関連付けられたTTLを取り出す
+			cost++;
 
 			// System.out.println("TTL: " + nowTTL);
 			// 取り出したノードのTTLが0であった場合
@@ -97,7 +98,7 @@ public class RelatedResearch implements Control {
 		return;
 	}
 
-	public static Node getBestNode(Node node, Data data) {
+	public static Node getBestNode(Node node, Data data, int cycle) {
 		addedQueueList = new ArrayList<Node>();
 		nodeTTL = new HashMap<Node, Integer>();
 		queue = new ArrayDeque<Node>();
@@ -106,9 +107,13 @@ public class RelatedResearch implements Control {
 		newTTL = ttl;
 		bestNode = null;
 		bestValue = Double.NEGATIVE_INFINITY;
+		cost = -1; // 検索はルートノードから始まるため初期値は-1
 
 		nextSearch(node);
 
+		ArrayList<Integer> costList = SharedResource.getCost(2);
+		costList.set(cycle, costList.get(cycle) + cost);
+		SharedResource.setCost(2, costList);
 		return bestNode;
 	}
 

@@ -27,6 +27,8 @@ public class LowDemandDataReplication implements Control {
 	private static AbstractList<Integer> threshold = new ArrayList<Integer>();
 	private static ArrayList<Boolean> lowDemand = new ArrayList<Boolean>();
 
+	private static int cycle = 0;
+
 	public LowDemandDataReplication(String prefix) {
 		alfa = Configuration.getDouble(prefix + "." + PAR_ALFA);
 		coefficient = Configuration.getDouble(prefix + "." + PAR_COEFFICIENT);
@@ -55,13 +57,16 @@ public class LowDemandDataReplication implements Control {
 		Node node;
 		while (addNum < max) {
 			node = Network.get(random.nextInt(Network.size()));
-			node = RelatedResearch.getBestNode(node, data);
+			node = RelatedResearch.getBestNode(node, data, cycle);
 
 			if (node != null) {
 				succFlood.set(2, succFlood.get(2) + 1);
 				Storage storage = SharedResource.getNodeStorage("relate", node);
 				boolean success = storage.setData(node, data);
 				if (success) {
+					Parameter parameter = (Parameter) node.getProtocol(5);
+					OutPut.writeCompare("relate", parameter);
+
 					succSet.set(2, succSet.get(2) + 1);
 				} else {
 					failSet.set(2, failSet.get(2) + 1);
@@ -79,7 +84,7 @@ public class LowDemandDataReplication implements Control {
 		Node node;
 		// System.out.println("Add Num: " + diff);
 		while (addNum < max) {
-			node = CuckooSearch.search(data);
+			node = CuckooSearch.search(data, cycle);
 			// System.out.println("CS Node: " + node);
 
 			if (node != null) {
@@ -87,6 +92,9 @@ public class LowDemandDataReplication implements Control {
 				Storage storage = SharedResource.getNodeStorage("cuckoo", node);
 				boolean success = storage.setData(node, data);
 				if (success) {
+					Parameter parameter = (Parameter) node.getProtocol(6);
+					OutPut.writeCompare("cuckoo", parameter);
+
 					succSet.set(3, succSet.get(3) + 1);
 				} else {
 					failSet.set(3, failSet.get(3) + 1);
@@ -194,6 +202,8 @@ public class LowDemandDataReplication implements Control {
 		}
 
 		showLowDemandData();
+
+		cycle++;
 
 		return false;
 	}

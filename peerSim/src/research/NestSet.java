@@ -43,7 +43,7 @@ public class NestSet implements Control {
 		ABA_RATE = Configuration.getDouble(prefix + "." + PAR_ABA_RATE);
 	}
 
-	public void alternate() {
+	public void alternate(int cycle) {
 		Collections.shuffle(rand);
 
 		int r1, r2;
@@ -56,7 +56,7 @@ public class NestSet implements Control {
 			// System.out.println("Target Node: " + nest.get(r2).getNode().getIndex() +
 			// "value " + nest.get(r2).getValue()
 			// + " (" + nest.get(r2).egg[0] + ", " + nest.get(r2).egg[1] + ")");
-			boolean success = nest.get(r2).replace(nest.get(r1));
+			boolean success = nest.get(r2).replace(nest.get(r1), cycle);
 			if (success == true) {
 				break;
 			}

@@ -34,8 +34,6 @@ public class StoragePath implements Storage {
 		int newCapacity = capacity - occupancy;
 
 		if (!dataList.contains(data) && (newCapacity >= 0)) {
-			OutPut.writeCompare("path", parameter);
-
 			dataList.add(data);
 
 			dataCounter = SharedResource.getCounter("path");

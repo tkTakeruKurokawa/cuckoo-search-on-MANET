@@ -21,6 +21,7 @@ public class Flooding implements Control {
 	private static Data target;
 	private static int id;
 	private static boolean hit;
+	private static int cost;
 
 	public Flooding(String prefix) {
 		ttl = Configuration.getInt(prefix + "." + PAR_TTL);
@@ -37,10 +38,11 @@ public class Flooding implements Control {
 		parent.put(source, null);
 
 		// キューが空でない場合探し続ける
-		// ターゲートデータを持っているノードを発見したらtrueを返す
+		// ターゲットトデータを持っているノードを発見したらtrueを返す
 		while (queue.peek() != null) {
 			node = queue.poll(); // キューからノードを取り出す
 			ttl = nodeTTL.get(node); // 取り出したノードに関連付けられたTTLを取り出す
+			cost++;
 
 			// 取り出したノードがターゲットデータを持っているかチェック
 			if (contains(node)) {
@@ -112,7 +114,7 @@ public class Flooding implements Control {
 		return false;
 	}
 
-	public static boolean search(Node node, Data data, int num) {
+	public static boolean search(Node node, Data data, int num, int cycle) {
 		addedQueueList = new ArrayList<Node>();
 		nodeTTL = new HashMap<Node, Integer>();
 		queue = new ArrayDeque<Node>();
@@ -123,8 +125,12 @@ public class Flooding implements Control {
 		target = data;
 		id = num;
 		hit = false;
+		cost = -1; // 検索はルートノードから始まるため初期値は-1
 
 		nextSearch(node, ttl);
+		ArrayList<Integer> costList = SharedResource.getCost(id);
+		costList.set(cycle, costList.get(cycle) + cost);
+		SharedResource.setCost(id, costList);
 		if (!hit)
 			return false;
 

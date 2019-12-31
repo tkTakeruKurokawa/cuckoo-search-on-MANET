@@ -51,7 +51,7 @@ public class Data implements Control {
 	private static void normalDistribution() {
 		double mu = 25.0;
 		double sigma = 100.0;
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < maxVariety; i++) {
 			double x = (double) i;
 			double f = (1.0 / 2.0) * (1.0 + Erf.erf((x - mu) / Math.sqrt(2.0 * sigma)));
 			maxRequesedRate.add(f); // リストの要素に最大データ要求割合が入る
@@ -60,7 +60,13 @@ public class Data implements Control {
 	}
 
 	private static void powerDistribution() {
-
+		double alfa = 1.0;
+		for (int i = 1; i <= maxVariety; i++) {
+			double x = (double) i;
+			double f = alfa * Math.pow(1, alfa) / Math.pow(x, alfa + 1);
+			maxRequesedRate.add(f);
+		}
+		Collections.shuffle(maxRequesedRate);
 	}
 
 	public static void uploadData() {

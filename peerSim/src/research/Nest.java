@@ -26,6 +26,7 @@ public class Nest implements Control {
 	private double[] newEgg;
 	private double value;
 	private double distance;
+	private int cost;
 
 	public Nest(Node node) {
 		this.node = node;
@@ -136,6 +137,7 @@ public class Nest implements Control {
 
 		// System.out.println(d);
 
+		cost = 0;
 		while (d > 0) {
 			pn = new HashMap<Node, Double>();
 
@@ -167,13 +169,14 @@ public class Nest implements Control {
 				base = minNode();
 				// System.out.println("next Node:" + base.getIndex());
 				d = d - 1;
+				cost++;
 			}
 		}
 
 		return base;
 	}
 
-	public boolean replace(Nest base) {
+	public boolean replace(Nest base, int cycle) {
 		Node src = base.getNode();
 		Node candidate;
 
@@ -181,6 +184,10 @@ public class Nest implements Control {
 		if (Objects.equals(candidate, null)) {
 			return false;
 		}
+
+		ArrayList<Integer> costList = SharedResource.getCost(3);
+		costList.set(cycle, costList.get(cycle) + cost);
+		SharedResource.setCost(3, costList);
 
 		NPCuckoo parameter = (NPCuckoo) SharedResource.getNodeParameter("cuckoo", candidate);
 		newEgg[0] = parameter.getBattery();
@@ -245,7 +252,7 @@ public class Nest implements Control {
 		// double upTime = egg[2];
 
 		// double value = 1.0 * battery + 1.0 * capacity;
-		double value = 1.0 * battery + 1.0 * capacity + upTime;
+		double value = 2.0 * battery + 1.5 * capacity + upTime;
 		// double value = 1.0 * battery + 1.0 * capacity + Math.log10(upTime);
 		if (egg[1] < 1.0)
 			value = Double.NEGATIVE_INFINITY;

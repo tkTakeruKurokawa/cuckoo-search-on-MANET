@@ -29,13 +29,13 @@ public class SharedResource implements Control {
 	private static int pid_npr;
 	private static final String PAR_NPC = "node_parameter_cuckoo";
 	private static int pid_npc;
+	private static final String PAR_MAX_CYCLE = "max_cycle";
+	private static int maxCycle;
 
 	private static Random random;
 	private static int rand;
-	private static ArrayList<Integer> ownerCounter;
-	private static ArrayList<Integer> pathCounter;
-	private static ArrayList<Integer> relateCounter;
-	private static ArrayList<Integer> cuckooCounter;
+	private static ArrayList<Integer> ownerCost, pathCost, relateCost, cuckooCost;
+	private static ArrayList<Integer> ownerCounter, pathCounter, relateCounter, cuckooCounter;
 	private static ArrayList<Boolean> dataRequest;
 	private static ArrayList<Integer> dataTotal;
 	private static ArrayList<Integer> accesses;
@@ -53,10 +53,30 @@ public class SharedResource implements Control {
 		pid_npp = Configuration.getPid(prefix + "." + PAR_NPP);
 		pid_npr = Configuration.getPid(prefix + "." + PAR_NPR);
 		pid_npc = Configuration.getPid(prefix + "." + PAR_NPC);
+		maxCycle = Configuration.getInt(prefix + "." + PAR_MAX_CYCLE);
 	}
 
 	public static void setAccesses(ArrayList<Integer> acc) {
 		accesses = acc;
+	}
+
+	public static void setCost(int dest, ArrayList<Integer> cost) {
+		switch (dest) {
+		case 0:
+			ownerCost = cost;
+			break;
+		case 1:
+			pathCost = cost;
+			break;
+		case 2:
+			relateCost = cost;
+			break;
+		case 3:
+			cuckooCost = cost;
+			break;
+		default:
+			System.exit(0);
+		}
 	}
 
 	public static void setCounter(String dest, ArrayList<Integer> dc) {
@@ -151,6 +171,23 @@ public class SharedResource implements Control {
 		return null;
 	}
 
+	public static ArrayList<Integer> getCost(int dest) {
+		switch (dest) {
+		case 0:
+			return ownerCost;
+		case 1:
+			return pathCost;
+		case 2:
+			return relateCost;
+		case 3:
+			return cuckooCost;
+		default:
+			break;
+		}
+		System.exit(4);
+		return null;
+	}
+
 	public static ArrayList<Integer> getCounter(String dest) {
 		switch (dest) {
 		case "owner":
@@ -195,6 +232,10 @@ public class SharedResource implements Control {
 	}
 
 	public boolean execute() {
+		ownerCost = new ArrayList<Integer>();
+		pathCost = new ArrayList<Integer>();
+		relateCost = new ArrayList<Integer>();
+		cuckooCost = new ArrayList<Integer>();
 		ownerCounter = new ArrayList<Integer>();
 		pathCounter = new ArrayList<Integer>();
 		relateCounter = new ArrayList<Integer>();
@@ -213,6 +254,13 @@ public class SharedResource implements Control {
 
 		for (int i = 0; i < 4; i++) {
 			dataTotal.add(0);
+		}
+
+		for (int i = 0; i < maxCycle; i++) {
+			ownerCost.add(i, 0);
+			pathCost.add(i, 0);
+			relateCost.add(i, 0);
+			cuckooCost.add(i, 0);
 		}
 
 		return false;

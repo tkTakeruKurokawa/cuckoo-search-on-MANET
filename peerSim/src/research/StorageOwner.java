@@ -34,8 +34,6 @@ public class StorageOwner implements Storage {
 		int newCapacity = capacity - occupancy;
 
 		if (!dataList.contains(data) && (newCapacity >= 0)) {
-			OutPut.writeCompare("owner", parameter);
-
 			dataList.add(data);
 
 			dataCounter = SharedResource.getCounter("owner");

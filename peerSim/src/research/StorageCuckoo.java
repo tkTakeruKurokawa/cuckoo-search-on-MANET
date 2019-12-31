@@ -34,8 +34,6 @@ public class StorageCuckoo implements Storage {
 		int newCapacity = capacity - occupancy;
 
 		if (!dataList.contains(data) && (newCapacity >= 0)) {
-			OutPut.writeCompare("cuckoo", parameter);
-
 			dataList.add(data);
 
 			dataCounter = SharedResource.getCounter("cuckoo");

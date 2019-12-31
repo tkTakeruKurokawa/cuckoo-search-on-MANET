@@ -185,7 +185,7 @@ public class ModifyNetwork implements Control {
 
 	public static double factorial(int src) {
 		if (src == 0) {
-			return 0;
+			return 1.0;
 		}
 		double value = 1;
 		for (int i = 1; i <= src; i++) {

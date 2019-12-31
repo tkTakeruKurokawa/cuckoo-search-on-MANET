@@ -76,6 +76,7 @@ init.sr.node_parameter_owner npo
 init.sr.node_parameter_path npp
 init.sr.node_parameter_relate npr
 init.sr.node_parameter_cuckoo npc
+init.sr.max_cycle cycleNum
 
 #ノードのパラメータ、座標を初期化
 init.iniNet InitializeNetwork
@@ -84,7 +85,7 @@ init.iniNet InitializeNetwork
 init.data Data
 init.data.maxVariety maxVariety
 init.data.size dataSize
-init.data.distribution normal #normal or power
+init.data.distribution power #normal or power
 
 #ランダムジオメトリックグラフを構成
 init.rgg RandomGeometricGraph
@@ -102,11 +103,11 @@ init.fld.ttl 2000
 
 #複製配置先を決定するためのCuckoo Search
 init.cs CuckooSearch
-init.cs.generation 100
+init.cs.generation 50
 
 #Cuckoo Searchで扱う巣の集合
 init.ns NestSet
-init.ns.nestSize 10
+init.ns.nestSize 20
 init.ns.abandonRate 0.2
 
 #Cuckoo Searchで扱う巣

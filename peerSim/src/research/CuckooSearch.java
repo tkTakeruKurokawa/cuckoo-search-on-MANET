@@ -1,9 +1,7 @@
 package research;
 
 import peersim.core.*;
-
 import java.util.ArrayList;
-
 import peersim.config.*;
 
 public class CuckooSearch implements Control {
@@ -14,23 +12,11 @@ public class CuckooSearch implements Control {
 		maxGeneration = Configuration.getInt(prefix + "." + PAR_MAXGENERATION);
 	}
 
-	public static Node search() {
-
+	public static Node search(Data data, int cycle) {
 		NestSet ns = new NestSet();
 		for (int generation = 0; generation < maxGeneration; generation++) {
 			// System.out.println("Generation: " + generation);
-			ns.alternate();
-		}
-		Node bestNode = ns.getBestNode();
-
-		return bestNode;
-	}
-
-	public static Node search(Data data) {
-		NestSet ns = new NestSet();
-		for (int generation = 0; generation < maxGeneration; generation++) {
-			// System.out.println("Generation: " + generation);
-			ns.alternate();
+			ns.alternate(cycle);
 			// ArrayList<Nest> nest = ns.getNestSet();
 			// System.out.println("NOWNEST:");
 			// for (int k = 0; k < 10; k++) {

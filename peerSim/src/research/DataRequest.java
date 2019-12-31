@@ -88,7 +88,7 @@ public class DataRequest implements Control {
 	}
 
 	private static void ownerReplication(Node node, Data data, Parameter parameter, Storage storage, int id) {
-		boolean hit = Flooding.search(node, data, id);
+		boolean hit = Flooding.search(node, data, id, cycle);
 		if (hit) {
 			succFlood.set(id, succFlood.get(id) + 1);
 			if (check(data, parameter, storage)) {
@@ -128,7 +128,7 @@ public class DataRequest implements Control {
 		// Storage storage = SharedResource.getNodeStorage("path", node);
 
 		// if (check(parameter, storage)) {
-		boolean hit = Flooding.search(node, data, 1);
+		boolean hit = Flooding.search(node, data, 1, cycle);
 		if (hit) {
 			succFlood.set(1, succFlood.get(1) + 1);
 			pathReplication(data);

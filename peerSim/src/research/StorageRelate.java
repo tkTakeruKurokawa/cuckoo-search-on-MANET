@@ -34,8 +34,6 @@ public class StorageRelate implements Storage {
 		int newCapacity = capacity - occupancy;
 
 		if (!dataList.contains(data) && (newCapacity >= 0)) {
-			OutPut.writeCompare("relate", parameter);
-
 			dataList.add(data);
 
 			dataCounter = SharedResource.getCounter("relate");
