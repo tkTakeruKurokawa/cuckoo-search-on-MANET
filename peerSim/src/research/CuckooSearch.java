@@ -12,11 +12,11 @@ public class CuckooSearch implements Control {
 		maxGeneration = Configuration.getInt(prefix + "." + PAR_MAXGENERATION);
 	}
 
-	public static Node search(Data data, int cycle) {
+	public static Node search(Node base, Data data, int cycle) {
 		NestSet ns = new NestSet();
 		for (int generation = 0; generation < maxGeneration; generation++) {
 			// System.out.println("Generation: " + generation);
-			ns.alternate(cycle);
+			ns.alternate(base, cycle);
 			// ArrayList<Nest> nest = ns.getNestSet();
 			// System.out.println("NOWNEST:");
 			// for (int k = 0; k < 10; k++) {

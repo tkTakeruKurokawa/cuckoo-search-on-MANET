@@ -1,6 +1,6 @@
 set xrange[0:500]
 set xlabel "Num of cycle"
-set yrange[0:100]
+set autoscale y
 set ylabel "Avarage Storage Remaining"
 set key left bottom
 
@@ -15,7 +15,7 @@ replot
 
 set xrange[0:500]
 set xlabel "Num of cycle"
-set yrange[0:100]
+set autoscale y
 set ylabel "Avarage Storage Remaining"
 set key left bottom
 
@@ -29,7 +29,7 @@ replot
 
 set xrange[0:500]
 set xlabel "Num of cycle"
-set yrange[0:100]
+set autoscale y
 set ylabel "Avarage Storage Remaining"
 set key left bottom
 
@@ -43,7 +43,7 @@ replot
 
 set xrange[0:500]
 set xlabel "Num of cycle"
-set yrange[0:100]
+set autoscale y
 set ylabel "Avarage Storage Remaining"
 set key left bottom
 
@@ -57,7 +57,7 @@ replot
 
 set xrange[0:500]
 set xlabel "Num of cycle"
-set yrange[0:100]
+set autoscale y
 set ylabel "Avarage Storage Remaining"
 set key left bottom
 
@@ -77,7 +77,7 @@ replot
 
 # set xrange[300:500]
 # set xlabel "Num of cycle"
-# set yrange[0:100]
+# set autoscale y
 # set ylabel "Avarage Storage Remaining"
 # set key left bottom
 

@@ -39,6 +39,20 @@ public class LowDemandDataReplication implements Control {
 		}
 	}
 
+	public static Node searchHavingNode(Data data) {
+		Node node;
+		while (true) {
+			int nodeID = random.nextInt(Network.size());
+			node = Network.get(nodeID);
+			Storage storage = SharedResource.getNodeStorage("cuckoo", node);
+			if (storage.contains(data)) {
+				break;
+			}
+		}
+
+		return node;
+	}
+
 	public static void relatedResearch(Data data, int max) {
 		int addNum = 0;
 		Node node;
@@ -66,9 +80,10 @@ public class LowDemandDataReplication implements Control {
 	public static void cuckooSearch(Data data, int max) {
 		int addNum = 0;
 		Node node;
+		Node base = searchHavingNode(data);
 		// System.out.println("Add Num: " + diff);
 		while (addNum < max) {
-			node = CuckooSearch.search(data, cycle);
+			node = CuckooSearch.search(base, data, cycle);
 			// System.out.println("CS Node: " + node);
 
 			if (node != null) {
@@ -114,7 +129,7 @@ public class LowDemandDataReplication implements Control {
 		}
 
 		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
-			if (threshold.get(dataID).equals(-1)) {
+			if (threshold.get(dataID) < 0) {
 				if (((double) counter.get(dataID)) <= (total * 0.05d)) {
 					threshold.set(dataID, counter.get(dataID));
 					lowDemand.set(dataID, true);
@@ -157,9 +172,8 @@ public class LowDemandDataReplication implements Control {
 				}
 				int dataNum = counter.get(dataID);
 				int safeNum = (int) Math.round(coefficient * (double) threshold.get(dataID));
-				// System.out.println("dataID: " + dataID + ", " + safeNum);
 
-				if (dataNum < safeNum && dataNum <= 0) {
+				if (dataNum < safeNum && dataNum > 0) {
 					Data data = Data.getData(dataID);
 					int replications = safeNum - dataNum;
 
@@ -181,11 +195,11 @@ public class LowDemandDataReplication implements Control {
 		ArrayList<Integer> cuckooCounter = SharedResource.getCounter("cuckoo");
 		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
 			System.out.println("-----------------------------------");
-			System.out.println(
-					"relate ID " + dataID + ": " + relateCounter.get(dataID) + ", " + relateThreshold.get(dataID));
+			System.out.println("relate ID " + dataID + ", num: " + relateCounter.get(dataID) + ", Threshold: "
+					+ relateThreshold.get(dataID));
 
-			System.out.println("cuckoo ID " + dataID + ": " + cuckooCounter.get(dataID) + ", "
-					+ cuckooThreshold.get(dataID) + ", " + passedCycle.get(dataID));
+			System.out.println("cuckoo ID: " + dataID + ", num: " + cuckooCounter.get(dataID) + ", Threshold: "
+					+ cuckooThreshold.get(dataID) + ", passedCycle: " + passedCycle.get(dataID));
 		}
 		System.out.println();
 	}

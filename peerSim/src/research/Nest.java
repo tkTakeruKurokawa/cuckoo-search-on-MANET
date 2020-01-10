@@ -176,11 +176,10 @@ public class Nest implements Control {
 		return base;
 	}
 
-	public boolean replace(Nest base, int cycle) {
-		Node src = base.getNode();
+	public boolean replace(Node base, int cycle) {
 		Node candidate;
 
-		candidate = levyWalk(src);
+		candidate = levyWalk(base);
 		if (Objects.equals(candidate, null)) {
 			return false;
 		}
@@ -195,10 +194,11 @@ public class Nest implements Control {
 		newEgg[2] = parameter.getUpTime();
 
 		double newValue = evaluate(newEgg);
-		// System.out.println("This Node: " + src.getIndex() + " value " + value + " ("
+		// System.out.println("This Node: " + base.getIndex() + " value " + value + " ("
 		// + egg[0] + ", " + egg[1] + ")");
 		// System.out.println("Candidate Node: " + candidate.getIndex() + " value " +
-		// newValue + " (" + newEgg[0] + ", " + newEgg[1] + ")");
+		// newValue + " (" + newEgg[0] + ", "
+		// + newEgg[1] + ")");
 
 		if (newValue > value) {
 			this.node = candidate;
