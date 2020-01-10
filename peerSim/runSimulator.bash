@@ -7,4 +7,5 @@ cd result
 gnuplot "counter.plt"
 gnuplot "occupancy.plt"
 gnuplot "remaining.plt"
+gnuplot "networkCost.plt"
 cd ../

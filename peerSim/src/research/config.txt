@@ -85,7 +85,8 @@ init.iniNet InitializeNetwork
 init.data Data
 init.data.maxVariety maxVariety
 init.data.size dataSize
-init.data.distribution power #normal or power
+init.data.distribution power 
+######### normal or power #########
 
 #ランダムジオメトリックグラフを構成
 init.rgg RandomGeometricGraph
@@ -132,7 +133,7 @@ control.dr DataRequest
 #低需要データの複製
 control.lddr LowDemandDataReplication
 control.lddr.alfa 0.5
-control.lddr.coefficient 1.5
+control.lddr.coefficient 1.0
 control.lddr.safe_num 5
 
 #各ノードで保有されているデータの総数を表示
