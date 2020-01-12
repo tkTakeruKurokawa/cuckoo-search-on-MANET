@@ -90,7 +90,7 @@ init.data.distribution power
 
 #ランダムジオメトリックグラフを構成
 init.rgg RandomGeometricGraph
-init.rgg.r 30.0
+init.rgg.r 50.0
 #init.rgg.r 10.0
 
 #Linkクラスを元に無向グラフを形成
@@ -100,7 +100,6 @@ init.wrgg.k K
 
 #データの検索手法のFlooading
 init.fld Flooding
-init.fld.ttl 2000
 
 #複製配置先を決定するためのCuckoo Search
 init.cs CuckooSearch

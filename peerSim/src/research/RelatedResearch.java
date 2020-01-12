@@ -112,7 +112,7 @@ public class RelatedResearch implements Control {
 		nextSearch(node);
 
 		ArrayList<Integer> costList = SharedResource.getCost(2);
-		costList.set(cycle, costList.get(cycle) + cost);
+		costList.set(cycle, costList.get(cycle) + cost * 2);
 		SharedResource.setCost(2, costList);
 		return bestNode;
 	}

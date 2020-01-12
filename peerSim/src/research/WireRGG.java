@@ -70,8 +70,9 @@ public class WireRGG extends WireGraph {
 
                 if (srcID == Network.size() - 1) {
                     relocate(srcID);
-                } else
+                } else {
                     continue;
+                }
             }
             srcID++;
         }

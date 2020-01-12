@@ -53,6 +53,21 @@ public class LowDemandDataReplication implements Control {
 		return node;
 	}
 
+	public static void calculateNetworkCost(int id, Node src, Node dest, int cycle) {
+		ArrayList<Integer> costList = SharedResource.getCost(id);
+		Integer hops = Flooding.hops(src, dest);
+		if (Objects.isNull(hops)) {
+			for (int i = 0; i < Network.size(); i++) {
+				NodeCoordinate node = SharedResource.getCoordinate(Network.get(i));
+				System.out.println(node.getX() + "\t" + node.getY());
+			}
+			System.exit(0);
+
+		}
+		costList.set(cycle, costList.get(cycle) + hops);
+		SharedResource.setCost(id, costList);
+	}
+
 	public static void relatedResearch(Data data, int max) {
 		int addNum = 0;
 		Node node;
@@ -60,7 +75,7 @@ public class LowDemandDataReplication implements Control {
 			node = Network.get(random.nextInt(Network.size()));
 			node = RelatedResearch.getBestNode(node, data, cycle);
 
-			if (node != null) {
+			if (Objects.nonNull(node)) {
 				Storage storage = SharedResource.getNodeStorage("relate", node);
 				boolean success = storage.setData(node, data);
 				if (success) {
@@ -86,12 +101,13 @@ public class LowDemandDataReplication implements Control {
 			node = CuckooSearch.search(base, data, cycle);
 			// System.out.println("CS Node: " + node);
 
-			if (node != null) {
+			if (Objects.nonNull(node)) {
 				Storage storage = SharedResource.getNodeStorage("cuckoo", node);
 				boolean success = storage.setData(node, data);
 				if (success) {
 					Parameter parameter = (Parameter) node.getProtocol(6);
 					OutPut.writeCompare("cuckoo", parameter);
+					calculateNetworkCost(3, base, node, cycle);
 				} else {
 				}
 			} else {
