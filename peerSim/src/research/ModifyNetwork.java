@@ -97,9 +97,9 @@ public class ModifyNetwork implements Control {
 
 				Node dstNode = Network.get(dstID);
 				NodeCoordinate dstCrd = SharedResource.getCoordinate(dstNode);
+				Link dstLink = SharedResource.getLink(dstNode);
 
 				if (RandomGeometricGraph.isConnect(newCrd, dstCrd)) {
-					Link dstLink = SharedResource.getLink(dstNode);
 					addLink(newLink, dstNode);
 					addLink(dstLink, newNode);
 				}
@@ -107,40 +107,41 @@ public class ModifyNetwork implements Control {
 				dstID++;
 			}
 
-			if (!Objects.equals(newLink.getNeighbor(0), null))
-				break;
-
-			newCrd.setCoordinate();
+			if (newLink.degree() > 0) {
+				return true;
+			} else {
+				newCrd.setCoordinate();
+			}
 		}
-
-		return true;
 	}
 
-	public static boolean removeLink(Node node) {
+	public static boolean removeLink(Node srcNode) {
 		// System.out.println("*************** REMOVE NODE ***************");
 
-		Link nodesLink = SharedResource.getLink(node);
+		Link srcLinkSet = SharedResource.getLink(srcNode);
 
 		// 削除するノードのリンクを取得し、隣接ノードをキューに入れる
-		for (int i = 0; i < nodesLink.degree(); i++)
-			queue.add(nodesLink.getNeighbor(i));
+		for (int i = 0; i < srcLinkSet.degree(); i++)
+			queue.add(srcLinkSet.getNeighbor(i));
 
 		// 隣接ノードに削除するノードを持つ,ノードから、該当ノードを削除する
 		while (true) {
-			Node n = queue.poll();
-			if (n == null)
+			Node dstNode = queue.poll();
+			if (dstNode == null) {
 				break;
-			Link neighborsLink = SharedResource.getLink(n);
+			}
+			Link dstLinkSet = SharedResource.getLink(dstNode);
 
-			for (int i = 0; i < neighborsLink.degree(); i++) {
-				if (Objects.equals(neighborsLink.getNeighbor(i), node)) {
+			for (int i = 0; i < dstLinkSet.degree(); i++) {
+				if (Objects.equals(dstLinkSet.getNeighbor(i), srcNode)) {
 					// System.out.printf("Node %d's len ", n.getIndex());
-					neighborsLink.removeNeighbor(i);
+					dstLinkSet.removeNeighbor(i);
 				}
 			}
 		}
-		return true;
 
+		srcLinkSet.onKill();
+		return true;
 	}
 
 	public static boolean removeNode(Node node) {
@@ -158,6 +159,8 @@ public class ModifyNetwork implements Control {
 
 		Storage sCuckoo = SharedResource.getNodeStorage("cuckoo", node);
 		sCuckoo.clear();
+
+		removeLink(node);
 
 		Network.remove(node.getIndex());
 		// System.out.println("ALL Node: " + Network.size());
@@ -233,7 +236,6 @@ public class ModifyNetwork implements Control {
 				leaveLambda.set(i, 1.0 / (random.nextDouble() * ((double) leaveLambdaMax)));
 				leaveCycle.set(i, 0.0);
 				int nodeID = random.nextInt(Network.size());
-				removeLink(Network.get(nodeID));
 				removeNode(Network.get(nodeID));
 				num++;
 				leaveSum++;
@@ -289,7 +291,15 @@ public class ModifyNetwork implements Control {
 			}
 		}
 
+		// ノード削除後，ノード間通信で全てのノードに到達できるか確認，再配置し，ノードを参加させる
+		// ノード削除後に確認，再配置する事で確実にノード間通信で全てのノードに到達可能状態になっている
+		// その状態でノードを追加
 		leaveCandidate();
+		if (!ConectionManagement.check()) {
+			ConectionManagement.ajust();
+		}
+		ConectionManagement.check();
+
 		joinCandidate();
 
 		for (int i = 0; i < joinCapacity; i++) {

@@ -8,6 +8,7 @@ dataSize 10.0
 highDemandNum 25
 lowDemandNum 25
 maxVariety 50
+distributionType norml  ##### normal or power #####
 
 ############## Network ###############
 
@@ -85,21 +86,18 @@ init.iniNet InitializeNetwork
 init.data Data
 init.data.maxVariety maxVariety
 init.data.size dataSize
-init.data.distribution power 
-######### normal or power #########
+init.data.distribution distributionType
+
+#データの検索手法のFlooading
+init.fld Flooding
 
 #ランダムジオメトリックグラフを構成
 init.rgg RandomGeometricGraph
-init.rgg.r 50.0
-#init.rgg.r 10.0
+init.rgg.r 30.0
 
 #Linkクラスを元に無向グラフを形成
 init.wrgg WireRGG
 init.wrgg.protocol lnk
-init.wrgg.k K
-
-#データの検索手法のFlooading
-init.fld Flooding
 
 #複製配置先を決定するためのCuckoo Search
 init.cs CuckooSearch
@@ -118,11 +116,10 @@ init.nest.capacity capacity
 
 #関連研究での複製配置先の決定に用いるFlooading
 init.rr RelatedResearch
-init.rr.ttl 100
+init.rr.ttl 10
 init.rr.capacity capacity
 
-order.init sr iniNet data rgg wrgg fld cs ns nest rr
-#order.init iniNet sr data rgg wrgg fld stat
+order.init sr iniNet data fld rgg wrgg  cs ns nest rr
 
 ############## Control ###############
 

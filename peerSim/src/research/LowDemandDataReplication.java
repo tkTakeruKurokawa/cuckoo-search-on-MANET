@@ -39,12 +39,13 @@ public class LowDemandDataReplication implements Control {
 		}
 	}
 
-	public static Node searchHavingNode(Data data) {
+	public static Node searchHavingNode(String type, Data data) {
 		Node node;
 		while (true) {
 			int nodeID = random.nextInt(Network.size());
 			node = Network.get(nodeID);
-			Storage storage = SharedResource.getNodeStorage("cuckoo", node);
+
+			Storage storage = SharedResource.getNodeStorage(type, node);
 			if (storage.contains(data)) {
 				break;
 			}
@@ -53,17 +54,9 @@ public class LowDemandDataReplication implements Control {
 		return node;
 	}
 
-	public static void calculateNetworkCost(int id, Node src, Node dest, int cycle) {
+	public static void calculateNetworkCost(int id, Node src, Node dst, int cycle) {
+		Integer hops = Flooding.hops(src, dst);
 		ArrayList<Integer> costList = SharedResource.getCost(id);
-		Integer hops = Flooding.hops(src, dest);
-		if (Objects.isNull(hops)) {
-			for (int i = 0; i < Network.size(); i++) {
-				NodeCoordinate node = SharedResource.getCoordinate(Network.get(i));
-				System.out.println(node.getX() + "\t" + node.getY());
-			}
-			System.exit(0);
-
-		}
 		costList.set(cycle, costList.get(cycle) + hops);
 		SharedResource.setCost(id, costList);
 	}
@@ -71,15 +64,15 @@ public class LowDemandDataReplication implements Control {
 	public static void relatedResearch(Data data, int max) {
 		int addNum = 0;
 		Node node;
+		Node base = searchHavingNode("relate", data);
 		while (addNum < max) {
-			node = Network.get(random.nextInt(Network.size()));
-			node = RelatedResearch.getBestNode(node, data, cycle);
+			node = RelatedResearch.getBestNode(base, data, cycle);
 
 			if (Objects.nonNull(node)) {
 				Storage storage = SharedResource.getNodeStorage("relate", node);
 				boolean success = storage.setData(node, data);
 				if (success) {
-					Parameter parameter = (Parameter) node.getProtocol(5);
+					Parameter parameter = SharedResource.getNodeParameter("relate", node);
 					if (replicated.get(data.getID()).equals(true)) {
 						OutPut.writeCompare("relate", parameter);
 					}
@@ -95,7 +88,7 @@ public class LowDemandDataReplication implements Control {
 	public static void cuckooSearch(Data data, int max) {
 		int addNum = 0;
 		Node node;
-		Node base = searchHavingNode(data);
+		Node base = searchHavingNode("cuckoo", data);
 		// System.out.println("Add Num: " + diff);
 		while (addNum < max) {
 			node = CuckooSearch.search(base, data, cycle);
@@ -105,7 +98,7 @@ public class LowDemandDataReplication implements Control {
 				Storage storage = SharedResource.getNodeStorage("cuckoo", node);
 				boolean success = storage.setData(node, data);
 				if (success) {
-					Parameter parameter = (Parameter) node.getProtocol(6);
+					Parameter parameter = SharedResource.getNodeParameter("cuckoo", node);
 					OutPut.writeCompare("cuckoo", parameter);
 					calculateNetworkCost(3, base, node, cycle);
 				} else {

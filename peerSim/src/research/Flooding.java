@@ -9,11 +9,11 @@ public class Flooding implements Control {
 	private static int ttl;
 
 	// private Node node;
-	private static ArrayList<Node> addedQueueList = new ArrayList<Node>();
-	private static HashMap<Node, Integer> nodeTTL = new HashMap<Node, Integer>();
-	private static Queue<Node> queue = new ArrayDeque<Node>();
-	private static ArrayList<Node> path = new ArrayList<Node>();
-	private static HashMap<Node, Node> parent = new HashMap<Node, Node>();
+	private static ArrayList<Node> addedQueueList;
+	private static HashMap<Node, Integer> nodeTTL;
+	private static Queue<Node> queue;
+	private static ArrayList<Node> path;
+	private static HashMap<Node, Node> parent;
 
 	private static Storage storage;
 	private static Node source;
@@ -43,22 +43,22 @@ public class Flooding implements Control {
 			ttl = nodeTTL.get(node); // 取り出したノードに関連付けられたTTLを取り出す
 			cost++;
 
-			// 取り出したノードがターゲットデータを持っているかチェック
-			if (contains(node)) {
-				hit = true;
-				// System.out.println("Node " + node.getID() + "Having");
-				while (Objects.nonNull(node)) {
-					path.add(node);
-					node = parent.get(node);
+			// データを探すのか==NULL，ノードを探すのか==nonNULL
+			if (Objects.isNull(targetNode)) {
+				// 取り出したノードがターゲットデータを持っているかチェック
+				if (contains(node)) {
+					hit = true;
+					while (Objects.nonNull(node)) {
+						path.add(node);
+						node = parent.get(node);
+					}
+					return true;
 				}
-				return true;
-			}
 
-			// 取り出したノードがターゲットノードであるかチェック
-			if (Objects.nonNull(targetNode)) {
+				// 取り出したノードがターゲットノードであるかチェック
+			} else {
 				if (targetNode.getIndex() == node.getIndex()) {
 					hit = true;
-					// System.out.println("Node " + node.getID() + "Having");
 					while (Objects.nonNull(node)) {
 						path.add(node);
 						node = parent.get(node);
@@ -66,7 +66,6 @@ public class Flooding implements Control {
 					return true;
 				}
 			}
-
 			// 取り出したノードのTTLが0であった場合
 			if (ttl <= 0) {
 				if (Objects.isNull(queue.peek())) {
@@ -129,16 +128,18 @@ public class Flooding implements Control {
 
 	public static void calculateNetworkCost(int id, int cycle) {
 		ArrayList<Integer> costList = SharedResource.getCost(id);
+		int searchCost = cost;
+		int hops = getPath().size() - 1;
 		if (id == 1) {
-			int total = cost;
-			for (int num = 1; num <= cost; num++) {
+			int total = 0;
+			for (int num = 1; num <= hops; num++) {
 				total += num;
 			}
-			costList.set(cycle, costList.get(cycle) + total);
+			costList.set(cycle, costList.get(cycle) + searchCost + total);
 			SharedResource.setCost(id, costList);
 
 		} else {
-			costList.set(cycle, costList.get(cycle) + cost * 2);
+			costList.set(cycle, costList.get(cycle) + searchCost + hops);
 			SharedResource.setCost(id, costList);
 		}
 	}
@@ -188,7 +189,7 @@ public class Flooding implements Control {
 		return null;
 	}
 
-	public static Integer hops(Node src, Node dest) {
+	public static Integer hops(Node src, Node dst) {
 		addedQueueList = new ArrayList<Node>();
 		nodeTTL = new HashMap<Node, Integer>();
 		queue = new ArrayDeque<Node>();
@@ -197,11 +198,14 @@ public class Flooding implements Control {
 
 		ttl = Network.size();
 		source = src;
-		targetNode = dest;
+		targetNode = dst;
 		hit = false;
 
 		nextSearch(src, ttl);
 
+		for (Node node : path) {
+			// System.out.println(node.getIndex());
+		}
 		targetNode = null;
 
 		if (hit) {

@@ -19,7 +19,7 @@ public class CuckooSearch implements Control {
 			ns.alternate(base, cycle);
 			// ArrayList<Nest> nest = ns.getNestSet();
 			// System.out.println("NOWNEST:");
-			// for (int k = 0; k < 10; k++) {
+			// for (int k = 0; k < ns.getNestSize(); k++) {
 			// System.out.printf("\t%d: ", k);
 			// System.out.println("Node: " + nest.get(k).getNode().getIndex() + " value " +
 			// nest.get(k).getValue()
