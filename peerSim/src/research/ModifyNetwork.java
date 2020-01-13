@@ -63,23 +63,23 @@ public class ModifyNetwork implements Control {
 		NodeCoordinate newCrd = SharedResource.getCoordinate(newNode);
 		newCrd.setCoordinate();
 
-		NodeParameter parameter = SharedResource.getParameter(newNode);
+		BaseParameter parameter = SharedResource.getBaseParameter(newNode);
 		parameter.setParameter();
 
-		NPOwner npo = SharedResource.getNPOwner(newNode);
+		NPOwner npo = (NPOwner) SharedResource.getNodeParameter("owner", newNode);
 		npo.setBattery(parameter.getBattery());
 		npo.setCapacity(parameter.getCapacity());
 
-		NPPath npp = SharedResource.getNPPath(newNode);
+		NPPath npp = (NPPath) SharedResource.getNodeParameter("path", newNode);
 		npp.setBattery(parameter.getBattery());
 		npp.setCapacity(parameter.getCapacity());
 
-		NPRelate npr = SharedResource.getNPRelate(newNode);
+		NPRelate npr = (NPRelate) SharedResource.getNodeParameter("relate", newNode);
 		npr.setBattery(parameter.getBattery());
 		npr.setCapacity(parameter.getCapacity());
 		npr.setContribution(random.nextDouble());
 
-		NPCuckoo npc = SharedResource.getNPCuckoo(newNode);
+		NPCuckoo npc = (NPCuckoo) SharedResource.getNodeParameter("cuckoo", newNode);
 		npc.setBattery(parameter.getBattery());
 		npc.setCapacity(parameter.getCapacity());
 		npc.setUpTime(1);
@@ -97,9 +97,9 @@ public class ModifyNetwork implements Control {
 
 				Node dstNode = Network.get(dstID);
 				NodeCoordinate dstCrd = SharedResource.getCoordinate(dstNode);
+				Link dstLink = SharedResource.getLink(dstNode);
 
 				if (RandomGeometricGraph.isConnect(newCrd, dstCrd)) {
-					Link dstLink = SharedResource.getLink(dstNode);
 					addLink(newLink, dstNode);
 					addLink(dstLink, newNode);
 				}
@@ -107,57 +107,60 @@ public class ModifyNetwork implements Control {
 				dstID++;
 			}
 
-			if (!Objects.equals(newLink.getNeighbor(0), null))
-				break;
-
-			newCrd.setCoordinate();
+			if (newLink.degree() > 0) {
+				return true;
+			} else {
+				newCrd.setCoordinate();
+			}
 		}
-
-		return true;
 	}
 
-	public static boolean removeLink(Node node) {
+	public static boolean removeLink(Node srcNode) {
 		// System.out.println("*************** REMOVE NODE ***************");
 
-		Link nodesLink = SharedResource.getLink(node);
+		Link srcLinkSet = SharedResource.getLink(srcNode);
 
 		// 削除するノードのリンクを取得し、隣接ノードをキューに入れる
-		for (int i = 0; i < nodesLink.degree(); i++)
-			queue.add(nodesLink.getNeighbor(i));
+		for (int i = 0; i < srcLinkSet.degree(); i++)
+			queue.add(srcLinkSet.getNeighbor(i));
 
 		// 隣接ノードに削除するノードを持つ,ノードから、該当ノードを削除する
 		while (true) {
-			Node n = queue.poll();
-			if (n == null)
+			Node dstNode = queue.poll();
+			if (dstNode == null) {
 				break;
-			Link neighborsLink = SharedResource.getLink(n);
+			}
+			Link dstLinkSet = SharedResource.getLink(dstNode);
 
-			for (int i = 0; i < neighborsLink.degree(); i++) {
-				if (Objects.equals(neighborsLink.getNeighbor(i), node)) {
+			for (int i = 0; i < dstLinkSet.degree(); i++) {
+				if (Objects.equals(dstLinkSet.getNeighbor(i), srcNode)) {
 					// System.out.printf("Node %d's len ", n.getIndex());
-					neighborsLink.removeNeighbor(i);
+					dstLinkSet.removeNeighbor(i);
 				}
 			}
 		}
-		return true;
 
+		srcLinkSet.onKill();
+		return true;
 	}
 
 	public static boolean removeNode(Node node) {
 		// Storage storage = SharedResource.getStorage(node);
 		// storage.clear();
 
-		StorageOwner sOwner = SharedResource.getSOwner(node);
+		Storage sOwner = SharedResource.getNodeStorage("owner", node);
 		sOwner.clear();
 
-		StoragePath sPath = SharedResource.getSPath(node);
+		Storage sPath = SharedResource.getNodeStorage("path", node);
 		sPath.clear();
 
-		StorageRelate sRelate = SharedResource.getSRelate(node);
+		Storage sRelate = SharedResource.getNodeStorage("relate", node);
 		sRelate.clear();
 
-		StorageCuckoo sCuckoo = SharedResource.getSCuckoo(node);
+		Storage sCuckoo = SharedResource.getNodeStorage("cuckoo", node);
 		sCuckoo.clear();
+
+		removeLink(node);
 
 		Network.remove(node.getIndex());
 		// System.out.println("ALL Node: " + Network.size());
@@ -185,7 +188,7 @@ public class ModifyNetwork implements Control {
 
 	public static double factorial(int src) {
 		if (src == 0) {
-			return 0;
+			return 1.0;
 		}
 		double value = 1;
 		for (int i = 1; i <= src; i++) {
@@ -221,9 +224,9 @@ public class ModifyNetwork implements Control {
 			}
 		}
 
-		System.out.println("join: " + num);
-		System.out.println("join Sum:" + joinSum);
-		System.out.println("Average join: " + (joinSum / ((double) count)));
+		// System.out.println("join: " + num);
+		// System.out.println("join Sum:" + joinSum);
+		// System.out.println("Average join: " + (joinSum / ((double) count)));
 	}
 
 	public static void leaveCandidate() {
@@ -233,16 +236,15 @@ public class ModifyNetwork implements Control {
 				leaveLambda.set(i, 1.0 / (random.nextDouble() * ((double) leaveLambdaMax)));
 				leaveCycle.set(i, 0.0);
 				int nodeID = random.nextInt(Network.size());
-				removeLink(Network.get(nodeID));
 				removeNode(Network.get(nodeID));
 				num++;
 				leaveSum++;
 			}
 		}
 
-		System.out.println("leave: " + num);
-		System.out.println("leave Sum:" + leaveSum);
-		System.out.println("Average leave: " + (leaveSum / ((double) count)));
+		// System.out.println("leave: " + num);
+		// System.out.println("leave Sum:" + leaveSum);
+		// System.out.println("Average leave: " + (leaveSum / ((double) count)));
 	}
 
 	public static BigDecimal reduceBattery(double battery) {
@@ -261,20 +263,20 @@ public class ModifyNetwork implements Control {
 
 		for (int nodeID = 0; nodeID < Network.size(); nodeID++) {
 			Node node = Network.get(nodeID);
-			NodeParameter parameter = SharedResource.getParameter(node);
+			BaseParameter parameter = SharedResource.getBaseParameter(node);
 			BigDecimal newValue = reduceBattery(parameter.getBattery());
 			parameter.setBattery(newValue.doubleValue());
 
-			NPOwner npo = SharedResource.getNPOwner(node);
+			NPOwner npo = (NPOwner) SharedResource.getNodeParameter("owner", node);
 			npo.setBattery(parameter.getBattery());
 
-			NPPath npp = SharedResource.getNPPath(node);
+			NPPath npp = (NPPath) SharedResource.getNodeParameter("path", node);
 			npp.setBattery(parameter.getBattery());
 
-			NPRelate npr = SharedResource.getNPRelate(node);
+			NPRelate npr = (NPRelate) SharedResource.getNodeParameter("relate", node);
 			npr.setBattery(parameter.getBattery());
 
-			NPCuckoo npc = SharedResource.getNPCuckoo(node);
+			NPCuckoo npc = (NPCuckoo) SharedResource.getNodeParameter("cuckoo", node);
 			npc.setBattery(parameter.getBattery());
 			npc.setUpTime(npc.getUpTime() + 1);
 
@@ -289,7 +291,15 @@ public class ModifyNetwork implements Control {
 			}
 		}
 
+		// ノード削除後，ノード間通信で全てのノードに到達できるか確認，再配置し，ノードを参加させる
+		// ノード削除後に確認，再配置する事で確実にノード間通信で全てのノードに到達可能状態になっている
+		// その状態でノードを追加
 		leaveCandidate();
+		if (!ConectionManagement.check()) {
+			ConectionManagement.ajust();
+		}
+		ConectionManagement.check();
+
 		joinCandidate();
 
 		for (int i = 0; i < joinCapacity; i++) {

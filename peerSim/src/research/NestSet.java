@@ -43,32 +43,29 @@ public class NestSet implements Control {
 		ABA_RATE = Configuration.getDouble(prefix + "." + PAR_ABA_RATE);
 	}
 
-	public void alternate() {
+	public void alternate(Node base, int cycle) {
 		Collections.shuffle(rand);
 
-		int r1, r2;
+		int worst = 0;
 		int bound = 0;
 		while (bound < 50) {
-			r1 = random.nextInt(nestSize);
-			r2 = (r1 + (random.nextInt(nestSize - 1) + 1)) % nestSize;
-
 			// System.out.println("r1: " + r1 + " r2: " + r2);
 			// System.out.println("Target Node: " + nest.get(r2).getNode().getIndex() +
 			// "value " + nest.get(r2).getValue()
 			// + " (" + nest.get(r2).egg[0] + ", " + nest.get(r2).egg[1] + ")");
-			boolean success = nest.get(r2).replace(nest.get(r1));
+			boolean success = nest.get(worst).replace(base, cycle);
 			if (success == true) {
 				break;
 			}
 			// System.out.println("Re levyWalk");
 			bound++;
 		}
-		// r2の巣を、r1の巣をベースにlevyWalkし、値を更新したものと置き換え
-		// 巣の要素が更新される可能性があるのは、巣r2
+
 		// System.out.println("After UPDATE");
-		// System.out.println("Target Node: " + nest.get(r2).getNode().getIndex() + "
-		// value " + nest.get(r2).getValue() + " (" + nest.get(r2).egg[0] + ", " +
-		// nest.get(r2).egg[1] + ")");
+		// System.out.println("Target Node: " + nest.get(worst).getNode().getIndex() + "
+		// value "
+		// + nest.get(worst).getValue() + " (" + nest.get(worst).egg[0] + ", " +
+		// nest.get(worst).egg[1] + ")");
 		sort(0, nestSize - 1);
 
 		int i = 0;

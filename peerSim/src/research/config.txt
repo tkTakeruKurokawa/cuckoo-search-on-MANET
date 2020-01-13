@@ -7,6 +7,8 @@ capacity 100.0
 dataSize 10.0
 highDemandNum 25
 lowDemandNum 25
+maxVariety 50
+distributionType norml  ##### normal or power #####
 
 ############## Network ###############
 
@@ -27,19 +29,15 @@ protocol.crd NodeCoordinate
 protocol.crd.d 1000.0
 
 #ノードの情報(バッテリー残量、ストレージ残量)
-protocol.prm NodeParameter
-protocol.prm.baseBattery 50.0
-protocol.prm.maxCapacity capacity
+protocol.bprm BaseParameter
+protocol.bprm.baseBattery 50.0
+protocol.bprm.maxCapacity capacity
 
-#各手法用パラメータ。値はサイクル毎にNodeParameterからコピー
+#各手法用パラメータ。値はサイクル毎にBaseParameterからコピー
 protocol.npo NPOwner
 protocol.npp NPPath
 protocol.npr NPRelate
 protocol.npc NPCuckoo
-
-#ノードが持っているデータ
-#protocol.str Storages
-#protocol.str.protocol prm
 
 #Owner Replication用のストレージ
 protocol.owner StorageOwner
@@ -58,59 +56,56 @@ protocol.cuckoo StorageCuckoo
 protocol.cuckoo.protocol npc
 
 #各ノードが各データを要求する確率
-protocol.rp RequestProbability
+protocol.nrc NodeRequestCycle
+protocol.nrc.maxVariety maxVariety
 
-order.protocol lnk crd prm npo npp npr npc owner path relate cuckoo rp
+order.protocol lnk crd bprm npo npp npr npc owner path relate cuckoo nrc
 
 ############## Initialize ###############
 
 #Initialize, Controlで共有されるデータ
 init.sr SharedResource
-init.sr.protocol0 lnk
-init.sr.protocol1 prm
-init.sr.protocol2 crd
-#init.sr.protocol3 str
-init.sr.protocol4 rp
-init.sr.protocol5 owner
-init.sr.protocol6 path
-init.sr.protocol7 relate
-init.sr.protocol8 cuckoo
-init.sr.protocol9 npo
-init.sr.protocol10 npp
-init.sr.protocol11 npr
-init.sr.protocol12 npc
+init.sr.link lnk
+init.sr.cordinate crd
+init.sr.node_request_cycle nrc
+init.sr.storage_owner owner
+init.sr.storage_path path
+init.sr.storage_relate relate
+init.sr.storage_cuckoo cuckoo
+init.sr.base_parameter bprm
+init.sr.node_parameter_owner npo
+init.sr.node_parameter_path npp
+init.sr.node_parameter_relate npr
+init.sr.node_parameter_cuckoo npc
+init.sr.max_cycle cycleNum
 
 #ノードのパラメータ、座標を初期化
 init.iniNet InitializeNetwork
 
 #ノードが持つデータ
 init.data Data
-init.data.maxVariety 50
+init.data.maxVariety maxVariety
 init.data.size dataSize
-init.data.highDemand highDemandNum
-init.data.lowDemand lowDemandNum
+init.data.distribution distributionType
+
+#データの検索手法のFlooading
+init.fld Flooding
 
 #ランダムジオメトリックグラフを構成
 init.rgg RandomGeometricGraph
 init.rgg.r 30.0
-#init.rgg.r 10.0
 
 #Linkクラスを元に無向グラフを形成
 init.wrgg WireRGG
 init.wrgg.protocol lnk
-init.wrgg.k K
-
-#データの検索手法のFlooading
-init.fld Flooding
-init.fld.ttl 2000
 
 #複製配置先を決定するためのCuckoo Search
 init.cs CuckooSearch
-init.cs.generation 100
+init.cs.generation 50
 
 #Cuckoo Searchで扱う巣の集合
 init.ns NestSet
-init.ns.nestSize 10
+init.ns.nestSize 20
 init.ns.abandonRate 0.2
 
 #Cuckoo Searchで扱う巣
@@ -121,19 +116,21 @@ init.nest.capacity capacity
 
 #関連研究での複製配置先の決定に用いるFlooading
 init.rr RelatedResearch
-init.rr.ttl 100
+init.rr.ttl 10
 init.rr.capacity capacity
 
-order.init sr iniNet data rgg wrgg fld cs ns nest rr
-#order.init iniNet sr data rgg wrgg fld stat
+order.init sr iniNet data fld rgg wrgg  cs ns nest rr
 
 ############## Control ###############
 
-#各ノードの高需要データに対するダウンロード要求
-control.ihdd IncreaseHighDemandData
+#各ノードのデータ要求
+control.dr DataRequest
 
-#各ノードの低需要データに対するダウンロード要求
-control.ildd IncreaseLowDemandData
+#低需要データの複製
+control.lddr LowDemandDataReplication
+control.lddr.alfa 0.5
+control.lddr.coefficient 1.0
+control.lddr.safe_num 5
 
 #各ノードで保有されているデータの総数を表示
 control.gr GetReplications
@@ -149,4 +146,4 @@ control.mn.join_lambda 300
 #データの需要のサイクルを進める
 control.dm DataManagement
 
-order.control ihdd ildd gr mn dm
+order.control dr lddr gr mn dm

@@ -1,9 +1,7 @@
 package research;
 
 import peersim.core.*;
-
 import java.util.ArrayList;
-
 import peersim.config.*;
 
 public class CuckooSearch implements Control {
@@ -14,26 +12,14 @@ public class CuckooSearch implements Control {
 		maxGeneration = Configuration.getInt(prefix + "." + PAR_MAXGENERATION);
 	}
 
-	public static Node search() {
-
+	public static Node search(Node base, Data data, int cycle) {
 		NestSet ns = new NestSet();
 		for (int generation = 0; generation < maxGeneration; generation++) {
 			// System.out.println("Generation: " + generation);
-			ns.alternate();
-		}
-		Node bestNode = ns.getBestNode();
-
-		return bestNode;
-	}
-
-	public static Node search(Data data) {
-		NestSet ns = new NestSet();
-		for (int generation = 0; generation < maxGeneration; generation++) {
-			// System.out.println("Generation: " + generation);
-			ns.alternate();
+			ns.alternate(base, cycle);
 			// ArrayList<Nest> nest = ns.getNestSet();
 			// System.out.println("NOWNEST:");
-			// for (int k = 0; k < 10; k++) {
+			// for (int k = 0; k < ns.getNestSize(); k++) {
 			// System.out.printf("\t%d: ", k);
 			// System.out.println("Node: " + nest.get(k).getNode().getIndex() + " value " +
 			// nest.get(k).getValue()
@@ -45,8 +31,8 @@ public class CuckooSearch implements Control {
 		int nestNum = 0;
 		while (nestNum < ns.getNestSize()) {
 			bestNode = ns.getBestNode(nestNum);
-			StorageCuckoo storage = SharedResource.getSCuckoo(bestNode);
-			NPCuckoo parameter = SharedResource.getNPCuckoo(bestNode);
+			Storage storage = SharedResource.getNodeStorage("cuckoo", bestNode);
+			Parameter parameter = SharedResource.getNodeParameter("cuckoo", bestNode);
 			int capacity = parameter.getCapacity();
 			int occupancy = data.getSize();
 			int newCapacity = capacity - occupancy;

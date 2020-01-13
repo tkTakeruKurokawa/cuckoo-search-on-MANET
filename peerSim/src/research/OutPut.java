@@ -3,20 +3,12 @@ package research;
 import java.io.*;
 
 public class OutPut {
-	private PrintWriter ownerHighCounter, pathHighCounter, relateHighCounter, cuckooHighCounter;
-	private PrintWriter ownerHighRemaining, pathHighRemaining, relateHighRemaining, cuckooHighRemaining;
-	private PrintWriter ownerLowCounter, pathLowCounter, relateLowCounter, cuckooLowCounter;
-	private PrintWriter ownerLowRemaining, pathLowRemaining, relateLowRemaining, cuckooLowRemaining;
-	private PrintWriter ownerHighOccupancy, pathHighOccupancy, relateHighOccupancy, cuckooHighOccupancy;
-	private PrintWriter ownerLowOccupancy, pathLowOccupancy, relateLowOccupancy, cuckooLowOccupancy;
-	private PrintWriter ownerCompare, pathCompare, relateCompare, cuckooCompare;
-	private PrintWriter ownerHit, pathHit, relateHit, cuckooHit;
+	private PrintWriter ownerCounter, ownerRemaining, ownerOccupancy, ownerHit, ownerCost;
+	private PrintWriter pathCounter, pathRemaining, pathOccupancy, pathHit, pathCost;
+	private PrintWriter relateCounter, relateRemaining, relateOccupancy, relateHit, relateCost, relateCompare;
+	private PrintWriter cuckooCounter, cuckooRemaining, cuckooOccupancy, cuckooHit, cuckooCost, cuckooCompare;
 	private PrintWriter links;
-
-	private static Statistic ownerStatistic = new Statistic();
-	private static Statistic pathStatistic = new Statistic();
-	private static Statistic relateStatistic = new Statistic();
-	private static Statistic cuckooStatistic = new Statistic();
+	private static Statistic relateStatistic, cuckooStatistic;
 
 	private double totalLinks = 0;
 
@@ -29,148 +21,108 @@ public class OutPut {
 
 			String way = new File(".").getAbsoluteFile().getParent();
 
-			String owner = way + "/result/highCounter_owner.tsv";
-			File hco = new File(owner);
-			owner = way + "/result/lowCounter_owner.tsv";
-			File lco = new File(owner);
-			owner = way + "/result/highRemaining_owner.tsv";
-			File hro = new File(owner);
-			owner = way + "/result/lowRemaining_owner.tsv";
-			File lro = new File(owner);
-			owner = way + "/result/highOccupancy_owner.tsv";
-			File hoo = new File(owner);
-			owner = way + "/result/lowOccupancy_owner.tsv";
-			File loo = new File(owner);
+			String owner = way + "/result/counter_owner.tsv";
+			File counter_owner = new File(owner);
+			owner = way + "/result/remaining_owner.tsv";
+			File remaining_owner = new File(owner);
+			owner = way + "/result/occupancy_owner.tsv";
+			File occupancy_owner = new File(owner);
 			owner = way + "/result/hitRate_owner.tsv";
-			File ho = new File(owner);
-			owner = way + "/result/compare_owner.tsv";
-			File co = new File(owner);
+			File hitRate_owner = new File(owner);
+			owner = way + "/result/networkCost_owner.tsv";
+			File networkCost_owner = new File(owner);
 
-			String path = way + "/result/highCounter_path.tsv";
-			File hcp = new File(path);
-			path = way + "/result/lowCounter_path.tsv";
-			File lcp = new File(path);
-			path = way + "/result/highRemaining_path.tsv";
-			File hrp = new File(path);
-			path = way + "/result/lowRemaining_path.tsv";
-			File lrp = new File(path);
-			path = way + "/result/highOccupancy_path.tsv";
-			File hop = new File(path);
-			path = way + "/result/lowOccupancy_path.tsv";
-			File lop = new File(path);
+			String path = way + "/result/counter_path.tsv";
+			File counter_path = new File(path);
+			path = way + "/result/remaining_path.tsv";
+			File remaining_path = new File(path);
+			path = way + "/result/occupancy_path.tsv";
+			File occupancy_path = new File(path);
 			path = way + "/result/hitRate_path.tsv";
-			File hp = new File(path);
-			path = way + "/result/compare_path.tsv";
-			File cp = new File(path);
+			File hitRate_path = new File(path);
+			path = way + "/result/networkCost_path.tsv";
+			File networkCost_path = new File(path);
 
-			String relate = way + "/result/highCounter_relate.tsv";
-			File hcr = new File(relate);
-			relate = way + "/result/lowCounter_relate.tsv";
-			File lcr = new File(relate);
-			relate = way + "/result/highRemaining_relate.tsv";
-			File hrr = new File(relate);
-			relate = way + "/result/lowRemaining_relate.tsv";
-			File lrr = new File(relate);
-			relate = way + "/result/highOccupancy_relate.tsv";
-			File hor = new File(relate);
-			relate = way + "/result/lowOccupancy_relate.tsv";
-			File lor = new File(relate);
+			String relate = way + "/result/counter_relate.tsv";
+			File counter_relate = new File(relate);
+			relate = way + "/result/remaining_relate.tsv";
+			File remaining_relate = new File(relate);
+			relate = way + "/result/occupancy_relate.tsv";
+			File occupancy_relate = new File(relate);
 			relate = way + "/result/hitRate_relate.tsv";
-			File hr = new File(relate);
+			File hitRate_relate = new File(relate);
+			relate = way + "/result/networkCost_relate.tsv";
+			File networkCost_relate = new File(relate);
 			relate = way + "/result/compare_relate.tsv";
-			File cr = new File(relate);
+			File compare_relate = new File(relate);
 
-			String cuckoo = way + "/result/highCounter_cuckoo.tsv";
-			File hcc = new File(cuckoo);
-			cuckoo = way + "/result/lowCounter_cuckoo.tsv";
-			File lcc = new File(cuckoo);
-			cuckoo = way + "/result/highRemaining_cuckoo.tsv";
-			File hrc = new File(cuckoo);
-			cuckoo = way + "/result/lowRemaining_cuckoo.tsv";
-			File lrc = new File(cuckoo);
-			cuckoo = way + "/result/highOccupancy_cuckoo.tsv";
-			File hoc = new File(cuckoo);
-			cuckoo = way + "/result/lowOccupancy_cuckoo.tsv";
-			File loc = new File(cuckoo);
+			String cuckoo = way + "/result/counter_cuckoo.tsv";
+			File counter_cuckoo = new File(cuckoo);
+			cuckoo = way + "/result/remaining_cuckoo.tsv";
+			File remaining_cuckoo = new File(cuckoo);
+			cuckoo = way + "/result/occupancy_cuckoo.tsv";
+			File occupancy_cuckoo = new File(cuckoo);
 			cuckoo = way + "/result/hitRate_cuckoo.tsv";
-			File hc = new File(cuckoo);
+			File hitRate_cuckoo = new File(cuckoo);
+			cuckoo = way + "/result/networkCost_cuckoo.tsv";
+			File networkCost_cuckoo = new File(cuckoo);
 			cuckoo = way + "/result/compare_cuckoo.tsv";
-			File cc = new File(cuckoo);
+			File compare_cuckoo = new File(cuckoo);
 
 			way = new File(".").getAbsoluteFile().getParent() + "/result/averageLinks.tsv";
 			File al = new File(way);
 
-			ownerHighCounter = new PrintWriter(new BufferedWriter(new FileWriter(hco, true)));
-			pathHighCounter = new PrintWriter(new BufferedWriter(new FileWriter(hcp, true)));
-			relateHighCounter = new PrintWriter(new BufferedWriter(new FileWriter(hcr, true)));
-			cuckooHighCounter = new PrintWriter(new BufferedWriter(new FileWriter(hcc, true)));
+			ownerCounter = new PrintWriter(new BufferedWriter(new FileWriter(counter_owner, true)));
+			ownerRemaining = new PrintWriter(new BufferedWriter(new FileWriter(remaining_owner, true)));
+			ownerOccupancy = new PrintWriter(new BufferedWriter(new FileWriter(occupancy_owner, true)));
+			ownerHit = new PrintWriter(new BufferedWriter(new FileWriter(hitRate_owner, true)));
+			ownerCost = new PrintWriter(new BufferedWriter(new FileWriter(networkCost_owner, true)));
 
-			ownerHighRemaining = new PrintWriter(new BufferedWriter(new FileWriter(hro, true)));
-			pathHighRemaining = new PrintWriter(new BufferedWriter(new FileWriter(hrp, true)));
-			relateHighRemaining = new PrintWriter(new BufferedWriter(new FileWriter(hrr, true)));
-			cuckooHighRemaining = new PrintWriter(new BufferedWriter(new FileWriter(hrc, true)));
+			pathCounter = new PrintWriter(new BufferedWriter(new FileWriter(counter_path, true)));
+			pathRemaining = new PrintWriter(new BufferedWriter(new FileWriter(remaining_path, true)));
+			pathOccupancy = new PrintWriter(new BufferedWriter(new FileWriter(occupancy_path, true)));
+			pathHit = new PrintWriter(new BufferedWriter(new FileWriter(hitRate_path, true)));
+			pathCost = new PrintWriter(new BufferedWriter(new FileWriter(networkCost_path, true)));
 
-			ownerLowCounter = new PrintWriter(new BufferedWriter(new FileWriter(lco, true)));
-			pathLowCounter = new PrintWriter(new BufferedWriter(new FileWriter(lcp, true)));
-			relateLowCounter = new PrintWriter(new BufferedWriter(new FileWriter(lcr, true)));
-			cuckooLowCounter = new PrintWriter(new BufferedWriter(new FileWriter(lcc, true)));
+			relateCounter = new PrintWriter(new BufferedWriter(new FileWriter(counter_relate, true)));
+			relateRemaining = new PrintWriter(new BufferedWriter(new FileWriter(remaining_relate, true)));
+			relateOccupancy = new PrintWriter(new BufferedWriter(new FileWriter(occupancy_relate, true)));
+			relateHit = new PrintWriter(new BufferedWriter(new FileWriter(hitRate_relate, true)));
+			relateCost = new PrintWriter(new BufferedWriter(new FileWriter(networkCost_relate, true)));
+			relateCompare = new PrintWriter(new BufferedWriter(new FileWriter(compare_relate, true)));
 
-			ownerLowRemaining = new PrintWriter(new BufferedWriter(new FileWriter(lro, true)));
-			pathLowRemaining = new PrintWriter(new BufferedWriter(new FileWriter(lrp, true)));
-			relateLowRemaining = new PrintWriter(new BufferedWriter(new FileWriter(lrr, true)));
-			cuckooLowRemaining = new PrintWriter(new BufferedWriter(new FileWriter(lrc, true)));
-
-			ownerHighOccupancy = new PrintWriter(new BufferedWriter(new FileWriter(hoo, true)));
-			pathHighOccupancy = new PrintWriter(new BufferedWriter(new FileWriter(hop, true)));
-			relateHighOccupancy = new PrintWriter(new BufferedWriter(new FileWriter(hor, true)));
-			cuckooHighOccupancy = new PrintWriter(new BufferedWriter(new FileWriter(hoc, true)));
-
-			ownerLowOccupancy = new PrintWriter(new BufferedWriter(new FileWriter(loo, true)));
-			pathLowOccupancy = new PrintWriter(new BufferedWriter(new FileWriter(lop, true)));
-			relateLowOccupancy = new PrintWriter(new BufferedWriter(new FileWriter(lor, true)));
-			cuckooLowOccupancy = new PrintWriter(new BufferedWriter(new FileWriter(loc, true)));
-
-			ownerHit = new PrintWriter(new BufferedWriter(new FileWriter(ho, true)));
-			pathHit = new PrintWriter(new BufferedWriter(new FileWriter(hp, true)));
-			relateHit = new PrintWriter(new BufferedWriter(new FileWriter(hr, true)));
-			cuckooHit = new PrintWriter(new BufferedWriter(new FileWriter(hc, true)));
-
-			ownerCompare = new PrintWriter(new BufferedWriter(new FileWriter(co, true)));
-			pathCompare = new PrintWriter(new BufferedWriter(new FileWriter(cp, true)));
-			relateCompare = new PrintWriter(new BufferedWriter(new FileWriter(cr, true)));
-			cuckooCompare = new PrintWriter(new BufferedWriter(new FileWriter(cc, true)));
+			cuckooCounter = new PrintWriter(new BufferedWriter(new FileWriter(counter_cuckoo, true)));
+			cuckooRemaining = new PrintWriter(new BufferedWriter(new FileWriter(remaining_cuckoo, true)));
+			cuckooOccupancy = new PrintWriter(new BufferedWriter(new FileWriter(occupancy_cuckoo, true)));
+			cuckooHit = new PrintWriter(new BufferedWriter(new FileWriter(hitRate_cuckoo, true)));
+			cuckooCost = new PrintWriter(new BufferedWriter(new FileWriter(networkCost_cuckoo, true)));
+			cuckooCompare = new PrintWriter(new BufferedWriter(new FileWriter(compare_cuckoo, true)));
 
 			links = new PrintWriter(new BufferedWriter(new FileWriter(al, true)));
+
+			relateStatistic = new Statistic();
+			cuckooStatistic = new Statistic();
 
 		} catch (IOException e) {
 			System.out.println(e);
 		}
 
-		ownerHighCounter = setCounterComments(ownerHighCounter);
-		ownerHighRemaining = setRemainingComments(ownerHighRemaining);
-		ownerHighOccupancy = setOccupancyComments(ownerHighOccupancy);
-		pathHighCounter = setCounterComments(pathHighCounter);
-		pathHighRemaining = setRemainingComments(pathHighRemaining);
-		pathHighOccupancy = setOccupancyComments(pathHighOccupancy);
-		relateHighCounter = setCounterComments(relateHighCounter);
-		relateHighRemaining = setRemainingComments(relateHighRemaining);
-		relateHighOccupancy = setOccupancyComments(relateHighOccupancy);
-		cuckooHighCounter = setCounterComments(cuckooHighCounter);
-		cuckooHighRemaining = setRemainingComments(cuckooHighRemaining);
-		cuckooHighOccupancy = setOccupancyComments(cuckooHighOccupancy);
-
-		ownerLowCounter = setCounterComments(ownerLowCounter);
-		ownerLowRemaining = setRemainingComments(ownerLowRemaining);
-		ownerLowOccupancy = setOccupancyComments(ownerLowOccupancy);
-		pathLowCounter = setCounterComments(pathLowCounter);
-		pathLowRemaining = setRemainingComments(pathLowRemaining);
-		pathLowOccupancy = setOccupancyComments(pathLowOccupancy);
-		relateLowCounter = setCounterComments(relateLowCounter);
-		relateLowRemaining = setRemainingComments(relateLowRemaining);
-		relateLowOccupancy = setOccupancyComments(relateLowOccupancy);
-		cuckooLowCounter = setCounterComments(cuckooLowCounter);
-		cuckooLowRemaining = setRemainingComments(cuckooLowRemaining);
-		cuckooLowOccupancy = setOccupancyComments(cuckooLowOccupancy);
+		ownerCounter = setCounterComments(ownerCounter);
+		ownerRemaining = setRemainingComments(ownerRemaining);
+		ownerOccupancy = setOccupancyComments(ownerOccupancy);
+		ownerCost = setNetworkCostComments(ownerCost);
+		pathCounter = setCounterComments(pathCounter);
+		pathRemaining = setRemainingComments(pathRemaining);
+		pathOccupancy = setOccupancyComments(pathOccupancy);
+		pathCost = setNetworkCostComments(pathCost);
+		relateCounter = setCounterComments(relateCounter);
+		relateRemaining = setRemainingComments(relateRemaining);
+		relateOccupancy = setOccupancyComments(relateOccupancy);
+		relateCost = setNetworkCostComments(relateCost);
+		cuckooCounter = setCounterComments(cuckooCounter);
+		cuckooRemaining = setRemainingComments(cuckooRemaining);
+		cuckooOccupancy = setOccupancyComments(cuckooOccupancy);
+		cuckooCost = setNetworkCostComments(cuckooCost);
 
 		links.println("Cycle\tAvarage Links");
 	}
@@ -196,14 +148,15 @@ public class OutPut {
 		return pw;
 	}
 
+	public PrintWriter setNetworkCostComments(PrintWriter pw) {
+		pw.println("Cycle\tNow Cost\tTotal Cost");
+		pw.println();
+
+		return pw;
+	}
+
 	public static void writeCompare(String type, Parameter parameter) {
 		switch (type) {
-		case "owner":
-			ownerStatistic.set(parameter);
-			break;
-		case "path":
-			pathStatistic.set(parameter);
-			break;
 		case "relate":
 			relateStatistic.set(parameter);
 			break;
@@ -215,114 +168,57 @@ public class OutPut {
 		}
 	}
 
-	public void writeHighCount(String type, int cycle, double highAvailability, double highTotal, double highAll) {
+	public void writeAvailability(String type, int cycle, double availability, double total, double all) {
 		switch (type) {
 		case "owner":
-			ownerHighCounter.println(cycle + "\t" + highAvailability + "\t" + highTotal + "\t" + highAll);
+			ownerCounter.println(cycle + "\t" + availability + "\t" + total + "\t" + all);
 			break;
 		case "path":
-			pathHighCounter.println(cycle + "\t" + highAvailability + "\t" + highTotal + "\t" + highAll);
+			pathCounter.println(cycle + "\t" + availability + "\t" + total + "\t" + all);
 			break;
 		case "relate":
-			relateHighCounter.println(cycle + "\t" + highAvailability + "\t" + highTotal + "\t" + highAll);
+			relateCounter.println(cycle + "\t" + availability + "\t" + total + "\t" + all);
 			break;
 		case "cuckoo":
-			cuckooHighCounter.println(cycle + "\t" + highAvailability + "\t" + highTotal + "\t" + highAll);
+			cuckooCounter.println(cycle + "\t" + availability + "\t" + total + "\t" + all);
 			break;
 		default:
 			break;
 		}
 	}
 
-	public void writeLowCount(String type, int cycle, double lowhAvailability, double lowhTotal, double lowhAll) {
-		switch (type) {
-		case "owner":
-			ownerLowCounter.println(cycle + "\t" + lowhAvailability + "\t" + lowhTotal + "\t" + lowhAll);
-			break;
-		case "path":
-			pathLowCounter.println(cycle + "\t" + lowhAvailability + "\t" + lowhTotal + "\t" + lowhAll);
-			break;
-		case "relate":
-			relateLowCounter.println(cycle + "\t" + lowhAvailability + "\t" + lowhTotal + "\t" + lowhAll);
-			break;
-		case "cuckoo":
-			cuckooLowCounter.println(cycle + "\t" + lowhAvailability + "\t" + lowhTotal + "\t" + lowhAll);
-			break;
-		default:
-			break;
-		}
-	}
-
-	public void writeHighRemaining(int type, int cycle, double averageRemaining, double standardDeviation) {
+	public void writeRemaining(int type, int cycle, double averageRemaining, double standardDeviation) {
 		switch (type) {
 		case 0:
-			ownerHighRemaining.println(cycle + "\t" + averageRemaining + "\t" + standardDeviation);
+			ownerRemaining.println(cycle + "\t" + averageRemaining + "\t" + standardDeviation);
 			break;
 		case 1:
-			pathHighRemaining.println(cycle + "\t" + averageRemaining + "\t" + standardDeviation);
+			pathRemaining.println(cycle + "\t" + averageRemaining + "\t" + standardDeviation);
 			break;
 		case 2:
-			relateHighRemaining.println(cycle + "\t" + averageRemaining + "\t" + standardDeviation);
+			relateRemaining.println(cycle + "\t" + averageRemaining + "\t" + standardDeviation);
 			break;
 		case 3:
-			cuckooHighRemaining.println(cycle + "\t" + averageRemaining + "\t" + standardDeviation);
+			cuckooRemaining.println(cycle + "\t" + averageRemaining + "\t" + standardDeviation);
 			break;
 		default:
 			break;
 		}
 	}
 
-	public void writeLowRemaining(int type, int cycle, double averageRemaining, double standardDeviation) {
+	public void writeOccupancy(int type, int cycle, double occupancy) {
 		switch (type) {
 		case 0:
-			ownerLowRemaining.println(cycle + "\t" + averageRemaining + "\t" + standardDeviation);
+			ownerOccupancy.println(cycle + "\t" + occupancy);
 			break;
 		case 1:
-			pathLowRemaining.println(cycle + "\t" + averageRemaining + "\t" + standardDeviation);
+			pathOccupancy.println(cycle + "\t" + occupancy);
 			break;
 		case 2:
-			relateLowRemaining.println(cycle + "\t" + averageRemaining + "\t" + standardDeviation);
+			relateOccupancy.println(cycle + "\t" + occupancy);
 			break;
 		case 3:
-			cuckooLowRemaining.println(cycle + "\t" + averageRemaining + "\t" + standardDeviation);
-			break;
-		default:
-			break;
-		}
-	}
-
-	public void writeHighOccupancy(int type, int cycle, double occupancy) {
-		switch (type) {
-		case 0:
-			ownerHighOccupancy.println(cycle + "\t" + occupancy);
-			break;
-		case 1:
-			pathHighOccupancy.println(cycle + "\t" + occupancy);
-			break;
-		case 2:
-			relateHighOccupancy.println(cycle + "\t" + occupancy);
-			break;
-		case 3:
-			cuckooHighOccupancy.println(cycle + "\t" + occupancy);
-			break;
-		default:
-			break;
-		}
-	}
-
-	public void writeLowOccupancy(int type, int cycle, double occupancy) {
-		switch (type) {
-		case 0:
-			ownerLowOccupancy.println(cycle + "\t" + occupancy);
-			break;
-		case 1:
-			pathLowOccupancy.println(cycle + "\t" + occupancy);
-			break;
-		case 2:
-			relateLowOccupancy.println(cycle + "\t" + occupancy);
-			break;
-		case 3:
-			cuckooLowOccupancy.println(cycle + "\t" + occupancy);
+			cuckooOccupancy.println(cycle + "\t" + occupancy);
 			break;
 		default:
 			break;
@@ -360,68 +256,6 @@ public class OutPut {
 		}
 	}
 
-	public void writeHighHitRate(int type, int numberOfHit, double averageHops, int numberOfMiss) {
-		switch (type) {
-		case 0:
-			ownerHit.println("High:");
-			ownerHit.println("Number of Hit\tAverage Hops\tNumber of Miss");
-			ownerHit.println(numberOfHit + "\t" + averageHops + "\t" + numberOfMiss);
-			ownerHit.println();
-			break;
-		case 1:
-			pathHit.println("High:");
-			pathHit.println("Number of Hit\tAverage Hops\tNumber of Miss");
-			pathHit.println(numberOfHit + "\t" + averageHops + "\t" + numberOfMiss);
-			pathHit.println();
-			break;
-		case 2:
-			relateHit.println("High:");
-			relateHit.println("Number of Hit\tAverage Hops\tNumber of Miss");
-			relateHit.println(numberOfHit + "\t" + averageHops + "\t" + numberOfMiss);
-			relateHit.println();
-			break;
-		case 3:
-			cuckooHit.println("High:");
-			cuckooHit.println("Number of Hit\tAverage Hops\tNumber of Miss");
-			cuckooHit.println(numberOfHit + "\t" + averageHops + "\t" + numberOfMiss);
-			cuckooHit.println();
-			break;
-		default:
-			break;
-		}
-	}
-
-	public void writeLowHitRate(int type, int numberOfHit, double averageHops, int numberOfMiss) {
-		switch (type) {
-		case 0:
-			ownerHit.println("Low:");
-			ownerHit.println("Number of Hit\tAverage Hops\tNumber of Miss");
-			ownerHit.println(numberOfHit + "\t" + averageHops + "\t" + numberOfMiss);
-			ownerHit.println();
-			break;
-		case 1:
-			pathHit.println("Low:");
-			pathHit.println("Number of Hit\tAverage Hops\tNumber of Miss");
-			pathHit.println(numberOfHit + "\t" + averageHops + "\t" + numberOfMiss);
-			pathHit.println();
-			break;
-		case 2:
-			relateHit.println("Low:");
-			relateHit.println("Number of Hit\tAverage Hops\tNumber of Miss");
-			relateHit.println(numberOfHit + "\t" + averageHops + "\t" + numberOfMiss);
-			relateHit.println();
-			break;
-		case 3:
-			cuckooHit.println("Low:");
-			cuckooHit.println("Number of Hit\tAverage Hops\tNumber of Miss");
-			cuckooHit.println(numberOfHit + "\t" + averageHops + "\t" + numberOfMiss);
-			cuckooHit.println();
-			break;
-		default:
-			break;
-		}
-	}
-
 	public void writeAverageLinks(int cycle, double averageLinks) {
 		links.println(cycle + "\t" + averageLinks);
 
@@ -431,49 +265,55 @@ public class OutPut {
 		}
 	}
 
+	public void writeNetworkCost(int type, int cycle, int nowCost, int totalCost) {
+		switch (type) {
+		case 0:
+			ownerCost.println(cycle + "\t" + nowCost + "\t" + totalCost);
+			break;
+		case 1:
+			pathCost.println(cycle + "\t" + nowCost + "\t" + totalCost);
+			break;
+		case 2:
+			relateCost.println(cycle + "\t" + nowCost + "\t" + totalCost);
+			break;
+		case 3:
+			cuckooCost.println(cycle + "\t" + nowCost + "\t" + totalCost);
+			break;
+		default:
+			break;
+		}
+	}
+
 	public void closeFiles() {
-		ownerCompare = ownerStatistic.output(ownerCompare);
-		pathCompare = pathStatistic.output(pathCompare);
 		relateCompare = relateStatistic.output(relateCompare);
 		cuckooCompare = cuckooStatistic.output(cuckooCompare);
 
-		ownerHighCounter.close();
-		ownerHighRemaining.close();
-		pathHighCounter.close();
-		pathHighRemaining.close();
-		relateHighCounter.close();
-		relateHighRemaining.close();
-		cuckooHighCounter.close();
-		cuckooHighRemaining.close();
-		ownerHighOccupancy.close();
-		pathHighOccupancy.close();
-		relateHighOccupancy.close();
-		cuckooHighOccupancy.close();
-
-		ownerLowCounter.close();
-		ownerLowRemaining.close();
-		pathLowCounter.close();
-		pathLowRemaining.close();
-		relateLowCounter.close();
-		relateLowRemaining.close();
-		cuckooLowCounter.close();
-		cuckooLowRemaining.close();
-		ownerLowOccupancy.close();
-		pathLowOccupancy.close();
-		relateLowOccupancy.close();
-		cuckooLowOccupancy.close();
-
+		ownerCounter.close();
+		ownerRemaining.close();
+		ownerOccupancy.close();
 		ownerHit.close();
-		pathHit.close();
-		relateHit.close();
-		cuckooHit.close();
+		ownerCost.close();
 
-		ownerCompare.close();
-		pathCompare.close();
+		pathCounter.close();
+		pathRemaining.close();
+		pathOccupancy.close();
+		pathHit.close();
+		pathCost.close();
+
+		relateCounter.close();
+		relateRemaining.close();
+		relateOccupancy.close();
+		relateHit.close();
+		relateCost.close();
 		relateCompare.close();
+
+		cuckooCounter.close();
+		cuckooRemaining.close();
+		cuckooOccupancy.close();
+		cuckooHit.close();
+		cuckooCost.close();
 		cuckooCompare.close();
 
 		links.close();
 	}
-
 }

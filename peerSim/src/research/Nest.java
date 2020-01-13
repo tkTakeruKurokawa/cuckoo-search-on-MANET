@@ -26,13 +26,14 @@ public class Nest implements Control {
 	private double[] newEgg;
 	private double value;
 	private double distance;
+	private int cost;
 
 	public Nest(Node node) {
 		this.node = node;
 		egg = new double[3];
 		newEgg = new double[3];
 
-		NPCuckoo parameter = SharedResource.getNPCuckoo(node);
+		NPCuckoo parameter = (NPCuckoo) SharedResource.getNodeParameter("cuckoo", node);
 		egg[0] = parameter.getBattery();
 		egg[1] = ((double) parameter.getCapacity());
 		egg[2] = ((double) parameter.getUpTime());
@@ -125,12 +126,9 @@ public class Nest implements Control {
 		double r, o;
 		int d;
 
-		while (true) {
+		do {
 			r = random.nextDouble();
-			if (r > 0.1d) {
-				break;
-			}
-		}
+		} while (r < 0.1d);
 
 		d = (int) Math.round(Math.pow(r, -2.0));
 		// d = (int) Math.round(s*2);
@@ -139,6 +137,7 @@ public class Nest implements Control {
 
 		// System.out.println(d);
 
+		cost = 0;
 		while (d > 0) {
 			pn = new HashMap<Node, Double>();
 
@@ -170,31 +169,36 @@ public class Nest implements Control {
 				base = minNode();
 				// System.out.println("next Node:" + base.getIndex());
 				d = d - 1;
+				cost++;
 			}
 		}
 
 		return base;
 	}
 
-	public boolean replace(Nest base) {
-		Node src = base.getNode();
+	public boolean replace(Node base, int cycle) {
 		Node candidate;
 
-		candidate = levyWalk(src);
+		candidate = levyWalk(base);
 		if (Objects.equals(candidate, null)) {
 			return false;
 		}
 
-		NPCuckoo parameter = SharedResource.getNPCuckoo(candidate);
+		ArrayList<Integer> costList = SharedResource.getCost(3);
+		costList.set(cycle, costList.get(cycle) + cost);
+		SharedResource.setCost(3, costList);
+
+		NPCuckoo parameter = (NPCuckoo) SharedResource.getNodeParameter("cuckoo", candidate);
 		newEgg[0] = parameter.getBattery();
 		newEgg[1] = parameter.getCapacity();
 		newEgg[2] = parameter.getUpTime();
 
 		double newValue = evaluate(newEgg);
-		// System.out.println("This Node: " + src.getIndex() + " value " + value + " ("
+		// System.out.println("This Node: " + base.getIndex() + " value " + value + " ("
 		// + egg[0] + ", " + egg[1] + ")");
 		// System.out.println("Candidate Node: " + candidate.getIndex() + " value " +
-		// newValue + " (" + newEgg[0] + ", " + newEgg[1] + ")");
+		// newValue + " (" + newEgg[0] + ", "
+		// + newEgg[1] + ")");
 
 		if (newValue > value) {
 			this.node = candidate;
@@ -216,7 +220,7 @@ public class Nest implements Control {
 			if (!Objects.equals(newNode, null))
 				break;
 		}
-		NPCuckoo parameter = SharedResource.getNPCuckoo(newNode);
+		NPCuckoo parameter = (NPCuckoo) SharedResource.getNodeParameter("cuckoo", newNode);
 
 		this.node = newNode;
 		egg[0] = parameter.getBattery();
@@ -227,7 +231,7 @@ public class Nest implements Control {
 
 	public void abandon(int nodeID) {
 		Node newNode = Network.get(nodeID);
-		NPCuckoo parameter = SharedResource.getNPCuckoo(newNode);
+		NPCuckoo parameter = (NPCuckoo) SharedResource.getNodeParameter("cuckoo", newNode);
 		newEgg[0] = parameter.getBattery();
 		newEgg[1] = ((double) parameter.getCapacity());
 		newEgg[2] = ((double) parameter.getUpTime());
@@ -248,7 +252,7 @@ public class Nest implements Control {
 		// double upTime = egg[2];
 
 		// double value = 1.0 * battery + 1.0 * capacity;
-		double value = 1.0 * battery + 1.0 * capacity + upTime;
+		double value = 2.0 * battery + 1.5 * capacity + upTime;
 		// double value = 1.0 * battery + 1.0 * capacity + Math.log10(upTime);
 		if (egg[1] < 1.0)
 			value = Double.NEGATIVE_INFINITY;

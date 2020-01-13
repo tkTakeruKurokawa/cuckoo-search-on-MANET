@@ -7,9 +7,7 @@ public interface Storage extends Protocol {
 
 	public Object clone();
 
-	public boolean setHighDemandData(Node node, Data data);
-
-	public boolean setLowDemandData(Node node, Data data);
+	public boolean setData(Node node, Data data);
 
 	public boolean isEmpty();
 

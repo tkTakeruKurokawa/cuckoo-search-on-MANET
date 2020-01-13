@@ -15,7 +15,7 @@ public class DataManagement implements Control {
 
         if (globalCycle % 5 == 0) {
             if (Data.getNowVariety() < Data.getMaxVariety()) {
-                Data.makeData();
+                Data.uploadData();
             }
         }
 

@@ -5,7 +5,7 @@ import peersim.core.*;
 
 public class Link implements Protocol, Linkable {
 
-	private static final int DEFAULT_INITIAL_CAPACITY = 10;
+	private static final int DEFAULT_INITIAL_CAPACITY = 100;
 	private static final String PAR_INITCAP = "capacity";
 
 	protected Node[] neighbors;
@@ -90,7 +90,7 @@ public class Link implements Protocol, Linkable {
 	}
 
 	public void onKill() {
-		neighbors = null;
+		neighbors = new Node[DEFAULT_INITIAL_CAPACITY];
 		len = 0;
 	}
 

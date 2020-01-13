@@ -13,13 +13,13 @@ public class Statistic {
 	private int count = 0;
 
 	public PrintWriter output(PrintWriter stat) {
-		stat.println("Allocation Num:\t" + count);
-		stat.println("Max Battery:\t" + maxB);
-		stat.println("Min Battery:\t" + minB);
-		stat.println("Max Capacity:\t" + maxC);
-		stat.println("Min Capacity:\t" + minC);
-		stat.println("Average Battery:\t" + aveB / ((double) count));
-		stat.println("Average Capacity:\t" + aveC / ((double) count));
+		stat.println("Allocation Num: " + count);
+		stat.println("Max Battery: " + maxB);
+		stat.println("Min Battery: " + minB);
+		stat.println("Max Capacity: " + maxC);
+		stat.println("Min Capacity: " + minC);
+		stat.println("Average Battery: " + aveB / ((double) count));
+		stat.println("Average Capacity: " + aveC / ((double) count));
 
 		return stat;
 	}

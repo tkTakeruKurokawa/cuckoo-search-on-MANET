@@ -103,6 +103,14 @@ class Test {
 
     public static void main(String[] args) {
 
+        int total = 3;
+        int sum = total;
+        for (int i = 1; i <= total; i++) {
+            sum += i;
+            System.out.println(i);
+        }
+        System.out.println(sum);
+
         ArrayList<Double> number = new ArrayList<Double>();
 
         // for (int i = 0; i < 2000; i++) {
@@ -145,6 +153,6 @@ class Test {
         // System.out.println(total);
         // System.out.println("average: " + total / 500.0);
 
-        System.out.println( Math.log10(300.0));
+        // System.out.println(Math.log10(300.0));
     }
 }

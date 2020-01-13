@@ -9,11 +9,9 @@ public class StoragePath implements Storage {
 	private static int pid_prm;
 
 	private ArrayList<Data> dataList = new ArrayList<Data>();
-	private static ArrayList<Integer> highDataCounter;
-	private static ArrayList<Integer> lowDataCounter;
+	private static ArrayList<Integer> dataCounter;
 
-	private static int highTotal = 0;
-	private static int lowTotal = 0;
+	private static int dataTotal = 0;
 
 	public StoragePath(String prefix) {
 		pid_prm = Configuration.getPid(prefix + "." + PAR_PROT);
@@ -29,33 +27,7 @@ public class StoragePath implements Storage {
 		return storage;
 	}
 
-	public boolean setLowDemandData(Node node, Data data) {
-		NPPath parameter = (NPPath) node.getProtocol(pid_prm);
-		int capacity = parameter.getCapacity();
-		int occupancy = data.getSize();
-		int newCapacity = capacity - occupancy;
-
-		if (!dataList.contains(data) && (newCapacity >= 0)) {
-			OutPut.writeCompare("path", parameter);
-
-			dataList.add(data);
-
-			lowDataCounter = SharedResource.getPathLowCounter();
-			lowDataCounter.set(data.getID(), lowDataCounter.get(data.getID()) + 1);
-			SharedResource.setPathLowCounter(lowDataCounter);
-
-			parameter.setCapacity(newCapacity);
-
-			lowTotal++;
-			SharedResource.setLowTotal("path", lowTotal);
-			return true;
-		}
-
-		return false;
-	}
-
-	// nodeのstorageにdataを追加
-	public boolean setHighDemandData(Node node, Data data) {
+	public boolean setData(Node node, Data data) {
 		NPPath parameter = (NPPath) node.getProtocol(pid_prm);
 		int capacity = parameter.getCapacity();
 		int occupancy = data.getSize();
@@ -64,16 +36,19 @@ public class StoragePath implements Storage {
 		if (!dataList.contains(data) && (newCapacity >= 0)) {
 			dataList.add(data);
 
-			highDataCounter = SharedResource.getPathHighCounter();
-			highDataCounter.set(data.getID(), highDataCounter.get(data.getID()) + 1);
-			SharedResource.setPathHighCounter(highDataCounter);
+			dataCounter = SharedResource.getCounter("path");
+			dataCounter.set(data.getID(), dataCounter.get(data.getID()) + 1);
+			SharedResource.setCounter("path", dataCounter);
+			;
 
 			parameter.setCapacity(newCapacity);
 
-			highTotal++;
-			SharedResource.setHighTotal("path", highTotal);
+			dataTotal++;
+			SharedResource.setDataTotal("path", dataTotal);
+
 			return true;
 		}
+
 		return false;
 	}
 
@@ -90,21 +65,16 @@ public class StoragePath implements Storage {
 	}
 
 	public void clear() {
-		highDataCounter = SharedResource.getPathHighCounter();
-		lowDataCounter = SharedResource.getPathLowCounter();
+		dataCounter = SharedResource.getCounter("path");
 
 		for (Data data : dataList) {
-			if (Objects.equals(data.getType(), "high")) {
-				highDataCounter.set(data.getID(), highDataCounter.get(data.getID()) - 1);
-			} else {
-				lowDataCounter.set(data.getID(), lowDataCounter.get(data.getID()) - 1);
-			}
+			dataCounter.set(data.getID(), dataCounter.get(data.getID()) - 1);
 		}
 
 		dataList = new ArrayList<Data>();
 
-		SharedResource.setPathHighCounter(highDataCounter);
-		SharedResource.setPathLowCounter(lowDataCounter);
+		SharedResource.setCounter("path", dataCounter);
+		;
 	}
 
 	public String toString() {

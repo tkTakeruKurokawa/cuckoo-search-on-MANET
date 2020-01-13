@@ -9,11 +9,9 @@ public class StorageRelate implements Storage {
 	private static int pid_prm;
 
 	private ArrayList<Data> dataList = new ArrayList<Data>();
-	private static ArrayList<Integer> highDataCounter;
-	private static ArrayList<Integer> lowDataCounter;
+	private static ArrayList<Integer> dataCounter;
 
-	private static int highTotal = 0;
-	private static int lowTotal = 0;
+	private static int dataTotal = 0;
 
 	public StorageRelate(String prefix) {
 		pid_prm = Configuration.getPid(prefix + "." + PAR_PROT);
@@ -29,34 +27,7 @@ public class StorageRelate implements Storage {
 		return storage;
 	}
 
-	public boolean setLowDemandData(Node node, Data data) {
-		NPRelate parameter = (NPRelate) node.getProtocol(pid_prm);
-		int capacity = parameter.getCapacity();
-		int occupancy = data.getSize();
-		int newCapacity = capacity - occupancy;
-
-		if (!dataList.contains(data) && (newCapacity >= 0)) {
-			OutPut.writeCompare("relate", parameter);
-
-			dataList.add(data);
-
-			lowDataCounter = SharedResource.getRelateLowCounter();
-			lowDataCounter.set(data.getID(), lowDataCounter.get(data.getID()) + 1);
-			SharedResource.setRelateLowCounter(lowDataCounter);
-
-			parameter.setCapacity(newCapacity);
-
-			lowTotal++;
-			SharedResource.setLowTotal("relate", lowTotal);
-
-			return true;
-		}
-
-		return false;
-	}
-
-	// nodeのstorageにdataを追加
-	public boolean setHighDemandData(Node node, Data data) {
+	public boolean setData(Node node, Data data) {
 		NPRelate parameter = (NPRelate) node.getProtocol(pid_prm);
 		int capacity = parameter.getCapacity();
 		int occupancy = data.getSize();
@@ -65,16 +36,18 @@ public class StorageRelate implements Storage {
 		if (!dataList.contains(data) && (newCapacity >= 0)) {
 			dataList.add(data);
 
-			highDataCounter = SharedResource.getRelateHighCounter();
-			highDataCounter.set(data.getID(), highDataCounter.get(data.getID()) + 1);
-			SharedResource.setRelateHighCounter(highDataCounter);
+			dataCounter = SharedResource.getCounter("relate");
+			dataCounter.set(data.getID(), dataCounter.get(data.getID()) + 1);
+			SharedResource.setCounter("relate", dataCounter);
 
 			parameter.setCapacity(newCapacity);
 
-			highTotal++;
-			SharedResource.setHighTotal("relate", highTotal);
+			dataTotal++;
+			SharedResource.setDataTotal("relate", dataTotal);
+
 			return true;
 		}
+
 		return false;
 	}
 
@@ -91,21 +64,15 @@ public class StorageRelate implements Storage {
 	}
 
 	public void clear() {
-		highDataCounter = SharedResource.getRelateHighCounter();
-		lowDataCounter = SharedResource.getRelateLowCounter();
+		dataCounter = SharedResource.getCounter("relate");
 
 		for (Data data : dataList) {
-			if (Objects.equals(data.getType(), "high")) {
-				highDataCounter.set(data.getID(), highDataCounter.get(data.getID()) - 1);
-			} else {
-				lowDataCounter.set(data.getID(), lowDataCounter.get(data.getID()) - 1);
-			}
+			dataCounter.set(data.getID(), dataCounter.get(data.getID()) - 1);
 		}
 
 		dataList = new ArrayList<Data>();
 
-		SharedResource.setRelateHighCounter(highDataCounter);
-		SharedResource.setRelateLowCounter(lowDataCounter);
+		SharedResource.setCounter("relate", dataCounter);
 	}
 
 	public String toString() {
