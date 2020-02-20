@@ -8,7 +8,6 @@ dataSize 10.0
 highDemandNum 25
 lowDemandNum 25
 maxVariety 50
-distributionType norml  ##### normal or power #####
 
 ############## Network ###############
 
@@ -86,7 +85,7 @@ init.iniNet InitializeNetwork
 init.data Data
 init.data.maxVariety maxVariety
 init.data.size dataSize
-init.data.distribution distributionType
+init.data.distribution normal ##### normal or power #####
 
 #データの検索手法のFlooading
 init.fld Flooding

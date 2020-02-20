@@ -84,8 +84,10 @@ public class Data implements Control {
 	public static void makeData() {
 		if (distribution.equals("normal")) {
 			normalDistribution();
-		} else {
+		} else if (distribution.equals("power")) {
 			powerDistribution();
+		} else {
+			System.exit(100);
 		}
 	}
 
