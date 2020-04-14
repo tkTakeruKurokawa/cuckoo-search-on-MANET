@@ -55,14 +55,19 @@ public class GetReplications implements Control {
 
 	public void networkCost() {
 		for (int i = 0; i < 4; i++) {
-			ArrayList<Integer> costList = SharedResource.getCost(i);
-			int total = 0;
+			ArrayList<Integer> searchCostList = SharedResource.getSearchCost(i);
+			ArrayList<Integer> replicationCostList = SharedResource.getReplicationCost(i);
+			double searchTotal = 0.0;
+			double replicationTotal = 0.0;
 
-			for (Integer cost : costList) {
-				total += cost;
+			for (int cycle = 0; cycle < searchCostList.size(); cycle++) {
+				searchTotal += (double) searchCostList.get(cycle);
+				replicationTotal += (double) replicationCostList.get(cycle);
 			}
 
-			output.writeNetworkCost(i, cycle, costList.get(cycle), total);
+			output.writeSearchCost(i, cycle, searchCostList.get(cycle), searchTotal / ((double) (cycle + 1)));
+			output.writeReplicationCost(i, cycle, replicationCostList.get(cycle),
+					replicationTotal / ((double) (cycle + 1)));
 		}
 	}
 
@@ -75,22 +80,22 @@ public class GetReplications implements Control {
 	public boolean existsData(Data data, int id) {
 		int num = 0;
 		switch (id) {
-		case 0:
-			ArrayList<Integer> dcOwner = SharedResource.getCounter("owner");
-			num = dcOwner.get(data.getID());
-			break;
-		case 1:
-			ArrayList<Integer> dcPath = SharedResource.getCounter("path");
-			num = dcPath.get(data.getID());
-			break;
-		case 2:
-			ArrayList<Integer> dcRelate = SharedResource.getCounter("relate");
-			num = dcRelate.get(data.getID());
-			break;
-		case 3:
-			ArrayList<Integer> dcCuckoo = SharedResource.getCounter("cuckoo");
-			num = dcCuckoo.get(data.getID());
-			break;
+			case 0:
+				ArrayList<Integer> dcOwner = SharedResource.getCounter("owner");
+				num = dcOwner.get(data.getID());
+				break;
+			case 1:
+				ArrayList<Integer> dcPath = SharedResource.getCounter("path");
+				num = dcPath.get(data.getID());
+				break;
+			case 2:
+				ArrayList<Integer> dcRelate = SharedResource.getCounter("relate");
+				num = dcRelate.get(data.getID());
+				break;
+			case 3:
+				ArrayList<Integer> dcCuckoo = SharedResource.getCounter("cuckoo");
+				num = dcCuckoo.get(data.getID());
+				break;
 		}
 		if (num > 0) {
 			return true;
@@ -145,8 +150,8 @@ public class GetReplications implements Control {
 		return false;
 	}
 
-	public void owner() {
-		ArrayList<Integer> dataCounter = SharedResource.getCounter("owner");
+	public double calucAvailability(String type) {
+		ArrayList<Integer> dataCounter = SharedResource.getCounter(type);
 
 		int total = 0;
 		double availability = 0.0;
@@ -156,68 +161,31 @@ public class GetReplications implements Control {
 			}
 		}
 
-		int all = SharedResource.getDataTotal("owner");
+		int all = SharedResource.getDataTotal(type);
 
 		availability = ((double) total) / ((double) all);
 
-		output.writeAvailability("owner", cycle, availability, total, all);
+		output.writeAvailability(type, cycle, availability, total, all);
+		return availability;
+	}
+
+	public void owner() {
+		double availability = calucAvailability("owner");
 		ownerSA.setAvailability(cycle + 1, availability);
 	}
 
 	public void path() {
-		ArrayList<Integer> dataCounter = SharedResource.getCounter("path");
-
-		int total = 0;
-		double availability = 0.0;
-		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
-			if (dataCounter.get(dataID) != null) {
-				total += dataCounter.get(dataID);
-			}
-		}
-
-		int all = SharedResource.getDataTotal("path");
-
-		availability = ((double) total) / ((double) all);
-
-		output.writeAvailability("path", cycle, availability, total, all);
+		double availability = calucAvailability("path");
 		pathSA.setAvailability(cycle + 1, availability);
 	}
 
 	public void relate() {
-		ArrayList<Integer> dataCounter = SharedResource.getCounter("relate");
-
-		int total = 0;
-		double availability = 0.0;
-		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
-			if (dataCounter.get(dataID) != null) {
-				total += dataCounter.get(dataID);
-			}
-		}
-
-		int all = SharedResource.getDataTotal("relate");
-
-		availability = ((double) total) / ((double) all);
-
-		output.writeAvailability("relate", cycle, availability, total, all);
+		double availability = calucAvailability("relate");
 		relateSA.setAvailability(cycle + 1, availability);
 	}
 
 	public void cuckoo() {
-		ArrayList<Integer> dataCounter = SharedResource.getCounter("cuckoo");
-
-		int total = 0;
-		double availability = 0.0;
-		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
-			if (dataCounter.get(dataID) != null) {
-				total += dataCounter.get(dataID);
-			}
-		}
-
-		int all = SharedResource.getDataTotal("cuckoo");
-
-		availability = ((double) total) / ((double) all);
-
-		output.writeAvailability("cuckoo", cycle, availability, total, all);
+		double availability = calucAvailability("cuckoo");
 		cuckooSA.setAvailability(cycle + 1, availability);
 	}
 

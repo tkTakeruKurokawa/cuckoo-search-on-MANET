@@ -57,7 +57,7 @@ public class NodeRequestCycle implements Protocol {
 		return false;
 	}
 
-	public static double factorial(int src) {
+	public double factorial(int src) {
 		if (src == 0) {
 			return ((double) 1.0);
 		}
@@ -70,9 +70,9 @@ public class NodeRequestCycle implements Protocol {
 	}
 
 	private int poisson() {
-		double lambda = 1.0;
+		double lambda = random.nextDouble() * 20.0;
 
-		for (int i = 0; i <= 5; i++) {
+		for (int i = 0; i <= 100; i++) {
 			double cycle = ((double) i);
 			double p = Math.exp(-1 * lambda) * (Math.pow(lambda, cycle)) / factorial(i);
 			boolean success = probability(p);

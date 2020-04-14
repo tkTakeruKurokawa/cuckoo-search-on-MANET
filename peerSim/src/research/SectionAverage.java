@@ -8,9 +8,13 @@ public class SectionAverage {
     private ArrayList<Double> remaining = new ArrayList<Double>();
     private ArrayList<Double> occupancy = new ArrayList<Double>();
 
+    private double total_availability = 0.0;
+    private double total_remaining = 0.0;
+    private double total_occupancy = 0.0;
+
     private int availability_id_old = 0;
-    private int r_id_old = 0;
-    private int o_id_old = 0;
+    private int remaining_id_old = 0;
+    private int occupancy_id_old = 0;
 
     private PrintWriter sa;
 
@@ -35,40 +39,47 @@ public class SectionAverage {
         occupancy.add(0.0);
     }
 
-    public void setAvailability(int cycle, double average) {
+    public void setAvailability(int cycle, double value) {
+        total_availability += value;
+
         int id = cycle / 100;
         if (id != availability_id_old) {
             availability.set(availability_id_old, availability.get(availability_id_old) / 100.0);
-            availability.add(average);
+            availability.add(value);
         } else {
-            availability.set(id, availability.get(id) + average);
+            availability.set(id, availability.get(id) + value);
         }
         availability_id_old = id;
     }
 
-    public void setRemaining(int cycle, double average) {
+    public void setRemaining(int cycle, double value) {
+        total_remaining += value;
+
         int id = cycle / 100;
-        if (id != r_id_old) {
-            remaining.set(r_id_old, remaining.get(r_id_old) / 100.0);
-            remaining.add(average);
+        if (id != remaining_id_old) {
+            remaining.set(remaining_id_old, remaining.get(remaining_id_old) / 100.0);
+            remaining.add(value);
         } else {
-            remaining.set(id, remaining.get(id) + average);
+            remaining.set(id, remaining.get(id) + value);
         }
-        r_id_old = id;
+        remaining_id_old = id;
     }
 
-    public void setOccupancy(int cycle, double average) {
+    public void setOccupancy(int cycle, double value) {
+        total_occupancy += value;
+
         int id = cycle / 100;
-        if (id != o_id_old) {
-            occupancy.set(o_id_old, occupancy.get(o_id_old) / 100.0);
-            occupancy.add(average);
+        if (id != occupancy_id_old) {
+            occupancy.set(occupancy_id_old, occupancy.get(occupancy_id_old) / 100.0);
+            occupancy.add(value);
         } else {
-            occupancy.set(id, occupancy.get(id) + average);
+            occupancy.set(id, occupancy.get(id) + value);
         }
-        o_id_old = id;
+        occupancy_id_old = id;
     }
 
     public void writeFile() {
+        double average;
         double previous = 0.0;
         sa.println("Availability:");
         sa.println("Average\tDifference");
@@ -80,6 +91,8 @@ public class SectionAverage {
             }
             previous = availability.get(id);
         }
+        average = total_availability / 500.0;
+        sa.println(average);
         sa.println();
 
         previous = 0.0;
@@ -93,6 +106,8 @@ public class SectionAverage {
             }
             previous = remaining.get(id);
         }
+        average = total_remaining / 500.0;
+        sa.println(average);
         sa.println();
 
         previous = 0.0;
@@ -106,6 +121,8 @@ public class SectionAverage {
             }
             previous = occupancy.get(id);
         }
+        average = total_occupancy / 500.0;
+        sa.println(average);
 
         sa.close();
     }

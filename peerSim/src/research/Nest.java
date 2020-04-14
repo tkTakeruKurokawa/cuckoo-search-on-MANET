@@ -184,9 +184,9 @@ public class Nest implements Control {
 			return false;
 		}
 
-		ArrayList<Integer> costList = SharedResource.getCost(3);
+		ArrayList<Integer> costList = SharedResource.getReplicationCost(3);
 		costList.set(cycle, costList.get(cycle) + cost);
-		SharedResource.setCost(3, costList);
+		SharedResource.setReplicationCost(3, costList);
 
 		NPCuckoo parameter = (NPCuckoo) SharedResource.getNodeParameter("cuckoo", candidate);
 		newEgg[0] = parameter.getBattery();

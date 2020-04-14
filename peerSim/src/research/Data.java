@@ -57,13 +57,14 @@ public class Data implements Control {
 			maxRequesedRate.add(f); // リストの要素に最大データ要求割合が入る
 		}
 		Collections.shuffle(maxRequesedRate); // アップロードされる順番をシャッフル
+		// Collections.reverse(maxRequesedRate);
 	}
 
 	private static void powerDistribution() {
-		double alfa = 1.0;
+		double alpha = 1.0;
 		for (int i = 1; i <= maxVariety; i++) {
 			double x = (double) i;
-			double f = alfa * Math.pow(1, alfa) / Math.pow(x, alfa + 1);
+			double f = alpha * Math.pow(1, alpha) / Math.pow(x, alpha + 1);
 			maxRequesedRate.add(f);
 		}
 		Collections.shuffle(maxRequesedRate);

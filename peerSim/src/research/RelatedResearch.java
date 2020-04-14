@@ -116,9 +116,9 @@ public class RelatedResearch implements Control {
 
 		int replicationCost = calculateNetworkCost();
 
-		ArrayList<Integer> costList = SharedResource.getCost(2);
+		ArrayList<Integer> costList = SharedResource.getReplicationCost(2);
 		costList.set(cycle, costList.get(cycle) + searchCost + replicationCost);
-		SharedResource.setCost(2, costList);
+		SharedResource.setReplicationCost(2, costList);
 		return bestNode;
 	}
 

@@ -20,9 +20,12 @@ public class LowDemandDataReplication implements Control {
 	private static ArrayList<Integer> relateThreshold = new ArrayList<Integer>();
 	private static ArrayList<Integer> cuckooThreshold = new ArrayList<Integer>();
 	private static ArrayList<Boolean> lowDemand = new ArrayList<Boolean>();
+	private static ArrayList<Integer> num = new ArrayList<Integer>();
 
 	private static int cycle = 0;
-	private static ArrayList<Boolean> replicated;
+	private static int dataID;
+	private static double cuckooTotal;
+	private static double relateTotal;
 
 	public LowDemandDataReplication(String prefix) {
 		alfa = Configuration.getDouble(prefix + "." + PAR_ALFA);
@@ -36,6 +39,7 @@ public class LowDemandDataReplication implements Control {
 			relateThreshold.add(i, -1);
 			cuckooThreshold.add(i, -1);
 			lowDemand.add(i, false);
+			num.add(i, 0);
 		}
 	}
 
@@ -54,11 +58,12 @@ public class LowDemandDataReplication implements Control {
 		return node;
 	}
 
+	// 最適なノードを発見後の複製配置する際ののコスト
 	public static void calculateNetworkCost(int id, Node src, Node dst, int cycle) {
 		Integer hops = Flooding.hops(src, dst);
-		ArrayList<Integer> costList = SharedResource.getCost(id);
+		ArrayList<Integer> costList = SharedResource.getReplicationCost(id);
 		costList.set(cycle, costList.get(cycle) + hops);
-		SharedResource.setCost(id, costList);
+		SharedResource.setReplicationCost(id, costList);
 	}
 
 	public static void relatedResearch(Data data, int max) {
@@ -73,9 +78,7 @@ public class LowDemandDataReplication implements Control {
 				boolean success = storage.setData(node, data);
 				if (success) {
 					Parameter parameter = SharedResource.getNodeParameter("relate", node);
-					if (replicated.get(data.getID()).equals(true)) {
-						OutPut.writeCompare("relate", parameter);
-					}
+					OutPut.writeCompare("relate", parameter);
 				} else {
 				}
 			} else {
@@ -112,40 +115,44 @@ public class LowDemandDataReplication implements Control {
 
 	public static void replicate(String type, ArrayList<Integer> counter, ArrayList<Integer> threshold,
 			ArrayList<Double> next) {
-		threshold = defineThreshold(type, counter, threshold);
-		next = exponentialSmoothing(counter, threshold, next);
-		calculateReplications(type, counter, threshold, next);
+		if (counter.get(dataID) > 0) {
+			threshold = defineThreshold(type, counter, threshold);
+			next = exponentialSmoothing(counter, threshold, next);
+			calculateReplications(type, counter, threshold, next);
 
-		if (type.equals("relate")) {
-			relateThreshold = threshold;
-			relateNext = next;
-		} else {
-			cuckooThreshold = threshold;
-			cuckooNext = next;
+			if (type.equals("relate")) {
+				relateThreshold = threshold;
+				relateNext = next;
+			} else {
+				cuckooThreshold = threshold;
+				cuckooNext = next;
+			}
 		}
 	}
 
 	public static ArrayList<Integer> defineThreshold(String type, ArrayList<Integer> counter,
 			ArrayList<Integer> threshold) {
-		Double total = 0.0;
-		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
-			total += (double) counter.get(dataID);
-			lowDemand.set(dataID, false);
-			if (type.equals("cuckoo")) {
-				replicated.add(dataID, false);
-			}
-
+		lowDemand.set(dataID, false);
+		double total;
+		if (type.equals("cuckoo")) {
+			total = cuckooTotal;
+		} else {
+			total = relateTotal;
 		}
 
-		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
-			if (threshold.get(dataID) < 0) {
-				if (((double) counter.get(dataID)) <= (total * 0.05d)) {
-					threshold.set(dataID, counter.get(dataID));
-					lowDemand.set(dataID, true);
-				} else if (((double) counter.get(dataID)) <= (((double) Network.size()) * 0.05d)) {
-					threshold.set(dataID, counter.get(dataID));
-					lowDemand.set(dataID, true);
-				}
+		if ((type.equals("relate") && threshold.get(dataID) < 0) || type.equals("cuckoo")) {
+			// if (((double) counter.get(dataID)) <= (total * 0.05d)) {
+			// threshold.set(dataID, counter.get(dataID));
+			// lowDemand.set(dataID, true);
+			// } else if (((double) counter.get(dataID)) <= (((double) Network.size()) *
+			// 0.05d)) {
+			// threshold.set(dataID, counter.get(dataID));
+			// lowDemand.set(dataID, true);
+			// }
+			int condition = (int) Math.round(Math.log10(Network.size()) * 3.0);
+			if (counter.get(dataID) <= condition) {
+				threshold.set(dataID, condition);
+				lowDemand.set(dataID, true);
 			}
 		}
 
@@ -154,18 +161,16 @@ public class LowDemandDataReplication implements Control {
 
 	public static ArrayList<Double> exponentialSmoothing(ArrayList<Integer> counter, ArrayList<Integer> threshold,
 			ArrayList<Double> next) {
-		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
-			Double md = (double) counter.get(dataID);
+		Double md = (double) counter.get(dataID);
 
-			if (next.get(dataID) < -1.0d) {
-				next.set(dataID, md);
-			} else {
-				double value = alfa * md + (1 - alfa) * next.get(dataID);
-				if (((int) Math.round(value)) <= threshold.get(dataID)) {
-					lowDemand.set(dataID, true);
-				}
-				next.set(dataID, value);
+		if (next.get(dataID) < -1.0d) {
+			next.set(dataID, md);
+		} else {
+			double value = alfa * md + (1 - alfa) * next.get(dataID);
+			if (((int) Math.round(value)) <= threshold.get(dataID)) {
+				lowDemand.set(dataID, true);
 			}
+			next.set(dataID, value);
 		}
 
 		return next;
@@ -173,26 +178,21 @@ public class LowDemandDataReplication implements Control {
 
 	public static void calculateReplications(String type, ArrayList<Integer> counter, ArrayList<Integer> threshold,
 			ArrayList<Double> next) {
-		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
-			if (lowDemand.get(dataID).equals(true)) {
-				Double x = (double) threshold.get(dataID) / next.get(dataID);
-				if (x.equals(0.0) || Double.isInfinite(x) || Double.isNaN(x)) {
-					x = 1.0;
-				}
-				int dataNum = counter.get(dataID);
-				int safeNum = (int) Math.round(coefficient * (double) threshold.get(dataID));
+		if (lowDemand.get(dataID).equals(true)) {
+			int dataNum = counter.get(dataID);
+			int safeNum = (int) Math.round(coefficient * (double) threshold.get(dataID));
 
-				if (dataNum < safeNum && dataNum > 0) {
-					Data data = Data.getData(dataID);
-					int replications = safeNum - dataNum;
+			if (dataNum < safeNum && dataNum > 0) {
+				Data data = Data.getData(dataID);
+				int adds = (int) Math.round(Math.log10(Network.size()) - Math.log10(counter.get(dataID)));
+				// int replications = safeNum + adds - dataNum;
+				int replications = safeNum - dataNum;
 
-					if (type.equals("relate")) {
-						relatedResearch(data, replications);
-					} else {
-						if (passedCycle.get(dataID) < 100) {
-							cuckooSearch(data, replications);
-							replicated.set(dataID, true);
-						}
+				if (type.equals("relate")) {
+					relatedResearch(data, replications);
+				} else {
+					if (passedCycle.get(dataID) < 100) {
+						cuckooSearch(data, replications);
 					}
 				}
 			}
@@ -207,29 +207,45 @@ public class LowDemandDataReplication implements Control {
 			System.out.println("relate ID " + dataID + ", num: " + relateCounter.get(dataID) + ", Threshold: "
 					+ relateThreshold.get(dataID));
 
-			System.out.println("cuckoo ID: " + dataID + ", num: " + cuckooCounter.get(dataID) + ", Threshold: "
-					+ cuckooThreshold.get(dataID) + ", passedCycle: " + passedCycle.get(dataID));
+			System.out.println("cuckoo ID: " + dataID + ", num: " + cuckooCounter.get(dataID) + ", max: "
+					+ num.get(dataID) + ", Threshold: " + cuckooThreshold.get(dataID) + ", passedCycle: "
+					+ passedCycle.get(dataID));
 		}
 		System.out.println();
 	}
 
 	public boolean execute() {
-		replicated = new ArrayList<Boolean>();
-
 		ArrayList<Integer> relateCounter = SharedResource.getCounter("relate");
 		ArrayList<Integer> cuckooCounter = SharedResource.getCounter("cuckoo");
-		replicate("cuckoo", cuckooCounter, cuckooThreshold, cuckooNext);
-		replicate("relate", relateCounter, relateThreshold, relateNext);
+
+		relateTotal = 0.0;
+		cuckooTotal = 0.0;
+		for (int id = 0; id < Data.getNowVariety(); id++) {
+			relateTotal += (double) relateCounter.get(id);
+			cuckooTotal += (double) cuckooCounter.get(id);
+
+			if (num.get(id) < cuckooCounter.get(id)) {
+				num.set(id, cuckooCounter.get(id));
+			}
+		}
 
 		ArrayList<Integer> accesses = SharedResource.getAccesses();
 		// データ要求があった場合，複製配置終了までのカウンターをリセット
-		for (int dataID = 0; dataID < Data.getNowVariety(); dataID++) {
-			// System.out.println("ID " + dataID + ": " + accesses.get(dataID));
+		for (int id = 0; id < Data.getNowVariety(); id++) {
+			dataID = id;
 			if (!accesses.get(dataID).equals(0)) {
+				relateThreshold.set(dataID, -1);
+				cuckooThreshold.set(dataID, -1);
 				passedCycle.set(dataID, 0);
-				// データ要求が無く，既に低需要と判定されている場合，カウンターの値を増加
-			} else if (!cuckooThreshold.get(dataID).equals(-1)) {
-				passedCycle.set(dataID, passedCycle.get(dataID) + 1);
+				// データ要求が無い場合
+			} else {
+				replicate("cuckoo", cuckooCounter, cuckooThreshold, cuckooNext);
+				replicate("relate", relateCounter, relateThreshold, relateNext);
+
+				// 低需要と判定されている場合，カウンターの値を増加
+				if (!cuckooThreshold.get(dataID).equals(-1)) {
+					passedCycle.set(dataID, passedCycle.get(dataID) + 1);
+				}
 			}
 		}
 

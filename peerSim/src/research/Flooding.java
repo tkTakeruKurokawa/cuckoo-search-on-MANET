@@ -127,7 +127,8 @@ public class Flooding implements Control {
 	}
 
 	public static void calculateNetworkCost(int id, int cycle) {
-		ArrayList<Integer> costList = SharedResource.getCost(id);
+		ArrayList<Integer> searchCostList = SharedResource.getSearchCost(id);
+		ArrayList<Integer> replicationCostList = SharedResource.getReplicationCost(id);
 		int searchCost = cost;
 		int hops = getPath().size() - 1;
 		if (id == 1) {
@@ -135,12 +136,16 @@ public class Flooding implements Control {
 			for (int num = 1; num <= hops; num++) {
 				total += num;
 			}
-			costList.set(cycle, costList.get(cycle) + searchCost + total);
-			SharedResource.setCost(id, costList);
+			searchCostList.set(cycle, searchCostList.get(cycle) + searchCost);
+			replicationCostList.set(cycle, replicationCostList.get(cycle) + total);
+			SharedResource.setSearchCost(id, searchCostList);
+			SharedResource.setReplicationCost(id, replicationCostList);
 
 		} else {
-			costList.set(cycle, costList.get(cycle) + searchCost + hops);
-			SharedResource.setCost(id, costList);
+			searchCostList.set(cycle, searchCostList.get(cycle) + searchCost);
+			replicationCostList.set(cycle, replicationCostList.get(cycle) + hops);
+			SharedResource.setSearchCost(id, searchCostList);
+			SharedResource.setReplicationCost(id, replicationCostList);
 		}
 	}
 

@@ -34,7 +34,9 @@ public class SharedResource implements Control {
 
 	private static Random random;
 	private static int rand;
-	private static ArrayList<Integer> ownerCost, pathCost, relateCost, cuckooCost;
+	private static ArrayList<Integer> ownerSearchCost, pathSearchCost, relateSearchCost, cuckooSearchCost;
+	private static ArrayList<Integer> ownerReplicationCost, pathReplicationCost, relateReplicationCost,
+			cuckooReplicationCost;
 	private static ArrayList<Integer> ownerCounter, pathCounter, relateCounter, cuckooCounter;
 	private static ArrayList<Boolean> dataRequest;
 	private static ArrayList<Integer> dataTotal;
@@ -60,60 +62,79 @@ public class SharedResource implements Control {
 		accesses = acc;
 	}
 
-	public static void setCost(int dest, ArrayList<Integer> cost) {
+	public static void setSearchCost(int dest, ArrayList<Integer> cost) {
 		switch (dest) {
-		case 0:
-			ownerCost = cost;
-			break;
-		case 1:
-			pathCost = cost;
-			break;
-		case 2:
-			relateCost = cost;
-			break;
-		case 3:
-			cuckooCost = cost;
-			break;
-		default:
-			System.exit(0);
+			case 0:
+				ownerSearchCost = cost;
+				break;
+			case 1:
+				pathSearchCost = cost;
+				break;
+			case 2:
+				relateSearchCost = cost;
+				break;
+			case 3:
+				cuckooSearchCost = cost;
+				break;
+			default:
+				System.exit(0);
+		}
+	}
+
+	public static void setReplicationCost(int dest, ArrayList<Integer> cost) {
+		switch (dest) {
+			case 0:
+				ownerReplicationCost = cost;
+				break;
+			case 1:
+				pathReplicationCost = cost;
+				break;
+			case 2:
+				relateReplicationCost = cost;
+				break;
+			case 3:
+				cuckooReplicationCost = cost;
+				break;
+			default:
+				System.exit(0);
 		}
 	}
 
 	public static void setCounter(String dest, ArrayList<Integer> dc) {
 		switch (dest) {
-		case "owner":
-			ownerCounter = dc;
-			break;
-		case "path":
-			pathCounter = dc;
-			break;
-		case "relate":
-			relateCounter = dc;
-			break;
-		case "cuckoo":
-			cuckooCounter = dc;
-			break;
-		default:
-			System.exit(0);
+			case "owner":
+				ownerCounter = dc;
+				break;
+			case "path":
+				pathCounter = dc;
+				break;
+			case "relate":
+				relateCounter = dc;
+				break;
+			case "cuckoo":
+				cuckooCounter = dc;
+				break;
+			default:
+				System.exit(0);
 		}
 	}
 
 	public static void setDataTotal(String dest, int value) {
 		switch (dest) {
-		case "owner":
-			dataTotal.set(0, value);
-			break;
-		case "path":
-			dataTotal.set(1, value);
-			break;
-		case "relate":
-			dataTotal.set(2, value);
-			break;
-		case "cuckoo":
-			dataTotal.set(3, value);
-			break;
-		default:
-			System.exit(1);
+			case "owner":
+				dataTotal.set(0, value);
+				break;
+			case "path":
+				dataTotal.set(1, value);
+				break;
+			case "relate":
+				dataTotal.set(2, value);
+				break;
+			case "cuckoo":
+				dataTotal.set(3, value);
+				break;
+			default:
+				System.exit(1);
 		}
 	}
 
@@ -139,16 +160,16 @@ public class SharedResource implements Control {
 
 	public static Storage getNodeStorage(String dest, Node node) {
 		switch (dest) {
-		case "owner":
-			return (StorageOwner) node.getProtocol(pid_so);
-		case "path":
-			return (StoragePath) node.getProtocol(pid_sp);
-		case "relate":
-			return (StorageRelate) node.getProtocol(pid_sr);
-		case "cuckoo":
-			return (StorageCuckoo) node.getProtocol(pid_sc);
-		default:
-			break;
+			case "owner":
+				return (StorageOwner) node.getProtocol(pid_so);
+			case "path":
+				return (StoragePath) node.getProtocol(pid_sp);
+			case "relate":
+				return (StorageRelate) node.getProtocol(pid_sr);
+			case "cuckoo":
+				return (StorageCuckoo) node.getProtocol(pid_sc);
+			default:
+				break;
 		}
 		System.exit(2);
 		return null;
@@ -156,33 +177,50 @@ public class SharedResource implements Control {
 
 	public static Parameter getNodeParameter(String dest, Node node) {
 		switch (dest) {
-		case "owner":
-			return (NPOwner) node.getProtocol(pid_npo);
-		case "path":
-			return (NPPath) node.getProtocol(pid_npp);
-		case "relate":
-			return (NPRelate) node.getProtocol(pid_npr);
-		case "cuckoo":
-			return (NPCuckoo) node.getProtocol(pid_npc);
-		default:
-			break;
+			case "owner":
+				return (NPOwner) node.getProtocol(pid_npo);
+			case "path":
+				return (NPPath) node.getProtocol(pid_npp);
+			case "relate":
+				return (NPRelate) node.getProtocol(pid_npr);
+			case "cuckoo":
+				return (NPCuckoo) node.getProtocol(pid_npc);
+			default:
+				break;
 		}
 		System.exit(3);
 		return null;
 	}
 
-	public static ArrayList<Integer> getCost(int dest) {
+	public static ArrayList<Integer> getSearchCost(int dest) {
 		switch (dest) {
-		case 0:
-			return ownerCost;
-		case 1:
-			return pathCost;
-		case 2:
-			return relateCost;
-		case 3:
-			return cuckooCost;
-		default:
-			break;
+			case 0:
+				return ownerSearchCost;
+			case 1:
+				return pathSearchCost;
+			case 2:
+				return relateSearchCost;
+			case 3:
+				return cuckooSearchCost;
+			default:
+				break;
+		}
+		System.exit(4);
+		return null;
+	}
+
+	public static ArrayList<Integer> getReplicationCost(int dest) {
+		switch (dest) {
+			case 0:
+				return ownerReplicationCost;
+			case 1:
+				return pathReplicationCost;
+			case 2:
+				return relateReplicationCost;
+			case 3:
+				return cuckooReplicationCost;
+			default:
+				break;
 		}
 		System.exit(4);
 		return null;
@@ -190,16 +228,16 @@ public class SharedResource implements Control {
 
 	public static ArrayList<Integer> getCounter(String dest) {
 		switch (dest) {
-		case "owner":
-			return ownerCounter;
-		case "path":
-			return pathCounter;
-		case "relate":
-			return relateCounter;
-		case "cuckoo":
-			return cuckooCounter;
-		default:
-			break;
+			case "owner":
+				return ownerCounter;
+			case "path":
+				return pathCounter;
+			case "relate":
+				return relateCounter;
+			case "cuckoo":
+				return cuckooCounter;
+			default:
+				break;
 		}
 		System.exit(4);
 		return null;
@@ -208,16 +246,16 @@ public class SharedResource implements Control {
 	public static int getDataTotal(String dest) {
 		int value = 0;
 		switch (dest) {
-		case "owner":
-			return dataTotal.get(0);
-		case "path":
-			return dataTotal.get(1);
-		case "relate":
-			return dataTotal.get(2);
-		case "cuckoo":
-			return dataTotal.get(3);
-		default:
-			break;
+			case "owner":
+				return dataTotal.get(0);
+			case "path":
+				return dataTotal.get(1);
+			case "relate":
+				return dataTotal.get(2);
+			case "cuckoo":
+				return dataTotal.get(3);
+			default:
+				break;
 		}
 		System.exit(5);
 		return value;
@@ -232,10 +270,14 @@ public class SharedResource implements Control {
 	}
 
 	public boolean execute() {
-		ownerCost = new ArrayList<Integer>();
-		pathCost = new ArrayList<Integer>();
-		relateCost = new ArrayList<Integer>();
-		cuckooCost = new ArrayList<Integer>();
+		ownerSearchCost = new ArrayList<Integer>();
+		pathSearchCost = new ArrayList<Integer>();
+		relateSearchCost = new ArrayList<Integer>();
+		cuckooSearchCost = new ArrayList<Integer>();
+		ownerReplicationCost = new ArrayList<Integer>();
+		pathReplicationCost = new ArrayList<Integer>();
+		relateReplicationCost = new ArrayList<Integer>();
+		cuckooReplicationCost = new ArrayList<Integer>();
 		ownerCounter = new ArrayList<Integer>();
 		pathCounter = new ArrayList<Integer>();
 		relateCounter = new ArrayList<Integer>();
@@ -257,10 +299,14 @@ public class SharedResource implements Control {
 		}
 
 		for (int i = 0; i < maxCycle; i++) {
-			ownerCost.add(i, 0);
-			pathCost.add(i, 0);
-			relateCost.add(i, 0);
-			cuckooCost.add(i, 0);
+			ownerSearchCost.add(i, 0);
+			pathSearchCost.add(i, 0);
+			relateSearchCost.add(i, 0);
+			cuckooSearchCost.add(i, 0);
+			ownerReplicationCost.add(i, 0);
+			pathReplicationCost.add(i, 0);
+			relateReplicationCost.add(i, 0);
+			cuckooReplicationCost.add(i, 0);
 		}
 
 		return false;
