@@ -60,10 +60,18 @@ class Test {
     }
 
     public static void main(String[] args) {
-        for (int i = 0; i < 100; i++) {
-            rnd.add(i);
-        }
+        // for (int i = 0; i < 100; i++) {
+        // rnd.add(i);
+        // }
 
-        System.out.println(poisson());
+        // System.out.println(poisson());
+        double n = 6.7;
+        double total = n;
+        for (int i = 1; i < 8; i++) {
+            n = n * 2.0;
+            total += n;
+            System.out.println(n);
+        }
+        System.out.println("total: " + total);
     }
 }

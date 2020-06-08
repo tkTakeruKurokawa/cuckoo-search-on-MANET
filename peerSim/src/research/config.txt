@@ -85,7 +85,7 @@ init.iniNet InitializeNetwork
 init.data Data
 init.data.maxVariety maxVariety
 init.data.size dataSize
-init.data.distribution normal ##### normal or power #####
+init.data.distribution power ##### normal or power #####
 
 #データの検索手法のFlooading
 init.fld Flooding
@@ -111,11 +111,13 @@ init.ns.abandonRate 0.2
 init.nest Nest
 init.nest.protocol0 prm
 init.nest.delta 45.0
-init.nest.capacity capacity
+init.nest.maxBattery 100.0
+init.nest.maxCapacity capacity
+init.nest.stepLimit 34
 
 #関連研究での複製配置先の決定に用いるFlooading
 init.rr RelatedResearch
-init.rr.ttl 10
+init.rr.ttl 8
 init.rr.capacity capacity
 
 order.init sr iniNet data fld rgg wrgg  cs ns nest rr

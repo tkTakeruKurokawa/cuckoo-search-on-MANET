@@ -13,11 +13,11 @@ public class NestSet implements Control {
 
 	private Random random = new Random();
 	private ArrayList<Integer> rand;
-	private ArrayList<Nest> nest;
+	private ArrayList<Nest> nests;
 	private int nestSize;
 
 	public NestSet() {
-		nest = new ArrayList<Nest>();
+		nests = new ArrayList<Nest>();
 		rand = new ArrayList<Integer>();
 
 		for (int i = 0; i < Network.size(); i++) {
@@ -32,10 +32,10 @@ public class NestSet implements Control {
 		for (int i = 0; i < nestSize; i++) {
 			Collections.shuffle(rand);
 			Node node = Network.get(rand.get(i));
-			nest.add(new Nest(node));
+			nests.add(new Nest(node));
 		}
 
-		sort(0, nestSize - 1);
+		Nest.sort(nests, 0, nestSize - 1);
 	}
 
 	public NestSet(String prefix) {
@@ -46,39 +46,41 @@ public class NestSet implements Control {
 	public void alternate(Node base, int cycle) {
 		Collections.shuffle(rand);
 
-		int worst = 0;
-		int bound = 0;
-		while (bound < 50) {
-			// System.out.println("r1: " + r1 + " r2: " + r2);
-			// System.out.println("Target Node: " + nest.get(r2).getNode().getIndex() +
-			// "value " + nest.get(r2).getValue()
-			// + " (" + nest.get(r2).egg[0] + ", " + nest.get(r2).egg[1] + ")");
-			boolean success = nest.get(worst).replace(base, cycle);
-			if (success == true) {
-				break;
-			}
-			// System.out.println("Re levyWalk");
-			bound++;
-		}
+		// int worst = 0;
+		// int bound = 0;
+		// while (bound < 50) {
+		// // System.out.println("r1: " + r1 + " r2: " + r2);
+		// // System.out.println("Target Node: " + nests.get(r2).getNode().getIndex() +
+		// // "value " + nests.get(r2).getValue()
+		// // + " (" + nests.get(r2).egg[0] + ", " + nests.get(r2).egg[1] + ")");
+		// boolean success = nests.get(worst).replace(base, cycle);
+		// if (success == true) {
+		// break;
+		// }
+		// // System.out.println("Re levyWalk");
+		// bound++;
+		// }
+		nests = Nest.runLevyWalk(nests, base, cycle);
 
 		// System.out.println("After UPDATE");
-		// System.out.println("Target Node: " + nest.get(worst).getNode().getIndex() + "
+		// System.out.println("Target Node: " + nests.get(worst).getNode().getIndex() +
+		// "
 		// value "
-		// + nest.get(worst).getValue() + " (" + nest.get(worst).egg[0] + ", " +
-		// nest.get(worst).egg[1] + ")");
-		sort(0, nestSize - 1);
+		// + nests.get(worst).getValue() + " (" + nests.get(worst).egg[0] + ", " +
+		// nests.get(worst).egg[1] + ")");
+		Nest.sort(nests, 0, nestSize - 1);
 
 		int i = 0;
 		int id = 0;
-		int abandanNum = (int) Math.floor((double) nestSize * ABA_RATE);
-		// System.out.println("ABANDAN:");
-		while ((i < abandanNum) && (Network.size() > nestSize)) {
+		int abandonNum = (int) Math.floor((double) nestSize * ABA_RATE);
+		// System.out.println("ABANDON:");
+		while ((i < abandonNum) && (Network.size() > nestSize)) {
 			boolean contain = false;
 			int newNodeID = rand.get(id);
 
 			// 巣に交換予定のノードが入っているかチェック
 			for (int nestID = 0; nestID < nestSize; nestID++) {
-				if (Objects.equals(nest.get(nestID).getNode().getIndex(), newNodeID)) {
+				if (Objects.equals(nests.get(nestID).getNode().getIndex(), newNodeID)) {
 					contain = true;
 				}
 			}
@@ -88,63 +90,30 @@ public class NestSet implements Control {
 				continue;
 			} else {
 				// 巣に入っていないかつ，交換予定のノードの評価が交換されるノードより良ければ交換
-				// System.out.println("Avandan nestID: " + i);
-				nest.get(i).abandon(newNodeID);
+				// System.out.println("Abandon nestID: " + i);
+				nests.get(i).abandon(newNodeID);
 				id = 0;
 			}
 			// System.out.printf("\t%d: ", i);
-			// System.out.println("Node: " + nest.get(i).getNode().getIndex() + " value " +
-			// nest.get(i).getValue() + " ("
-			// + nest.get(i).egg[0] + ", " + nest.get(i).egg[1] + ")");
-			// nest.get(i).abandon();
+			// System.out.println("Node: " + nests.get(i).getNode().getIndex() + " value " +
+			// nests.get(i).getValue() + " ("
+			// + nests.get(i).egg[0] + ", " + nests.get(i).egg[1] + ")");
+			// nests.get(i).abandon();
 			i++;
 		}
-		sort(0, nestSize - 1);
-	}
-
-	public void sort(int lb, int ub) {
-		int i, j, k;
-		double pivot;
-		Nest tmpNest;
-
-		if (lb < ub) {
-			k = (lb + ub) / 2;
-			pivot = nest.get(k).getValue();
-			i = lb;
-			j = ub;
-
-			do {
-				while (nest.get(i).getValue() < pivot) {
-					i++;
-				}
-				while (nest.get(j).getValue() > pivot) {
-					j--;
-				}
-				if (i <= j) {
-					tmpNest = nest.get(i);
-
-					nest.set(i, nest.get(j));
-
-					nest.set(j, tmpNest);
-					i++;
-					j--;
-				}
-			} while (i <= j);
-			sort(lb, j);
-			sort(i, ub);
-		}
+		Nest.sort(nests, 0, nestSize - 1);
 	}
 
 	public ArrayList<Nest> getNestSet() {
-		return nest;
+		return nests;
 	}
 
 	public Node getBestNode() {
-		return nest.get(nest.size() - 1).getNode();
+		return nests.get(nests.size() - 1).getNode();
 	}
 
 	public Node getBestNode(int num) {
-		return nest.get(nest.size() - 1 - num).getNode();
+		return nests.get(nests.size() - 1 - num).getNode();
 	}
 
 	public int getNestSize() {

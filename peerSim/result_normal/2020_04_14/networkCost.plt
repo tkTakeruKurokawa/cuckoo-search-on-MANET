@@ -52,9 +52,9 @@
 
 set xrange [0:500]
 set xlabel 'Num of cycle'
-set autoscale y
+set yrange [0:2000]
 set ylabel 'Network Cost'
-set key left top
+set key right top
 
 plot "searchCost_owner.tsv" every ::2 using 1:3 with lines title "Owner" lc rgb "blue",\
 	"searchCost_path.tsv" every ::2 using 1:3 with lines title "Path" lc rgb "magenta",\
@@ -120,9 +120,9 @@ replot
 
 set xrange [0:500]
 set xlabel 'Num of cycle'
-set autoscale y
+set yrange [0:2000]
 set ylabel 'Network Cost'
-set key left top
+set key right top
 
 plot "replicationCost_owner.tsv" every ::2 using 1:3 with lines title "Owner" lc rgb "blue",\
 	"replicationCost_path.tsv" every ::2 using 1:3 with lines title "Path" lc rgb "magenta",\
