@@ -100,7 +100,7 @@ init.wrgg.protocol lnk
 
 #複製配置先を決定するためのCuckoo Search
 init.cs CuckooSearch
-init.cs.generation 50
+init.cs.generation 10
 
 #Cuckoo Searchで扱う巣の集合
 init.ns NestSet
@@ -113,11 +113,11 @@ init.nest.protocol0 prm
 init.nest.delta 45.0
 init.nest.maxBattery 100.0
 init.nest.maxCapacity capacity
-init.nest.stepLimit 34
+init.nest.stepLimit 30
 
 #関連研究での複製配置先の決定に用いるFlooading
 init.rr RelatedResearch
-init.rr.ttl 8
+init.rr.ttl 20
 init.rr.capacity capacity
 
 order.init sr iniNet data fld rgg wrgg  cs ns nest rr
@@ -132,6 +132,7 @@ control.lddr LowDemandDataReplication
 control.lddr.alfa 0.5
 control.lddr.coefficient 1.0
 control.lddr.safe_num 5
+control.lddr.stop_cycle 100
 
 #各ノードで保有されているデータの総数を表示
 control.gr GetReplications

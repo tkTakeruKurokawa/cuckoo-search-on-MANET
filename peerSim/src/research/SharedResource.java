@@ -37,6 +37,8 @@ public class SharedResource implements Control {
 	private static ArrayList<Integer> ownerSearchCost, pathSearchCost, relateSearchCost, cuckooSearchCost;
 	private static ArrayList<Integer> ownerReplicationCost, pathReplicationCost, relateReplicationCost,
 			cuckooReplicationCost;
+	private static ArrayList<Integer> ownerReplicationCount, pathReplicationCount, relateReplicationCount,
+			cuckooReplicationCount;
 	private static ArrayList<Integer> ownerCounter, pathCounter, relateCounter, cuckooCounter;
 	private static ArrayList<Boolean> dataRequest;
 	private static ArrayList<Integer> dataTotal;
@@ -94,6 +96,25 @@ public class SharedResource implements Control {
 				break;
 			case 3:
 				cuckooReplicationCost = cost;
+				break;
+			default:
+				System.exit(0);
+		}
+	}
+
+	public static void setReplicationCount(int dest, ArrayList<Integer> count) {
+		switch (dest) {
+			case 0:
+				ownerReplicationCount = count;
+				break;
+			case 1:
+				pathReplicationCount = count;
+				break;
+			case 2:
+				relateReplicationCount = count;
+				break;
+			case 3:
+				cuckooReplicationCount = count;
 				break;
 			default:
 				System.exit(0);
@@ -226,6 +247,23 @@ public class SharedResource implements Control {
 		return null;
 	}
 
+	public static ArrayList<Integer> getReplicationCount(int dest) {
+		switch (dest) {
+			case 0:
+				return ownerReplicationCount;
+			case 1:
+				return pathReplicationCount;
+			case 2:
+				return relateReplicationCount;
+			case 3:
+				return cuckooReplicationCount;
+			default:
+				break;
+		}
+		System.exit(4);
+		return null;
+	}
+
 	public static ArrayList<Integer> getCounter(String dest) {
 		switch (dest) {
 			case "owner":
@@ -278,6 +316,10 @@ public class SharedResource implements Control {
 		pathReplicationCost = new ArrayList<Integer>();
 		relateReplicationCost = new ArrayList<Integer>();
 		cuckooReplicationCost = new ArrayList<Integer>();
+		ownerReplicationCount = new ArrayList<Integer>();
+		pathReplicationCount = new ArrayList<Integer>();
+		relateReplicationCount = new ArrayList<Integer>();
+		cuckooReplicationCount = new ArrayList<Integer>();
 		ownerCounter = new ArrayList<Integer>();
 		pathCounter = new ArrayList<Integer>();
 		relateCounter = new ArrayList<Integer>();
@@ -307,6 +349,10 @@ public class SharedResource implements Control {
 			pathReplicationCost.add(i, 0);
 			relateReplicationCost.add(i, 0);
 			cuckooReplicationCost.add(i, 0);
+			ownerReplicationCount.add(i, 0);
+			pathReplicationCount.add(i, 0);
+			relateReplicationCount.add(i, 0);
+			cuckooReplicationCount.add(i, 0);
 		}
 
 		return false;

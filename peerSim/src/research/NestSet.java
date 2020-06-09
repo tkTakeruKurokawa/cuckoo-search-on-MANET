@@ -70,6 +70,12 @@ public class NestSet implements Control {
 		// nests.get(worst).egg[1] + ")");
 		Nest.sort(nests, 0, nestSize - 1);
 
+		runAbandon();
+
+		Nest.sort(nests, 0, nestSize - 1);
+	}
+
+	public void runAbandon() {
 		int i = 0;
 		int id = 0;
 		int abandonNum = (int) Math.floor((double) nestSize * ABA_RATE);
@@ -101,7 +107,6 @@ public class NestSet implements Control {
 			// nests.get(i).abandon();
 			i++;
 		}
-		Nest.sort(nests, 0, nestSize - 1);
 	}
 
 	public ArrayList<Nest> getNestSet() {

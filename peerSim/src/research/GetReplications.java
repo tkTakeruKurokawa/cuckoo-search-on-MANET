@@ -57,6 +57,7 @@ public class GetReplications implements Control {
 		for (int i = 0; i < 4; i++) {
 			ArrayList<Integer> searchCostList = SharedResource.getSearchCost(i);
 			ArrayList<Integer> replicationCostList = SharedResource.getReplicationCost(i);
+			ArrayList<Integer> replicationCountList = SharedResource.getReplicationCount(i);
 			double searchTotal = 0.0;
 			double replicationTotal = 0.0;
 
@@ -67,7 +68,7 @@ public class GetReplications implements Control {
 
 			output.writeSearchCost(i, cycle, searchCostList.get(cycle), searchTotal / ((double) (cycle + 1)));
 			output.writeReplicationCost(i, cycle, replicationCostList.get(cycle),
-					replicationTotal / ((double) (cycle + 1)));
+					replicationTotal / ((double) (cycle + 1)), replicationCountList.get(cycle));
 		}
 	}
 

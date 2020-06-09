@@ -167,7 +167,7 @@ public class OutPut {
 	}
 
 	public PrintWriter setNetworkCostComments(PrintWriter pw) {
-		pw.println("Cycle\tNow Cost\tAverage Cost");
+		pw.println("Cycle\tNow Cost\tAverage Cost\tNumber of Replication");
 		pw.println();
 
 		return pw;
@@ -302,19 +302,19 @@ public class OutPut {
 		}
 	}
 
-	public void writeReplicationCost(int type, int cycle, int nowCost, double averageCost) {
+	public void writeReplicationCost(int type, int cycle, int nowCost, double averageCost, int replicationCount) {
 		switch (type) {
 			case 0:
-				ownerReplicationCost.println(cycle + "\t" + nowCost + "\t" + averageCost);
+				ownerReplicationCost.println(cycle + "\t" + nowCost + "\t" + averageCost + "\t" + replicationCount);
 				break;
 			case 1:
-				pathReplicationCost.println(cycle + "\t" + nowCost + "\t" + averageCost);
+				pathReplicationCost.println(cycle + "\t" + nowCost + "\t" + averageCost + "\t" + replicationCount);
 				break;
 			case 2:
-				relateReplicationCost.println(cycle + "\t" + nowCost + "\t" + averageCost);
+				relateReplicationCost.println(cycle + "\t" + nowCost + "\t" + averageCost + "\t" + replicationCount);
 				break;
 			case 3:
-				cuckooReplicationCost.println(cycle + "\t" + nowCost + "\t" + averageCost);
+				cuckooReplicationCost.println(cycle + "\t" + nowCost + "\t" + averageCost + "\t" + replicationCount);
 				break;
 			default:
 				break;

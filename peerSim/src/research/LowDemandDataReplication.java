@@ -12,6 +12,8 @@ public class LowDemandDataReplication implements Control {
 	private static double coefficient;
 	private static final String PAR_SAFE_NUM = "safe_num";
 	private static int safe;
+	private static final String PAR_STOP_CYCLE = "stop_cycle";
+	private static int stopCycle;
 
 	private static Random random = new Random();
 	private static ArrayList<Integer> passedCycle = new ArrayList<Integer>();
@@ -31,6 +33,7 @@ public class LowDemandDataReplication implements Control {
 		alfa = Configuration.getDouble(prefix + "." + PAR_ALFA);
 		coefficient = Configuration.getDouble(prefix + "." + PAR_COEFFICIENT);
 		safe = Configuration.getInt(prefix + "." + PAR_SAFE_NUM);
+		stopCycle = Configuration.getInt(prefix + "." + PAR_STOP_CYCLE);
 
 		for (int i = 0; i < Data.getMaxVariety(); i++) {
 			passedCycle.add(i, 0);
@@ -68,6 +71,7 @@ public class LowDemandDataReplication implements Control {
 
 	public static void relatedResearch(Data data, int max) {
 		int addNum = 0;
+		int successCount = 0;
 		Node node;
 		Node base = searchHavingNode("relate", data);
 		while (addNum < max) {
@@ -79,6 +83,7 @@ public class LowDemandDataReplication implements Control {
 				if (success) {
 					Parameter parameter = SharedResource.getNodeParameter("relate", node);
 					OutPut.writeCompare("relate", parameter);
+					successCount++;
 				} else {
 				}
 			} else {
@@ -86,10 +91,15 @@ public class LowDemandDataReplication implements Control {
 
 			addNum++;
 		}
+
+		ArrayList<Integer> count = SharedResource.getReplicationCount(2);
+		count.set(cycle, count.get(cycle) + successCount);
+		SharedResource.setReplicationCount(2, count);
 	}
 
 	public static void cuckooSearch(Data data, int max) {
 		int addNum = 0;
+		int successCount = 0;
 		Node node;
 		Node base = searchHavingNode("cuckoo", data);
 		// System.out.println("Add Num: " + diff);
@@ -104,6 +114,7 @@ public class LowDemandDataReplication implements Control {
 					Parameter parameter = SharedResource.getNodeParameter("cuckoo", node);
 					OutPut.writeCompare("cuckoo", parameter);
 					calculateNetworkCost(3, base, node, cycle);
+					successCount++;
 				} else {
 				}
 			} else {
@@ -111,6 +122,10 @@ public class LowDemandDataReplication implements Control {
 
 			addNum++;
 		}
+
+		ArrayList<Integer> count = SharedResource.getReplicationCount(3);
+		count.set(cycle, count.get(cycle) + successCount);
+		SharedResource.setReplicationCount(3, count);
 	}
 
 	public static void replicate(String type, ArrayList<Integer> counter, ArrayList<Integer> threshold,
@@ -191,7 +206,7 @@ public class LowDemandDataReplication implements Control {
 				if (type.equals("relate")) {
 					relatedResearch(data, replications);
 				} else {
-					if (passedCycle.get(dataID) < 100) {
+					if (passedCycle.get(dataID) < stopCycle) {
 						cuckooSearch(data, replications);
 					}
 				}

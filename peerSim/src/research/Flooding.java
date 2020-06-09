@@ -147,6 +147,12 @@ public class Flooding implements Control {
 			SharedResource.setSearchCost(id, searchCostList);
 			SharedResource.setReplicationCost(id, replicationCostList);
 		}
+
+		for (int i = 0; i < 4; i++) {
+			ArrayList<Integer> count = SharedResource.getReplicationCount(i);
+			count.set(cycle, count.get(cycle) + 1);
+			SharedResource.setReplicationCount(i, count);
+		}
 	}
 
 	public static boolean search(Node node, Data data, int num, int cycle) {
@@ -194,6 +200,7 @@ public class Flooding implements Control {
 		return null;
 	}
 
+	// カッコウ探索で低需要データを割り当てる際のホップ数
 	public static Integer hops(Node src, Node dst) {
 		addedQueueList = new ArrayList<Node>();
 		nodeTTL = new HashMap<Node, Integer>();
