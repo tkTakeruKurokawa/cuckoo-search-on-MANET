@@ -70,7 +70,7 @@ public class NestSet implements Control {
 		// nests.get(worst).egg[1] + ")");
 		Nest.sort(nests, 0, nestSize - 1);
 
-		runAbandon();
+		// runAbandon();
 
 		Nest.sort(nests, 0, nestSize - 1);
 	}

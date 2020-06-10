@@ -1,8 +1,16 @@
 package research;
 
+import peersim.config.*;
+import peersim.core.Control;
+
 import java.io.*;
 
-public class OutPut {
+public class OutPut implements Control {
+	private static final String PAR_DISTRIBUTION = "distribution";
+	private static int distribution;
+	private static final String PAR_STOP_CYCLE = "stopCycle";
+	private static int stopCycle;
+
 	private PrintWriter ownerCounter, ownerRemaining, ownerOccupancy, ownerHit, ownerSearchCost, ownerReplicationCost;
 	private PrintWriter pathCounter, pathRemaining, pathOccupancy, pathHit, pathSearchCost, pathReplicationCost;
 	private PrintWriter relateCounter, relateRemaining, relateOccupancy, relateHit, relateSearchCost,
@@ -13,73 +21,87 @@ public class OutPut {
 	private static Statistic relateStatistic, cuckooStatistic;
 
 	private double totalLinks = 0;
+	private static String directoryName;
+
+	public OutPut(String s) {
+		distribution = Configuration.getInt(s + "." + PAR_DISTRIBUTION);
+		stopCycle = Configuration.getInt(s + "." + PAR_STOP_CYCLE);
+
+		if (distribution == 0) {
+			directoryName = "result" + String.valueOf(stopCycle) + "/normal";
+		} else if (distribution == 1) {
+			directoryName = "result" + String.valueOf(stopCycle) + "/pareto";
+		} else {
+			System.exit(-2);
+		}
+	}
 
 	public OutPut() {
 		try {
-			File dir = new File("result");
+			File dir = new File(directoryName + "/eps");
 			if (!dir.exists()) {
-				dir.mkdir();
+				dir.mkdirs();
 			}
 
 			String way = new File(".").getAbsoluteFile().getParent();
 
-			String owner = way + "/result/counter_owner.tsv";
+			String owner = way + "/" + directoryName + "/counter_owner.tsv";
 			File counter_owner = new File(owner);
-			owner = way + "/result/remaining_owner.tsv";
+			owner = way + "/" + directoryName + "/remaining_owner.tsv";
 			File remaining_owner = new File(owner);
-			owner = way + "/result/occupancy_owner.tsv";
+			owner = way + "/" + directoryName + "/occupancy_owner.tsv";
 			File occupancy_owner = new File(owner);
-			owner = way + "/result/hitRate_owner.tsv";
+			owner = way + "/" + directoryName + "/hitRate_owner.tsv";
 			File hitRate_owner = new File(owner);
-			owner = way + "/result/searchCost_owner.tsv";
+			owner = way + "/" + directoryName + "/searchCost_owner.tsv";
 			File searchCost_owner = new File(owner);
-			owner = way + "/result/replicationCost_owner.tsv";
+			owner = way + "/" + directoryName + "/replicationCost_owner.tsv";
 			File replicationCost_owner = new File(owner);
 
-			String path = way + "/result/counter_path.tsv";
+			String path = way + "/" + directoryName + "/counter_path.tsv";
 			File counter_path = new File(path);
-			path = way + "/result/remaining_path.tsv";
+			path = way + "/" + directoryName + "/remaining_path.tsv";
 			File remaining_path = new File(path);
-			path = way + "/result/occupancy_path.tsv";
+			path = way + "/" + directoryName + "/occupancy_path.tsv";
 			File occupancy_path = new File(path);
-			path = way + "/result/hitRate_path.tsv";
+			path = way + "/" + directoryName + "/hitRate_path.tsv";
 			File hitRate_path = new File(path);
-			path = way + "/result/searchCost_path.tsv";
+			path = way + "/" + directoryName + "/searchCost_path.tsv";
 			File searchCost_path = new File(path);
-			path = way + "/result/replicationCost_path.tsv";
+			path = way + "/" + directoryName + "/replicationCost_path.tsv";
 			File replicationCost_path = new File(path);
 
-			String relate = way + "/result/counter_relate.tsv";
+			String relate = way + "/" + directoryName + "/counter_relate.tsv";
 			File counter_relate = new File(relate);
-			relate = way + "/result/remaining_relate.tsv";
+			relate = way + "/" + directoryName + "/remaining_relate.tsv";
 			File remaining_relate = new File(relate);
-			relate = way + "/result/occupancy_relate.tsv";
+			relate = way + "/" + directoryName + "/occupancy_relate.tsv";
 			File occupancy_relate = new File(relate);
-			relate = way + "/result/hitRate_relate.tsv";
+			relate = way + "/" + directoryName + "/hitRate_relate.tsv";
 			File hitRate_relate = new File(relate);
-			relate = way + "/result/searchCost_relate.tsv";
+			relate = way + "/" + directoryName + "/searchCost_relate.tsv";
 			File searchCost_relate = new File(relate);
-			relate = way + "/result/replicationCost_relate.tsv";
+			relate = way + "/" + directoryName + "/replicationCost_relate.tsv";
 			File replicationCost_relate = new File(relate);
-			relate = way + "/result/compare_relate.tsv";
+			relate = way + "/" + directoryName + "/compare_relate.tsv";
 			File compare_relate = new File(relate);
 
-			String cuckoo = way + "/result/counter_cuckoo.tsv";
+			String cuckoo = way + "/" + directoryName + "/counter_cuckoo.tsv";
 			File counter_cuckoo = new File(cuckoo);
-			cuckoo = way + "/result/remaining_cuckoo.tsv";
+			cuckoo = way + "/" + directoryName + "/remaining_cuckoo.tsv";
 			File remaining_cuckoo = new File(cuckoo);
-			cuckoo = way + "/result/occupancy_cuckoo.tsv";
+			cuckoo = way + "/" + directoryName + "/occupancy_cuckoo.tsv";
 			File occupancy_cuckoo = new File(cuckoo);
-			cuckoo = way + "/result/hitRate_cuckoo.tsv";
+			cuckoo = way + "/" + directoryName + "/hitRate_cuckoo.tsv";
 			File hitRate_cuckoo = new File(cuckoo);
-			cuckoo = way + "/result/searchCost_cuckoo.tsv";
+			cuckoo = way + "/" + directoryName + "/searchCost_cuckoo.tsv";
 			File searchCost_cuckoo = new File(cuckoo);
-			cuckoo = way + "/result/replicationCost_cuckoo.tsv";
+			cuckoo = way + "/" + directoryName + "/replicationCost_cuckoo.tsv";
 			File replicationCost_cuckoo = new File(cuckoo);
-			cuckoo = way + "/result/compare_cuckoo.tsv";
+			cuckoo = way + "/" + directoryName + "/compare_cuckoo.tsv";
 			File compare_cuckoo = new File(cuckoo);
 
-			way = new File(".").getAbsoluteFile().getParent() + "/result/averageLinks.tsv";
+			way = new File(".").getAbsoluteFile().getParent() + "/" + directoryName + "/averageLinks.tsv";
 			File al = new File(way);
 
 			ownerCounter = new PrintWriter(new BufferedWriter(new FileWriter(counter_owner, true)));
@@ -356,5 +378,9 @@ public class OutPut {
 		cuckooCompare.close();
 
 		links.close();
+	}
+
+	public boolean execute() {
+		return false;
 	}
 }

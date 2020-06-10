@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 import java.lang.Math;
+import org.apache.commons.math3.special.*;
 
 class Test {
 
@@ -59,19 +60,40 @@ class Test {
         return total;
     }
 
+    private static void normalDistribution() {
+        ArrayList<Double> list = new ArrayList<Double>();
+        double mu = 25.0;
+        double sigma = 100.0;
+        for (int i = 0; i < 50; i++) {
+            double x = (double) i;
+            double f = (1.0 / 2.0) * (1.0 + Erf.erf((x - mu) / Math.sqrt(2.0 * sigma)));
+            list.add(f);
+        }
+        Collections.reverse(list);
+        for (Double value : list) {
+            System.out.printf("%f, ", value);
+        }
+        System.out.println();
+    }
+
+    private static void powerDistribution() {
+        double alpha = 1.0;
+        for (int i = 1; i <= 50; i++) {
+            double x = (double) i;
+            double f = alpha * Math.pow(1, alpha) / Math.pow(x, alpha + 1);
+            System.out.printf("%f, ", f);
+        }
+        System.out.println();
+    }
+
     public static void main(String[] args) {
         // for (int i = 0; i < 100; i++) {
         // rnd.add(i);
         // }
-
         // System.out.println(poisson());
-        double n = 6.7;
-        double total = n;
-        for (int i = 1; i < 8; i++) {
-            n = n * 2.0;
-            total += n;
-            System.out.println(n);
-        }
-        System.out.println("total: " + total);
+
+        normalDistribution();
+        powerDistribution();
+
     }
 }

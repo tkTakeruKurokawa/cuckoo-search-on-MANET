@@ -65,6 +65,8 @@ public class Nest implements Control {
 		steps = 0;
 	}
 
+	// 巣集合に低需要データを持っているノードが入るバグがある
+	// 巣集合に入っているノードが探索で見つかった場合にもう一度入るバグがある
 	private static Node levyWalk(ArrayList<Nest> nests, Node base) {
 		double r, o;
 		int d;
