@@ -13,17 +13,17 @@ public class CuckooSearch implements Control {
 	}
 
 	public static Node search(Node base, Data data, int cycle) {
-		NestSet ns = new NestSet();
+		NestSet ns = new NestSet(data);
 		for (int generation = 0; generation < maxGeneration; generation++) {
 			// System.out.println("Generation: " + generation);
-			ns.alternate(base, cycle);
+			ns.alternate(base, cycle, generation);
 			// ArrayList<Nest> nest = ns.getNestSet();
 			// System.out.println("NOWNEST:");
 			// for (int k = 0; k < ns.getNestSize(); k++) {
 			// System.out.printf("\t%d: ", k);
 			// System.out.println("Node: " + nest.get(k).getNode().getIndex() + " value " +
 			// nest.get(k).getValue()
-			// + " (" + nest.get(k).egg[0] + ", " + nest.get(k).egg[1] + ")");
+			// + " (" + nest.get(k).eggs[0] + ", " + nest.get(k).eggs[1] + ")");
 			// }
 		}
 
@@ -45,6 +45,7 @@ public class CuckooSearch implements Control {
 		}
 
 		// System.out.println("return Node:" + bestNode.getIndex());
+		// System.out.println("----------FINISH CUCKOO SEARCH----------");
 		return bestNode;
 	}
 

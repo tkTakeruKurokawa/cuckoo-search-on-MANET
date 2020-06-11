@@ -104,6 +104,8 @@ public class LowDemandDataReplication implements Control {
 		Node base = searchHavingNode("cuckoo", data);
 		// System.out.println("Add Num: " + diff);
 		while (addNum < max) {
+			// System.out.println("----------START NODE: " + base.getIndex() + "
+			// ----------");
 			node = CuckooSearch.search(base, data, cycle);
 			// System.out.println("CS Node: " + node);
 

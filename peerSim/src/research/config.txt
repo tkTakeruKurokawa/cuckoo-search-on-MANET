@@ -8,7 +8,7 @@ dataSize 10.0
 highDemandNum 25
 lowDemandNum 25
 maxVariety 50
-stopCycle 300
+stopCycle 100
 
 #0で正規分布に従う
 #1でパレート分布に従う

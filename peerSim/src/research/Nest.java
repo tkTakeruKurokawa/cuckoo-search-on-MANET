@@ -22,6 +22,8 @@ public class Nest implements Control {
 	private static Random random = new Random();
 	private static HashMap<Node, Double> candidates = new HashMap<Node, Double>();
 	private static final double PI = Math.PI;
+	private static Data targetData;
+	private static Node lastPosition = null;
 	private static double distance;
 	private static int steps;
 
@@ -44,14 +46,21 @@ public class Nest implements Control {
 		stepLimit = Configuration.getInt(prefix + "." + PAR_STEP_LIMIT);
 	}
 
-	public static ArrayList<Nest> runLevyWalk(ArrayList<Nest> nests, Node base, int cycle) {
-		initializeProperty();
+	public static ArrayList<Nest> runLevyWalk(ArrayList<Nest> nests, Node base, Data targeData, int cycle,
+			int generation) {
+		initializeProperty(targeData);
 
-		Node lastPosition = base;
+		Node startNode = base;
+		if (generation != 0) {
+			startNode = lastPosition;
+		}
 		while (steps < stepLimit) {
-			lastPosition = levyWalk(nests, lastPosition);
+			// System.out.println("Start Node: " + startNode.getIndex());
+			startNode = levyWalk(nests, startNode);
 			// System.out.println("steps: " + steps);
 		}
+		lastPosition = startNode;
+		// System.out.println("Last Node: " + lastPosition.getIndex());
 
 		ArrayList<Integer> costList = SharedResource.getReplicationCost(3);
 		costList.set(cycle, costList.get(cycle) + steps);
@@ -60,13 +69,12 @@ public class Nest implements Control {
 		return nests;
 	}
 
-	private static void initializeProperty() {
+	private static void initializeProperty(Data data) {
 		distance = 0;
 		steps = 0;
+		targetData = data;
 	}
 
-	// 巣集合に低需要データを持っているノードが入るバグがある
-	// 巣集合に入っているノードが探索で見つかった場合にもう一度入るバグがある
 	private static Node levyWalk(ArrayList<Nest> nests, Node base) {
 		double r, o;
 		int d;
@@ -96,6 +104,7 @@ public class Nest implements Control {
 			Link linkable = SharedResource.getLink(base);
 			if (linkable.degree() == 0) {
 				System.out.println("No Neighbor");
+				System.out.println(base.toString());
 				System.exit(10000);
 			}
 			for (int i = 0; i < linkable.degree(); i++) {
@@ -194,7 +203,13 @@ public class Nest implements Control {
 		return minNode;
 	}
 
+	// 巣集合に低需要データを持っているノードが入るバグがある
+	// 巣集合に入っているノードが探索で見つかった場合にもう一度入るバグがある
 	private static void compareAndReplace(ArrayList<Nest> nests, Node newNode) {
+		if (!checkNode(nests, newNode)) {
+			return;
+		}
+
 		NPCuckoo parameter = (NPCuckoo) SharedResource.getNodeParameter("cuckoo", newNode);
 		double newValue = evaluate(parameter.getBattery(), parameter.getCapacity(), parameter.getUpTime());
 
@@ -207,6 +222,27 @@ public class Nest implements Control {
 				return;
 			}
 		}
+	}
+
+	private static boolean checkNode(ArrayList<Nest> nests, Node node) {
+		// Levy walkで見つけたノードが低需要データを持っている場合
+		Storage storage = SharedResource.getNodeStorage("cuckoo", node);
+		if (storage.contains(targetData)) {
+			// System.out.println("Node having Data: " + targetData.getID() + " storage: " +
+			// storage.toString());
+			return false;
+		}
+
+		// Levy walkで見つけたノードが既に巣集合に入っている場合
+		for (Nest nest : nests) {
+			if (nest.getNode().getIndex() == node.getIndex()) {
+				// System.out.println("Nest having Node: " + nest.getNode().getIndex() + "
+				// node:" + node.getIndex());
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public static double evaluate(double battery, double capacity, double upTime) {

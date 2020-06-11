@@ -10,15 +10,17 @@ public class NestSet implements Control {
 	public static int SET_SIZE;
 	private static final String PAR_ABA_RATE = "abandonRate";
 	private static double ABA_RATE;
+	private static Data targetData;
 
 	private Random random = new Random();
 	private ArrayList<Integer> rand;
 	private ArrayList<Nest> nests;
 	private int nestSize;
 
-	public NestSet() {
+	public NestSet(Data data) {
 		nests = new ArrayList<Nest>();
 		rand = new ArrayList<Integer>();
+		targetData = data;
 
 		for (int i = 0; i < Network.size(); i++) {
 			rand.add(i);
@@ -29,10 +31,19 @@ public class NestSet implements Control {
 		} else {
 			nestSize = SET_SIZE;
 		}
-		for (int i = 0; i < nestSize; i++) {
-			Collections.shuffle(rand);
+
+		Collections.shuffle(rand);
+		int nestCount = 0;
+		int i = 0;
+		while (nestCount < nestSize) {
 			Node node = Network.get(rand.get(i));
-			nests.add(new Nest(node));
+			Storage storage = SharedResource.getNodeStorage("cuckoo", node);
+			if (!storage.contains(targetData)) {
+				nests.add(new Nest(node));
+				nestCount++;
+			}
+
+			i++;
 		}
 
 		Nest.sort(nests, 0, nestSize - 1);
@@ -43,8 +54,8 @@ public class NestSet implements Control {
 		ABA_RATE = Configuration.getDouble(prefix + "." + PAR_ABA_RATE);
 	}
 
-	public void alternate(Node base, int cycle) {
-		Collections.shuffle(rand);
+	public void alternate(Node base, int cycle, int generation) {
+		// Collections.shuffle(rand);
 
 		// int worst = 0;
 		// int bound = 0;
@@ -60,7 +71,7 @@ public class NestSet implements Control {
 		// // System.out.println("Re levyWalk");
 		// bound++;
 		// }
-		nests = Nest.runLevyWalk(nests, base, cycle);
+		nests = Nest.runLevyWalk(nests, base, targetData, cycle, generation);
 
 		// System.out.println("After UPDATE");
 		// System.out.println("Target Node: " + nests.get(worst).getNode().getIndex() +
@@ -70,9 +81,7 @@ public class NestSet implements Control {
 		// nests.get(worst).egg[1] + ")");
 		Nest.sort(nests, 0, nestSize - 1);
 
-		// runAbandon();
-
-		Nest.sort(nests, 0, nestSize - 1);
+		runAbandon();
 	}
 
 	public void runAbandon() {
@@ -107,6 +116,8 @@ public class NestSet implements Control {
 			// nests.get(i).abandon();
 			i++;
 		}
+
+		Nest.sort(nests, 0, nestSize - 1);
 	}
 
 	public ArrayList<Nest> getNestSet() {
