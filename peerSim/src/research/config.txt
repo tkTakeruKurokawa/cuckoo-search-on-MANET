@@ -8,7 +8,7 @@ dataSize 10.0
 highDemandNum 25
 lowDemandNum 25
 maxVariety 50
-stopCycle 100
+stopCycle 300
 
 #0で正規分布に従う
 #1でパレート分布に従う
@@ -110,7 +110,7 @@ init.wrgg.protocol lnk
 
 #複製配置先を決定するためのCuckoo Search
 init.cs CuckooSearch
-init.cs.generation 10
+init.cs.generation 1
 
 #Cuckoo Searchで扱う巣の集合
 init.ns NestSet
@@ -123,7 +123,7 @@ init.nest.protocol0 prm
 init.nest.delta 45.0
 init.nest.maxBattery 100.0
 init.nest.maxCapacity capacity
-init.nest.stepLimit 30
+init.nest.stepLimit 300
 
 #関連研究での複製配置先の決定に用いるFlooading
 init.rr RelatedResearch
