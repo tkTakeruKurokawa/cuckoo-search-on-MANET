@@ -15,7 +15,7 @@ replot
 
 set xrange [0:500]
 set xlabel 'Num of cycle'
-set autoscale y
+set yrange [0:7000]
 set ylabel 'Network Cost'
 set key left top
 
